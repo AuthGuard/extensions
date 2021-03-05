@@ -1,0 +1,12 @@
+{
+  "kafka": {
+    "topics": {
+      "AUTHENTICATION": "test.event"
+    },
+    "producerConfig": {
+      "bootstrap.servers": "",
+      "client.id": "client",
+      "acks": "all"
+    }
+  }
+}
