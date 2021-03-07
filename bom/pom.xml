@@ -22,7 +22,6 @@
         <guice.version>4.2.2</guice.version>
         <jackson.version>2.11.1</jackson.version>
         <logback.version>1.2.3</logback.version>
-        <immutables.version>2.7.4</immutables.version>
 
         <surefire.version>3.0.0-M3</surefire.version>
         <junit.version>5.5.1</junit.version>
@@ -115,13 +114,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.immutables</groupId>
-                <artifactId>value</artifactId>
-                <version>${immutables.version}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

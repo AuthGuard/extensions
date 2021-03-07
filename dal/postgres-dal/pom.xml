@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Extensions :: DAL :: Postgres</name>
+    <name>Extensions :: Data Access :: Postgres</name>
 
     <artifactId>postgres-dal</artifactId>
     <packaging>pom</packaging>
