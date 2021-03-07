@@ -12,7 +12,7 @@
 
     <name>Extensions :: Email Providers</name>
 
-    <artifactId>email-parent</artifactId>
+    <artifactId>email-extensions-parent</artifactId>
     <packaging>pom</packaging>
 
     <modules>

@@ -58,42 +58,36 @@
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>persistence</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>cache</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>dal-common</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>emb</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>email</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>sms</artifactId>
                 <version>${authguard.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
