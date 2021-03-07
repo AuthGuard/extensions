@@ -37,6 +37,7 @@
         <module>bom</module>
         <module>emb</module>
         <module>email</module>
+        <module>dal</module>
     </modules>
 
     <dependencies>

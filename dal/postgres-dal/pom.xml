@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dal-extensions-parent</artifactId>
+        <groupId>com.nexblocks.authguard</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Extensions :: DAL :: Postgres</name>
+
+    <artifactId>postgres-dal</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>postgres-persistence</module>
+        <module>postgres-cache</module>
+    </modules>
+
+    <properties>
+        <postgresql-connector.version>42.2.16</postgresql-connector.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.nexblocks.authguard</groupId>
+                <artifactId>bom</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
