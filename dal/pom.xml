@@ -18,6 +18,7 @@
     <modules>
         <module>hibernate-dal</module>
         <module>postgres-dal</module>
+        <module>redis-cache</module>
     </modules>
 
     <dependencyManagement>
