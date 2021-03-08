@@ -85,6 +85,12 @@
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${authguard.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>sms</artifactId>
                 <version>${authguard.version}</version>
             </dependency>
