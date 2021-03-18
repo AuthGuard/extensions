@@ -13,10 +13,12 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
         implements AccountsRepository {
     private static final String GET_BY_ID = "accounts.getById";
     private static final String GET_BY_EXTERNAL_ID = "accounts.getByExternalId";
+    private static final String GET_BY_EMAIL = "accounts.getByEmail";
     private static final String GET_BY_ROLE = "accounts.getByRole";
 
     private static final String ID_FIELD = "id";
     private static final String EXTERNAL_ID_FIELD = "externalId";
+    private static final String EMAIL_FIELD = "email";
     private static final String ROLE_FIELD = "role";
 
     public HibernateAccountsRepository() {
@@ -33,6 +35,12 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     public CompletableFuture<Optional<AccountDO>> getByExternalId(final String externalId) {
         return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AccountDO.class)
                 .setParameter(EXTERNAL_ID_FIELD, externalId));
+    }
+
+    @Override
+    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
+        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EMAIL, AccountDO.class)
+                .setParameter(EMAIL_FIELD, email));
     }
 
     @Override

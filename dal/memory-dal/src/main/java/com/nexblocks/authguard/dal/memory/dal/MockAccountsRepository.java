@@ -21,6 +21,15 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
+    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
+        return CompletableFuture.supplyAsync(() -> getRepo().values()
+                .stream()
+                .filter(account -> account.getEmail() != null)
+                .filter(account -> account.getEmail().getEmail().equals(email))
+                .findFirst());
+    }
+
+    @Override
     public CompletableFuture<List<AccountDO>> getByRole(final String role) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()

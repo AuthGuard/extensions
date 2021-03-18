@@ -39,13 +39,6 @@ class HibernateAccountsRepositoryTest {
         final AccountDO persisted = repository.save(account).join();
         final Optional<AccountDO> retrieved = repository.getById(id).join();
 
-//        List<AccountDO> results = QueryExecutor.getAList(session ->
-//                session.createQuery("SELECT account FROM AccountDO account " +
-//                        "LEFT JOIN FETCH account.permissions " +
-//                        "LEFT JOIN FETCH account.roles", AccountDO.class)).join();
-//
-//        System.out.println(results);
-
         assertThat(retrieved).contains(persisted);
     }
 
@@ -68,6 +61,27 @@ class HibernateAccountsRepositoryTest {
 
         final AccountDO persisted = repository.save(account).join();
         final Optional<AccountDO> retrieved = repository.getByExternalId(externalId).join();
+
+        assertThat(retrieved).contains(persisted);
+    }
+
+    @Test
+    void getByEmail() {
+        final String id = UUID.randomUUID().toString();
+
+        final EmailDO email = EmailDO.builder()
+                .email("getByEmaild@test.com")
+                .build();
+
+        final AccountDO account = AccountDO.builder()
+                .id(id)
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .build();
+
+        final AccountDO persisted = repository.save(account).join();
+        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail()).join();
 
         assertThat(retrieved).contains(persisted);
     }
