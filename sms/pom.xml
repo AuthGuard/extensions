@@ -10,15 +10,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Extensions :: Email Providers</name>
+    <name>Extensions :: SMS Providers</name>
 
-    <artifactId>email-extensions-parent</artifactId>
+    <artifactId>sms-extensions-parent</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>javamail-provider</module>
-        <module>log-email</module>
+        <module>log-sms</module>
     </modules>
-
 
 </project>

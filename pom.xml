@@ -35,9 +35,10 @@
 
     <modules>
         <module>bom</module>
+        <module>dal</module>
         <module>emb</module>
         <module>email</module>
-        <module>dal</module>
+        <module>sms</module>
     </modules>
 
     <dependencyManagement>
