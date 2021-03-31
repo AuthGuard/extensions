@@ -13,16 +13,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateAppsRepositoryTest {
+public class HibernateAppsRepositoryTest {
     private HibernateAppsRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateAppsRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = UUID.randomUUID().toString();
 
         final AppDO app = AppDO.builder()
@@ -38,7 +38,7 @@ class HibernateAppsRepositoryTest {
     }
 
     @Test
-    void getByExternalId() {
+    public void getByExternalId() {
         final String id = UUID.randomUUID().toString();
         final String externalId = "getByExternalId";
 
@@ -56,7 +56,7 @@ class HibernateAppsRepositoryTest {
     }
 
     @Test
-    void getAllForAccount() {
+    public void getAllForAccount() {
         final String id = UUID.randomUUID().toString();
         final String accountId = "account";
 

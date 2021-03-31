@@ -11,14 +11,14 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateRolesRepositoryTest {
+public class HibernateRolesRepositoryTest {
     private HibernateRolesRepository repository;
 
     private RoleDO first;
     private RoleDO second;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateRolesRepository();
 
         first = repository.save(RoleDO.builder()
@@ -33,18 +33,18 @@ class HibernateRolesRepositoryTest {
     }
 
     @Test
-    void getAll() {
+    public void getAll() {
         assertThat(repository.getAll().join()).containsOnly(first, second);
     }
 
     @Test
-    void getByName() {
+    public void getByName() {
         assertThat(repository.getByName(first.getName()).join()).contains(first);
         assertThat(repository.getByName(second.getName()).join()).contains(second);
     }
 
     @Test
-    void getMultiple() {
+    public void getMultiple() {
         assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName())).join())
                 .containsOnly(first, second);
     }

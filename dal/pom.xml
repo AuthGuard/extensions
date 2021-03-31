@@ -36,6 +36,24 @@
                 <artifactId>hibernate-cache</artifactId>
                 <version>0.3.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.nexblocks.authguard</groupId>
+                <artifactId>hibernate-persistence</artifactId>
+                <version>0.3.0</version>
+                <classifier>tests</classifier>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.nexblocks.authguard</groupId>
+                <artifactId>hibernate-cache</artifactId>
+                <version>0.3.0</version>
+                <classifier>tests</classifier>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

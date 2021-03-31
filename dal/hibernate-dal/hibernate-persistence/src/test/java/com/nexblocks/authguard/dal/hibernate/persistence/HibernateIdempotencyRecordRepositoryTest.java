@@ -11,16 +11,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateIdempotencyRecordRepositoryTest {
+public class HibernateIdempotencyRecordRepositoryTest {
     private HibernateIdempotencyRecordRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateIdempotencyRecordRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = "record-id";
 
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
@@ -36,7 +36,7 @@ class HibernateIdempotencyRecordRepositoryTest {
     }
 
     @Test
-    void saveAndGetByKey() {
+    public void saveAndGetByKey() {
         final String key = "by-key-key";
 
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
@@ -52,7 +52,7 @@ class HibernateIdempotencyRecordRepositoryTest {
     }
 
     @Test
-    void saveAndGetByKeyAndEntityType() {
+    public void saveAndGetByKeyAndEntityType() {
         final String key = "by-key-and-entity-key";
         final String entityType = "by-key-and-entity-entity";
 

@@ -26,6 +26,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.nexblocks.authguard</groupId>
+            <artifactId>hibernate-persistence</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql-connector.version}</version>

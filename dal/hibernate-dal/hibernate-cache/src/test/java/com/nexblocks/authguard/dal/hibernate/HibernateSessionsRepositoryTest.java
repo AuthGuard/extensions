@@ -14,16 +14,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateSessionsRepositoryTest {
+public class HibernateSessionsRepositoryTest {
     private HibernateSessionsRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateSessionsRepository();
     }
 
     @Test
-    void getByToken() {
+    public void getByToken() {
         final String id = UUID.randomUUID().toString();
         final String token = "getByToken-token";
 

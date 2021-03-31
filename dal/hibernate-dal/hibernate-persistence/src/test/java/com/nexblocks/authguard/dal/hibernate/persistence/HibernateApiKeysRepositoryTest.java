@@ -12,16 +12,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateApiKeysRepositoryTest {
+public class HibernateApiKeysRepositoryTest {
     private HibernateApiKeysRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateApiKeysRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = UUID.randomUUID().toString();
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
@@ -36,7 +36,7 @@ class HibernateApiKeysRepositoryTest {
     }
 
     @Test
-    void getByAppId() {
+    public void getByAppId() {
         final String id = UUID.randomUUID().toString();
         final String appId = "app";
 
@@ -53,7 +53,7 @@ class HibernateApiKeysRepositoryTest {
     }
 
     @Test
-    void getByKey() {
+    public void getByKey() {
         final String id = UUID.randomUUID().toString();
         final String key = "getByKey";
 

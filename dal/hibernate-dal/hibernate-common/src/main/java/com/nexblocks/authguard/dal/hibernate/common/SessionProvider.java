@@ -8,7 +8,7 @@ import org.hibernate.cfg.Configuration;
 
 @Singleton
 public class SessionProvider {
-    private static SessionFactory factory = new Configuration()
+    private static final Configuration factoryConfiguration = new Configuration()
             .addAnnotatedClass(AccountDO.class)
             .addAnnotatedClass(EmailDO.class)
             .addAnnotatedClass(CredentialsDO.class)
@@ -24,10 +24,23 @@ public class SessionProvider {
             .addAnnotatedClass(SessionDO.class)
             .addAnnotatedClass(OneTimePasswordDO.class)
             .addAnnotatedClass(IdempotentRecordDO.class)
-            .addAnnotatedClass(TokenRestrictionsDO.class)
-            .buildSessionFactory();
+            .addAnnotatedClass(TokenRestrictionsDO.class);
+
+    private static SessionFactory factory;
+
+    public static void overrideProperty(final String name, final String value) {
+        if (factory != null) {
+            throw new IllegalStateException("Properties cannot be overridden after the session factory was built");
+        }
+
+        factoryConfiguration.setProperty(name, value);
+    }
 
     static Session newSession() {
+        if (factory == null) {
+            factory = factoryConfiguration.buildSessionFactory();
+        }
+
         return factory.openSession();
     }
 }

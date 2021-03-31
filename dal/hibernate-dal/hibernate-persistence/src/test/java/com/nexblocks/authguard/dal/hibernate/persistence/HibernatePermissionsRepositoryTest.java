@@ -10,14 +10,14 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernatePermissionsRepositoryTest {
+public class HibernatePermissionsRepositoryTest {
     private HibernatePermissionsRepository repository;
 
     private PermissionDO first;
     private PermissionDO second;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernatePermissionsRepository();
 
         first = repository.save(PermissionDO.builder()
@@ -34,23 +34,23 @@ class HibernatePermissionsRepositoryTest {
     }
 
     @Test
-    void search() {
+    public void search() {
         assertThat(repository.search("tests", "first").join()).contains(first);
         assertThat(repository.search("tests", "second").join()).contains(second);
     }
 
     @Test
-    void getAll() {
+    public void getAll() {
         assertThat(repository.getAll().join()).containsOnly(first, second);
     }
 
     @Test
-    void getAllForGroup() {
+    public void getAllForGroup() {
         assertThat(repository.getAllForGroup("tests").join()).containsOnly(first, second);
     }
 
     @Test
-    void getAllForNonexistentGroup() {
+    public void getAllForNonexistentGroup() {
         assertThat(repository.getAllForGroup("nothing").join()).isEmpty();
     }
 }

@@ -14,16 +14,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateCredentialsRepositoryTest {
+public class HibernateCredentialsRepositoryTest {
     private HibernateCredentialsRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateCredentialsRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = UUID.randomUUID().toString();
 
         final CredentialsDO credentials = CredentialsDO.builder()
@@ -46,7 +46,7 @@ class HibernateCredentialsRepositoryTest {
     }
 
     @Test
-    void findByIdentifier() {
+    public void findByIdentifier() {
         final String id = UUID.randomUUID().toString();
         final String identifier = "findByIdentifier";
 

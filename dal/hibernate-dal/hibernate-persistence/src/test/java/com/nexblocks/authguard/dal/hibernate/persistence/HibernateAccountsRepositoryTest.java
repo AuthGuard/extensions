@@ -14,16 +14,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateAccountsRepositoryTest {
+public class HibernateAccountsRepositoryTest {
     private HibernateAccountsRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateAccountsRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = UUID.randomUUID().toString();
         final EmailDO email = EmailDO.builder()
                 .email("saveAndGetById@test.com")
@@ -43,7 +43,7 @@ class HibernateAccountsRepositoryTest {
     }
 
     @Test
-    void getByExternalId() {
+    public void getByExternalId() {
         final String id = UUID.randomUUID().toString();
         final String externalId = UUID.randomUUID().toString();
 
@@ -66,7 +66,7 @@ class HibernateAccountsRepositoryTest {
     }
 
     @Test
-    void getByEmail() {
+    public void getByEmail() {
         final String id = UUID.randomUUID().toString();
 
         final EmailDO email = EmailDO.builder()
@@ -87,7 +87,7 @@ class HibernateAccountsRepositoryTest {
     }
 
     @Test
-    void getByRole() {
+    public void getByRole() {
         final String id = UUID.randomUUID().toString();
         final String role = "test-role";
 

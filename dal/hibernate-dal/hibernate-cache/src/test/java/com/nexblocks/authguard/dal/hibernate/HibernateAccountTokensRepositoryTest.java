@@ -15,16 +15,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateAccountTokensRepositoryTest {
+public class HibernateAccountTokensRepositoryTest {
     private HibernateAccountTokensRepository repository;
 
     @BeforeAll
-    void setup() {
+    public void setup() {
         repository = new HibernateAccountTokensRepository();
     }
 
     @Test
-    void saveAndGetById() {
+    public void saveAndGetById() {
         final String id = UUID.randomUUID().toString();
 
         final AccountTokenDO accountToken = AccountTokenDO.builder()
