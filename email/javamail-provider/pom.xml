@@ -5,7 +5,7 @@
     <parent>
         <artifactId>email-extensions-parent</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.3.0</version>
+        <version>0.4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,6 @@
     <name>Extensions :: Email Providers :: JavaMail</name>
 
     <artifactId>javamail-provider</artifactId>
-    <version>0.3.0</version>
 
     <properties>
         <java-mail.version>1.6.2</java-mail.version>
@@ -30,7 +29,7 @@
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>bom</artifactId>
-                <version>${project.version}</version>
+                <version>${authguard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

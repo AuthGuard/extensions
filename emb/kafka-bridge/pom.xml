@@ -7,14 +7,13 @@
     <parent>
         <artifactId>emb-parent</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.3.0</version>
+        <version>0.4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <name>Extensions :: EMB :: Kafka Bridge</name>
 
     <artifactId>kafka-bridge</artifactId>
-    <version>0.3.0</version> <!-- each extension needs to maintain its own version -->
 
     <properties>
         <kafka.version>2.0.0</kafka.version>
@@ -35,7 +34,7 @@
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>bom</artifactId>
-                <version>${project.version}</version>
+                <version>${authguard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
