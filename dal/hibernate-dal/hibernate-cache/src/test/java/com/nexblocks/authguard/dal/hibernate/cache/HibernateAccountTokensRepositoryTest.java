@@ -1,6 +1,5 @@
-package com.nexblocks.authguard.dal.hibernate;
+package com.nexblocks.authguard.dal.hibernate.cache;
 
-import com.nexblocks.authguard.dal.hibernate.cache.HibernateAccountTokensRepository;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
 import com.nexblocks.authguard.dal.model.TokenRestrictionsDO;
 import org.junit.jupiter.api.BeforeAll;

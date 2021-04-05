@@ -14,7 +14,7 @@ public class HibernateAccountLocksRepository extends AbstractHibernateRepository
 
     private static final String GET_BY_ACCOUNT_ID = "account_locks.getByAccountId";
 
-    private static final String ACCOUNT_ID_FIELD = "token";
+    private static final String ACCOUNT_ID_FIELD = "accountId";
 
     public HibernateAccountLocksRepository() {
         super(AccountLockDO.class);

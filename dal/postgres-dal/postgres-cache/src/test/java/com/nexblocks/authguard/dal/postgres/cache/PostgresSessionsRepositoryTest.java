@@ -1,6 +1,6 @@
 package com.nexblocks.authguard.dal.postgres.cache;
 
-import com.nexblocks.authguard.dal.hibernate.HibernateSessionsRepositoryTest;
+import com.nexblocks.authguard.dal.hibernate.cache.HibernateSessionsRepositoryTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 

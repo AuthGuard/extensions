@@ -1,6 +1,5 @@
-package com.nexblocks.authguard.dal.hibernate;
+package com.nexblocks.authguard.dal.hibernate.cache;
 
-import com.nexblocks.authguard.dal.hibernate.cache.HibernateSessionsRepository;
 import com.nexblocks.authguard.dal.model.SessionDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
