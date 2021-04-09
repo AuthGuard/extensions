@@ -21,6 +21,7 @@
         <module>redis-cache</module>
         <module>memory-dal</module>
         <module>mongo-dal</module>
+        <module>mysql-dal</module>
     </modules>
 
     <dependencyManagement>
