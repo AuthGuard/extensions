@@ -22,6 +22,7 @@
         <module>memory-dal</module>
         <module>mongo-dal</module>
         <module>mysql-dal</module>
+        <module>cockroachdb-dal</module>
     </modules>
 
     <dependencyManagement>
