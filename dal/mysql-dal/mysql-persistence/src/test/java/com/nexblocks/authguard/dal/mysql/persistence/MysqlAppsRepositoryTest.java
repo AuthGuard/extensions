@@ -10,6 +10,6 @@ public class MysqlAppsRepositoryTest extends HibernateAppsRepositoryTest {
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.cache.AccountLocksRepository;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -16,13 +17,14 @@ public class HibernateAccountLocksRepository extends AbstractHibernateRepository
 
     private static final String ACCOUNT_ID_FIELD = "accountId";
 
-    public HibernateAccountLocksRepository() {
-        super(AccountLockDO.class);
+    @Inject
+    public HibernateAccountLocksRepository(final QueryExecutor queryExecutor) {
+        super(AccountLockDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final String accountId) {
-        return QueryExecutor
+        return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AccountLockDO.class)
                         .setParameter(ACCOUNT_ID_FIELD, accountId))
                 .thenApply(Function.identity());

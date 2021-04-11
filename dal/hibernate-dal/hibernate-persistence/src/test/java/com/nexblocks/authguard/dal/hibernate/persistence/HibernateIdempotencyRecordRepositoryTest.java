@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.IdempotentRecordDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,12 @@ public class HibernateIdempotencyRecordRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateIdempotencyRecordRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateIdempotencyRecordRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test

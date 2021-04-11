@@ -10,6 +10,6 @@ public class CockroachDBApiKeysRepositoryTest extends HibernateApiKeysRepository
     @Override
     public void setup() {
         CockroachTestContainer.start();
-        super.setup();
+        initialize(CockroachTestContainer.getSessionProvider());
     }
 }

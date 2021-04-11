@@ -10,6 +10,6 @@ public class CockroachDBIdempotencyRecordsRepositoryTest extends HibernateIdempo
     @Override
     public void setup() {
         CockroachTestContainer.start();
-        super.setup();
+        initialize(CockroachTestContainer.getSessionProvider());
     }
 }

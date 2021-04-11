@@ -10,6 +10,6 @@ class PostgresSessionsRepositoryTest extends HibernateSessionsRepositoryTest {
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

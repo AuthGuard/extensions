@@ -10,6 +10,6 @@ public class PostgresAccountRepositoryTest extends HibernateAccountsRepositoryTe
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

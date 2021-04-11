@@ -25,6 +25,11 @@
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>dal-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.nexblocks.authguard</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

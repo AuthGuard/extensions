@@ -10,6 +10,6 @@ public class MysqlPermissionsRepositoryTest extends HibernatePermissionsReposito
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

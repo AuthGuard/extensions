@@ -10,6 +10,6 @@ public class PostgresApiKeysRepositoryTest extends HibernateApiKeysRepositoryTes
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

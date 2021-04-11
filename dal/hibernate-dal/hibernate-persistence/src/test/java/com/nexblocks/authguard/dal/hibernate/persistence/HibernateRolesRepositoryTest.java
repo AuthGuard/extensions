@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.RoleDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,12 @@ public class HibernateRolesRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateRolesRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateRolesRepository(new QueryExecutor(sessionProvider));
 
         first = repository.save(RoleDO.builder()
                 .id(UUID.randomUUID().toString())

@@ -10,6 +10,6 @@ public class MysqlCredentialsRepositoryTest extends HibernateCredentialsReposito
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

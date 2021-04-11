@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
 import com.nexblocks.authguard.dal.model.TokenRestrictionsDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +21,12 @@ public class HibernateAccountTokensRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateAccountTokensRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateAccountTokensRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test

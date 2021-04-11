@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AccountLockDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,12 @@ class HibernateAccountLocksRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateAccountLocksRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateAccountLocksRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test

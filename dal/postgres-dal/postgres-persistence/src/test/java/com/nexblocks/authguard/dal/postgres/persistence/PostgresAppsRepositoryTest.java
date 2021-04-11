@@ -10,6 +10,6 @@ public class PostgresAppsRepositoryTest extends HibernateAppsRepositoryTest {
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

@@ -10,6 +10,6 @@ public class CockroachDBAppsRepositoryTest extends HibernateAppsRepositoryTest {
     @Override
     public void setup() {
         CockroachTestContainer.start();
-        super.setup();
+        initialize(CockroachTestContainer.getSessionProvider());
     }
 }

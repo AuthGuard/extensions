@@ -10,6 +10,6 @@ public class MysqlIdempotencyRecordsRepositoryTest extends HibernateIdempotencyR
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

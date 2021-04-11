@@ -10,6 +10,6 @@ public class MysqlRolesRepositoryTest extends HibernateRolesRepositoryTest {
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

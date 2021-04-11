@@ -10,6 +10,6 @@ public class CockroachDBExchangeAttemptsRepositoryTest extends HibernateExchange
     @Override
     public void setup() {
         CockroachTestContainer.start();
-        super.setup();
+        initialize(CockroachTestContainer.getSessionProvider());
     }
 }

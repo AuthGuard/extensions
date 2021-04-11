@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.IdempotentRecordDO;
@@ -17,19 +18,20 @@ public class HibernateIdempotencyRecordRepository extends AbstractHibernateRepos
     private static final String KEY_FIELD = "key";
     private static final String ENTITY_TYPE_FIELD = "entityType";
 
-    public HibernateIdempotencyRecordRepository() {
-        super(IdempotentRecordDO.class);
+    @Inject
+    public HibernateIdempotencyRecordRepository(final QueryExecutor queryExecutor) {
+        super(IdempotentRecordDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<List<IdempotentRecordDO>> findByKey(final String key) {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_BY_KEY, IdempotentRecordDO.class)
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_KEY, IdempotentRecordDO.class)
                 .setParameter(KEY_FIELD, key));
     }
 
     @Override
     public CompletableFuture<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key, final String entityType) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY_AND_ENTITY, IdempotentRecordDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY_AND_ENTITY, IdempotentRecordDO.class)
                 .setParameter(KEY_FIELD, key)
                 .setParameter(ENTITY_TYPE_FIELD, entityType));
     }

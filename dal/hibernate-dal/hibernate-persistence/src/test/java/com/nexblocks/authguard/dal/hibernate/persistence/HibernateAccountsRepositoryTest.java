@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AccountDO;
 import com.nexblocks.authguard.dal.model.EmailDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +21,12 @@ public class HibernateAccountsRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateAccountsRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateAccountsRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test

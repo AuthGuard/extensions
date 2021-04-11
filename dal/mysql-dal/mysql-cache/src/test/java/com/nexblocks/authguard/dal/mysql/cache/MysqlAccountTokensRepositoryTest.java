@@ -10,6 +10,6 @@ class MysqlAccountTokensRepositoryTest extends HibernateAccountTokensRepositoryT
     @Override
     public void setup() {
         MysqlTestContainer.start();
-        super.setup();
+        initialize(MysqlTestContainer.getSessionProvider());
     }
 }

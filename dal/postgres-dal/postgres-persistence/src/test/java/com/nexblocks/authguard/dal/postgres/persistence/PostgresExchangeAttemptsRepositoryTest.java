@@ -10,6 +10,6 @@ public class PostgresExchangeAttemptsRepositoryTest extends HibernateExchangeAtt
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }
