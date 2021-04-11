@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +25,7 @@ public class RedisAccountTokensRepository implements AccountTokensRepository {
 
     @Override
     public CompletableFuture<AccountTokenDO> save(final AccountTokenDO accountToken) {
-        final Duration ttl = Duration.between(ZonedDateTime.now(), accountToken.getExpiresAt());
+        final Duration ttl = Duration.between(OffsetDateTime.now(), accountToken.getExpiresAt());
 
         LOG.debug("Storing account token {}", accountToken.getToken());
 

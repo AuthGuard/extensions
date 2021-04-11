@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +25,7 @@ public class RedisOtpRepository implements OtpRepository {
 
     @Override
     public CompletableFuture<OneTimePasswordDO> save(final OneTimePasswordDO otp) {
-        final Duration ttl = Duration.between(ZonedDateTime.now(), otp.getExpiresAt());
+        final Duration ttl = Duration.between(OffsetDateTime.now(), otp.getExpiresAt());
 
         LOG.debug("Storing OTP {}", otp.getId());
 
