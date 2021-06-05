@@ -18,6 +18,7 @@
     <modules>
         <module>javamail-provider</module>
         <module>log-email</module>
+        <module>sendgrid-provider</module>
     </modules>
 
 
