@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.CredentialsDO;
 import com.nexblocks.authguard.dal.model.PasswordDO;
 import com.nexblocks.authguard.dal.model.UserIdentifierDO;
@@ -19,7 +21,12 @@ public class HibernateCredentialsRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateCredentialsRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateCredentialsRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test

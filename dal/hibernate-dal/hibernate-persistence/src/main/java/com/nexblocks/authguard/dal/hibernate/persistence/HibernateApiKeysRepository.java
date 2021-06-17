@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -20,13 +21,14 @@ public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiK
     private static final String APP_ID_FIELD = "appId";
     private static final String KEY_FIELD = "key";
 
-    public HibernateApiKeysRepository() {
-        super(ApiKeyDO.class);
+    @Inject
+    public HibernateApiKeysRepository(final QueryExecutor queryExecutor) {
+        super(ApiKeyDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<ApiKeyDO>> getById(final String id) {
-        return QueryExecutor
+        return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, ApiKeyDO.class)
                         .setParameter(CommonFields.ID, id))
                 .thenApply(Function.identity());
@@ -34,14 +36,14 @@ public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiK
 
     @Override
     public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final String appId) {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_BY_APP_ID, ApiKeyDO.class)
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_APP_ID, ApiKeyDO.class)
                 .setParameter(APP_ID_FIELD, appId))
                 .thenApply(Function.identity());
     }
 
     @Override
     public CompletableFuture<Optional<ApiKeyDO>> getByKey(final String key) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY, ApiKeyDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY, ApiKeyDO.class)
                 .setParameter(KEY_FIELD, key)).thenApply(Function.identity());
     }
 }

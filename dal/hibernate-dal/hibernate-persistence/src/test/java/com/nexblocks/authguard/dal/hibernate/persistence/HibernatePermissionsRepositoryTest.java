@@ -1,5 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.PermissionDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,12 @@ public class HibernatePermissionsRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernatePermissionsRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernatePermissionsRepository(new QueryExecutor(sessionProvider));
 
         first = repository.save(PermissionDO.builder()
                 .id(UUID.randomUUID().toString())

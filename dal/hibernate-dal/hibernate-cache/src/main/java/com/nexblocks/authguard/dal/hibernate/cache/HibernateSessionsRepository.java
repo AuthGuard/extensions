@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.cache.SessionsRepository;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -13,13 +14,14 @@ public class HibernateSessionsRepository extends AbstractHibernateRepository<Ses
     private static final String GET_BY_TOKEN = "sessions.getByToken";
     private static final String TOKEN_FIELD = "token";
 
-    public HibernateSessionsRepository() {
-        super(SessionDO.class);
+    @Inject
+    public HibernateSessionsRepository(final QueryExecutor queryExecutor) {
+        super(SessionDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<SessionDO>> getByToken(final String token) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, SessionDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, SessionDO.class)
                 .setParameter(TOKEN_FIELD, token));
     }
 

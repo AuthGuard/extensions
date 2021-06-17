@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.cache.AccountTokensRepository;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -14,13 +15,14 @@ public class HibernateAccountTokensRepository extends AbstractHibernateRepositor
 
     private static final String TOKEN_FIELD = "token";
 
-    public HibernateAccountTokensRepository() {
-        super(AccountTokenDO.class);
+    @Inject
+    public HibernateAccountTokensRepository(final QueryExecutor queryExecutor) {
+        super(AccountTokenDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, AccountTokenDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, AccountTokenDO.class)
                 .setParameter(TOKEN_FIELD, token));
     }
 

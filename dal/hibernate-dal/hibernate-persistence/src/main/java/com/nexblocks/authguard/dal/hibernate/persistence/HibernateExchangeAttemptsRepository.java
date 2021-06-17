@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.ExchangeAttemptDO;
@@ -20,13 +21,14 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     private static final String TIMESTAMP_FIELD = "timestamp";
     private static final String FROM_EXCHANGE_FIELD = "exchangeFrom";
 
-    protected HibernateExchangeAttemptsRepository() {
-        super(ExchangeAttemptDO.class);
+    @Inject
+    protected HibernateExchangeAttemptsRepository(final QueryExecutor queryExecutor) {
+        super(ExchangeAttemptDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final String entityId) {
-        return QueryExecutor
+        return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                 ).thenApply(Function.identity());
@@ -35,7 +37,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final String entityId,
                                                                                      final OffsetDateTime fromTimestamp) {
-        return QueryExecutor
+        return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY_FROM_TIMESTAMP, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)
@@ -46,7 +48,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final String entityId,
                                                                                                 final OffsetDateTime fromTimestamp,
                                                                                                 final String fromExchange) {
-        return QueryExecutor
+        return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ALL, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)

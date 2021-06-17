@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.common;
 
+import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -12,22 +13,29 @@ import java.util.function.Function;
 
 public class QueryExecutor {
 
-    public static <T> CompletableFuture<T> persistAndReturn(final T entity) {
+    private final SessionProvider sessionProvider;
+
+    @Inject
+    public QueryExecutor(final SessionProvider sessionProvider) {
+        this.sessionProvider = sessionProvider;
+    }
+
+    public <T> CompletableFuture<T> persistAndReturn(final T entity) {
         return doInNewTransaction(session -> session.persist(entity))
                 .thenApply(ignored -> entity);
     }
 
-    public static <T> CompletableFuture<Optional<T>> updateAndReturn(final T entity) {
+    public <T> CompletableFuture<Optional<T>> updateAndReturn(final T entity) {
         return doInNewTransaction(session -> session.update(entity))
                 .thenApply(ignored -> Optional.of(entity));
     }
 
-    public static <T> CompletableFuture<Optional<T>> getById(final String id, final Class<T> entityType) {
+    public <T> CompletableFuture<Optional<T>> getById(final String id, final Class<T> entityType) {
         return inNewTransaction(session -> session.get(entityType, id))
                 .thenApply(Optional::ofNullable);
     }
 
-    public static <T> CompletableFuture<Optional<T>> getSingleResult(final Function<Session, Query<T>> sessionQuery) {
+    public <T> CompletableFuture<Optional<T>> getSingleResult(final Function<Session, Query<T>> sessionQuery) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
 
@@ -39,14 +47,14 @@ public class QueryExecutor {
         });
     }
 
-    public static <T> CompletableFuture<List<T>> getAList(final Function<Session, Query<T>> sessionQuery) {
+    public <T> CompletableFuture<List<T>> getAList(final Function<Session, Query<T>> sessionQuery) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
             return query.getResultList();
         });
     }
 
-    public static <T> CompletableFuture<Optional<T>> deleteById(final String id, final Class<T> entityType) {
+    public <T> CompletableFuture<Optional<T>> deleteById(final String id, final Class<T> entityType) {
         return getById(id, entityType)
                 .thenCompose(retrieved -> {
                     if (retrieved.isPresent()) {
@@ -58,9 +66,9 @@ public class QueryExecutor {
                 });
     }
 
-    static CompletableFuture<Void> doInNewTransaction(final Consumer<Session> consumer) {
+    CompletableFuture<Void> doInNewTransaction(final Consumer<Session> consumer) {
         return CompletableFuture.runAsync(() -> {
-            final Session session = SessionProvider.newSession();
+            final Session session = sessionProvider.newSession();
 
             session.beginTransaction();
 
@@ -71,9 +79,9 @@ public class QueryExecutor {
         });
     }
 
-    static <T> CompletableFuture<T> inNewTransaction(final Function<Session, T> function) {
+    <T> CompletableFuture<T> inNewTransaction(final Function<Session, T> function) {
         return CompletableFuture.supplyAsync(() -> {
-            final Session session = SessionProvider.newSession();
+            final Session session = sessionProvider.newSession();
 
             session.beginTransaction();
 

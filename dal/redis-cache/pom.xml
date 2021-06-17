@@ -5,14 +5,14 @@
     <parent>
         <artifactId>dal-extensions-parent</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.3.0</version>
+        <version>0.7.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>Extensions :: Data Access :: Redis Cache</name>
 
     <artifactId>redis-cache</artifactId>
-    <version>0.3.0</version>
 
     <properties>
         <msgpack.version>0.8.22</msgpack.version>
@@ -26,7 +26,7 @@
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>bom</artifactId>
-                <version>0.3.0</version>
+                <version>${authguard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

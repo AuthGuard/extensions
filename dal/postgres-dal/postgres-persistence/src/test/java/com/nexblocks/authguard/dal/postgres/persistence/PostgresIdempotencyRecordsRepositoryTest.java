@@ -10,6 +10,6 @@ public class PostgresIdempotencyRecordsRepositoryTest extends HibernateIdempoten
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import redis.embedded.RedisServer;
 
 import java.time.Clock;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +43,7 @@ class RedisSessionsRepositoryTest {
         final SessionDO session = SessionDO.builder()
                 .id("session-id")
                 .sessionToken("session-token")
-                .expiresAt(ZonedDateTime.now(Clock.systemUTC()).plusMinutes(5))
+                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5))
                 .build();
 
         final SessionDO cached = redisSessionsRepository.save(session).join();

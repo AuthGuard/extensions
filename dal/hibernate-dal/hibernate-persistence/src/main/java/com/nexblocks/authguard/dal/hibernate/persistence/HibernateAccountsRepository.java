@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountDO;
@@ -21,31 +22,32 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     private static final String EMAIL_FIELD = "email";
     private static final String ROLE_FIELD = "role";
 
-    public HibernateAccountsRepository() {
-        super(AccountDO.class);
+    @Inject
+    public HibernateAccountsRepository(final QueryExecutor queryExecutor) {
+        super(AccountDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<AccountDO>> getById(final String id) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_ID, AccountDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_ID, AccountDO.class)
                 .setParameter(ID_FIELD, id));
     }
 
     @Override
     public CompletableFuture<Optional<AccountDO>> getByExternalId(final String externalId) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AccountDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AccountDO.class)
                 .setParameter(EXTERNAL_ID_FIELD, externalId));
     }
 
     @Override
     public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EMAIL, AccountDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EMAIL, AccountDO.class)
                 .setParameter(EMAIL_FIELD, email));
     }
 
     @Override
     public CompletableFuture<List<AccountDO>> getByRole(final String role) {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ROLE, AccountDO.class)
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ROLE, AccountDO.class)
                 .setParameter(ROLE_FIELD, role));
     }
 }

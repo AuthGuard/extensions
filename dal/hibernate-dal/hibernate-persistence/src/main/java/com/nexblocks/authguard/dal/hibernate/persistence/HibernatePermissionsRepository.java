@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -21,13 +22,14 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     private static final String GROUP_FIELD = "group";
     private static final String NAME_FIELD = "name";
 
-    public HibernatePermissionsRepository() {
-        super(PermissionDO.class);
+    @Inject
+    public HibernatePermissionsRepository(final QueryExecutor queryExecutor) {
+        super(PermissionDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<PermissionDO>> getById(final String id) {
-        return QueryExecutor
+        return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, PermissionDO.class)
                         .setParameter(CommonFields.ID, id))
                 .thenApply(Function.identity());
@@ -35,20 +37,20 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
 
     @Override
     public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_GROUP_AND_NAME, PermissionDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_GROUP_AND_NAME, PermissionDO.class)
                 .setParameter(GROUP_FIELD, group)
                 .setParameter(NAME_FIELD, name));
     }
 
     @Override
     public CompletableFuture<Collection<PermissionDO>> getAll() {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class))
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class))
                 .thenApply(Function.identity());
     }
 
     @Override
     public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group) {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
                 .setParameter(GROUP_FIELD, group))
                 .thenApply(Function.identity());
     }

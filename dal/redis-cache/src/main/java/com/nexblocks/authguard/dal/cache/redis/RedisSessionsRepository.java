@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +25,7 @@ public class RedisSessionsRepository implements SessionsRepository {
 
     @Override
     public CompletableFuture<SessionDO> save(final SessionDO session) {
-        final Duration ttl = Duration.between(ZonedDateTime.now(), session.getExpiresAt());
+        final Duration ttl = Duration.between(OffsetDateTime.now(), session.getExpiresAt());
 
         LOG.debug("Storing session {}", session.getSessionToken());
 

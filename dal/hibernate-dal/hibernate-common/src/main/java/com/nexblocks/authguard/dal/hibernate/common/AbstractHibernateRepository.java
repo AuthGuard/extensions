@@ -8,23 +8,31 @@ import java.util.concurrent.CompletableFuture;
 public abstract class AbstractHibernateRepository<T> implements Repository<T> {
     private final Class<T> entityType;
 
-    protected AbstractHibernateRepository(final Class<T> entityType) {
+    /*
+     * TODO replace this.
+     *  It was added as a quick hack to support passing configuration from ConfigContext. We need
+     *  a better way.
+     */
+    protected final QueryExecutor queryExecutor;
+
+    protected AbstractHibernateRepository(final Class<T> entityType, final QueryExecutor queryExecutor) {
         this.entityType = entityType;
+        this.queryExecutor = queryExecutor;
     }
 
     public CompletableFuture<T> save(final T entity) {
-        return QueryExecutor.persistAndReturn(entity);
+        return queryExecutor.persistAndReturn(entity);
     }
     
     public CompletableFuture<Optional<T>> getById(final String id) {
-        return QueryExecutor.getById(id, entityType);
+        return queryExecutor.getById(id, entityType);
     }
 
     public CompletableFuture<Optional<T>> update(final T entity) {
-        return QueryExecutor.updateAndReturn(entity);
+        return queryExecutor.updateAndReturn(entity);
     }
 
     public CompletableFuture<Optional<T>> delete(final String id) {
-        return QueryExecutor.deleteById(id, entityType);
+        return queryExecutor.deleteById(id, entityType);
     }
 }

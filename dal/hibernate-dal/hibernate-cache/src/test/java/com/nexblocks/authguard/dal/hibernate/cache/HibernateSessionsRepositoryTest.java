@@ -1,12 +1,13 @@
-package com.nexblocks.authguard.dal.hibernate;
+package com.nexblocks.authguard.dal.hibernate.cache;
 
-import com.nexblocks.authguard.dal.hibernate.cache.HibernateSessionsRepository;
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.SessionDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +20,12 @@ public class HibernateSessionsRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateSessionsRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateSessionsRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test
@@ -30,7 +36,7 @@ public class HibernateSessionsRepositoryTest {
         final SessionDO session = SessionDO.builder()
                 .id(id)
                 .sessionToken(token)
-                .expiresAt(ZonedDateTime.now())
+                .expiresAt(OffsetDateTime.now())
                 .data(Collections.emptyMap())
                 .build();
 

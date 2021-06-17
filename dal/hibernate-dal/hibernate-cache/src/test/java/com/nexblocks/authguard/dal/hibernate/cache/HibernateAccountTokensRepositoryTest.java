@@ -1,13 +1,14 @@
-package com.nexblocks.authguard.dal.hibernate;
+package com.nexblocks.authguard.dal.hibernate.cache;
 
-import com.nexblocks.authguard.dal.hibernate.cache.HibernateAccountTokensRepository;
+import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
 import com.nexblocks.authguard.dal.model.TokenRestrictionsDO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +21,12 @@ public class HibernateAccountTokensRepositoryTest {
 
     @BeforeAll
     public void setup() {
-        repository = new HibernateAccountTokensRepository();
+        final SessionProvider sessionProvider = TestSessionProvider.create();
+        initialize(sessionProvider);
+    }
+
+    protected void initialize(final SessionProvider sessionProvider) {
+        repository = new HibernateAccountTokensRepository(new QueryExecutor(sessionProvider));
     }
 
     @Test
@@ -31,7 +37,7 @@ public class HibernateAccountTokensRepositoryTest {
                 .id(id)
                 .associatedAccountId("account")
                 .token("token")
-                .expiresAt(ZonedDateTime.now())
+                .expiresAt(OffsetDateTime.now())
                 .additionalInformation(Collections.emptyMap())
                 .tokenRestrictions(TokenRestrictionsDO.builder()
                         .permissions(Collections.emptySet())
@@ -54,7 +60,7 @@ public class HibernateAccountTokensRepositoryTest {
                 .id(id)
                 .associatedAccountId("account")
                 .token(token)
-                .expiresAt(ZonedDateTime.now())
+                .expiresAt(OffsetDateTime.now())
                 .additionalInformation(Collections.emptyMap())
                 .tokenRestrictions(TokenRestrictionsDO.builder()
                         .permissions(Collections.emptySet())

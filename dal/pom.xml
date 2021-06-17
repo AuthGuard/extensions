@@ -5,7 +5,7 @@
     <parent>
         <artifactId>extensions</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.3.0</version>
+        <version>0.7.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -21,6 +21,8 @@
         <module>redis-cache</module>
         <module>memory-dal</module>
         <module>mongo-dal</module>
+        <module>mysql-dal</module>
+        <module>cockroachdb-dal</module>
     </modules>
 
     <dependencyManagement>
@@ -28,19 +30,19 @@
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>hibernate-persistence</artifactId>
-                <version>0.3.0</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>hibernate-cache</artifactId>
-                <version>0.3.0</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>hibernate-persistence</artifactId>
-                <version>0.3.0</version>
+                <version>${project.version}</version>
                 <classifier>tests</classifier>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -49,7 +51,7 @@
             <dependency>
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>hibernate-cache</artifactId>
-                <version>0.3.0</version>
+                <version>${project.version}</version>
                 <classifier>tests</classifier>
                 <type>test-jar</type>
                 <scope>test</scope>

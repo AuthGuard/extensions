@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -16,13 +17,14 @@ public class HibernateCredentialsRepository extends AbstractHibernateRepository<
     private static final String GET_BY_IDENTIFIER = "credentials.getByIdentifier";
     private static final String IDENTIFIER_FIELD = "identifier";
 
-    public HibernateCredentialsRepository() {
-        super(CredentialsDO.class);
+    @Inject
+    public HibernateCredentialsRepository(final QueryExecutor queryExecutor) {
+        super(CredentialsDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<CredentialsDO>> getById(final String id) {
-        return QueryExecutor
+        return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, CredentialsDO.class)
                         .setParameter(CommonFields.ID, id))
                 .thenApply(Function.identity());
@@ -30,7 +32,7 @@ public class HibernateCredentialsRepository extends AbstractHibernateRepository<
 
     @Override
     public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_IDENTIFIER, CredentialsDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_IDENTIFIER, CredentialsDO.class)
                 .setParameter(IDENTIFIER_FIELD, identifier));
     }
 }

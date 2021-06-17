@@ -1,6 +1,6 @@
 package com.nexblocks.authguard.dal.postgres.cache;
 
-import com.nexblocks.authguard.dal.hibernate.HibernateAccountTokensRepositoryTest;
+import com.nexblocks.authguard.dal.hibernate.cache.HibernateAccountTokensRepositoryTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 
@@ -10,6 +10,6 @@ class PostgresAccountTokensRepositoryTest extends HibernateAccountTokensReposito
     @Override
     public void setup() {
         PostgresContainer.start();
-        super.setup();
+        initialize(PostgresContainer.getSessionProvider());
     }
 }

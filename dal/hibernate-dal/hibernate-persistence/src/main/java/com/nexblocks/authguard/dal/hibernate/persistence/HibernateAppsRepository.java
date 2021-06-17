@@ -1,5 +1,6 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
+import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
@@ -20,13 +21,14 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     private static final String EXTERNAL_ID_FIELD = "externalId";
     private static final String ACCOUNT_ID_FIELD = "parentAccountId";
 
-    public HibernateAppsRepository() {
-        super(AppDO.class);
+    @Inject
+    public HibernateAppsRepository(final QueryExecutor queryExecutor) {
+        super(AppDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<AppDO>> getById(final String id) {
-        return QueryExecutor
+        return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, AppDO.class)
                         .setParameter(CommonFields.ID, id))
                 .thenApply(Function.identity());
@@ -34,13 +36,13 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
 
     @Override
     public CompletableFuture<Optional<AppDO>> getByExternalId(final String externalId) {
-        return QueryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AppDO.class)
+        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AppDO.class)
                 .setParameter(EXTERNAL_ID_FIELD, externalId));
     }
 
     @Override
     public CompletableFuture<List<AppDO>> getAllForAccount(final String accountId) {
-        return QueryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId));
     }
 }
