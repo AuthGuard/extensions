@@ -38,10 +38,8 @@ public class IndicesBootstrap implements BootstrapStep {
                 Indexes.text("name")
         );
 
-        final IndexOptions permissionsIndexOptions = new IndexOptions()
-                .unique(true);
-
-        database.getCollection(permissionsCollection).createIndex(permissionsIndex, permissionsIndexOptions)
+        database.getCollection(permissionsCollection)
+                .createIndex(permissionsIndex, new IndexOptions().unique(true).name("permissions.groupAndName.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
 
         // ---------------
@@ -49,12 +47,42 @@ public class IndicesBootstrap implements BootstrapStep {
         final String rolesCollection = config.getCollections()
                 .getOrDefault("roles", Defaults.Collections.ROLES);
 
-        final Bson rolesIndex = Indexes.text("name");
+        final Bson rolesIndex = Indexes.ascending("name");
 
-        final IndexOptions rolesIndexOptions = new IndexOptions()
-                .unique(true);
+        database.getCollection(rolesCollection)
+                .createIndex(rolesIndex, new IndexOptions().unique(true).name("roles.name.index"))
+                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
 
-        database.getCollection(rolesCollection).createIndex(rolesIndex, rolesIndexOptions)
+        // ---------------
+        LOG.info("Bootstrapping accounts index");
+        final String accountsCollection = config.getCollections()
+                .getOrDefault("accounts", Defaults.Collections.ACCOUNTS);
+
+        final Bson accountEmailIndex = Indexes.ascending("email.email");
+        final Bson accountBackupEmailIndex = Indexes.ascending("backupEmail.email");
+        final Bson accountPhoneNumberIndex = Indexes.ascending("phoneNumber.number");
+
+        database.getCollection(accountsCollection)
+                .createIndex(accountEmailIndex, new IndexOptions().unique(true).name("accounts.email.index"))
+                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+
+        database.getCollection(accountsCollection)
+                .createIndex(accountBackupEmailIndex, new IndexOptions().unique(true).name("accounts.backupEmail.index"))
+                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+
+        database.getCollection(accountsCollection)
+                .createIndex(accountPhoneNumberIndex, new IndexOptions().unique(true).name("accounts.phoneNumber.index"))
+                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+
+        // ---------------
+        LOG.info("Bootstrapping credentials index");
+        final String credentialsCollection = config.getCollections()
+                .getOrDefault("credentials", Defaults.Collections.CREDENTIALS);
+
+        final Bson identifiersIndex = Indexes.ascending("identifiers.identifier");
+
+        database.getCollection(credentialsCollection)
+                .createIndex(identifiersIndex, new IndexOptions().unique(true).name("credentials.identifier.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
     }
 

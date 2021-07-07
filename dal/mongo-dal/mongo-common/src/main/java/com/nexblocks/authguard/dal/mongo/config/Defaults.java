@@ -10,7 +10,8 @@ public class Defaults {
         public static final String CREDENTIALS = "credentials";
         public static final String CREDENTIALS_AUDIT = "credentials_audit";
         public static final String APPLICATIONS = "apps";
-        public static final String ACCOUNT_TOKENS = "tokens";
+        public static final String ACCOUNT_TOKENS = "account_tokens";
+        public static final String ACCOUNT_LOCKS = "account_locks";
         public static final String OTP = "otp";
         public static final String PERMISSIONS = "permissions";
         public static final String ROLES = "roles";

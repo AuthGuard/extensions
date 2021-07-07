@@ -2,6 +2,7 @@ package com.nexblocks.authguard.dal.mongo.cache.bootstrap;
 
 import com.google.inject.Inject;
 import com.mongodb.DuplicateKeyException;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.reactivestreams.client.MongoDatabase;
 import com.nexblocks.authguard.bootstrap.BootstrapStep;
@@ -30,35 +31,39 @@ public class CacheIndicesBootstrap implements BootstrapStep {
     public void run() {
         LOG.info("Bootstrapping account locks indices");
         final String accountLocksCollection = config.getCollections()
-                .getOrDefault("account_locks", Defaults.Collections.PERMISSIONS);
+                .getOrDefault("account_locks", Defaults.Collections.ACCOUNT_LOCKS);
 
-        final Bson accountLocksAccountIdIndex = Indexes.text("accountId");
+        final Bson accountLocksAccountIdIndex = Indexes.ascending("accountId");
 
-        database.getCollection(accountLocksCollection).createIndex(accountLocksAccountIdIndex)
+        database.getCollection(accountLocksCollection)
+                .createIndex(accountLocksAccountIdIndex, new IndexOptions().name("account_locks.accountId.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
 
         // ---------------
         LOG.info("Bootstrapping account tokens indices");
         final String accountTokensCollection = config.getCollections()
-                .getOrDefault("account_tokens", Defaults.Collections.PERMISSIONS);
+                .getOrDefault("account_tokens", Defaults.Collections.ACCOUNT_TOKENS);
 
-        final Bson accountTokensAccountIdIndex = Indexes.text("accountId");
-        final Bson accountTokensTokenIndex = Indexes.text("token");
+        final Bson accountTokensAccountIdIndex = Indexes.ascending("accountId");
+        final Bson accountTokensTokenIndex = Indexes.ascending("token");
 
-        database.getCollection(accountTokensCollection).createIndex(accountTokensAccountIdIndex)
+        database.getCollection(accountTokensCollection)
+                .createIndex(accountTokensAccountIdIndex, new IndexOptions().name("account_tokens.accountId.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
 
-        database.getCollection(accountTokensCollection).createIndex(accountTokensTokenIndex)
+        database.getCollection(accountTokensCollection)
+                .createIndex(accountTokensTokenIndex, new IndexOptions().name("account_tokens.token.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
 
         // ----------------
         LOG.info("Bootstrapping sessions indices");
         final String sessionsCollection = config.getCollections()
-                .getOrDefault("account_tokens", Defaults.Collections.PERMISSIONS);
+                .getOrDefault("sessions", Defaults.Collections.SESSIONS);
 
-        final Bson sessionsTokenIndex = Indexes.text("sessionToken");
+        final Bson sessionsTokenIndex = Indexes.ascending("sessionToken");
 
-        database.getCollection(sessionsCollection).createIndex(sessionsTokenIndex)
+        database.getCollection(sessionsCollection)
+                .createIndex(sessionsTokenIndex, new IndexOptions().name("sessions.sessionToken.index"))
                 .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
     }
 
