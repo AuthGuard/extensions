@@ -15,4 +15,6 @@ public interface SendGridConfig {
     String getApiKeyVariable();
 
     Map<String, String> getEmailTemplates();
+    String getFromName();
+    String getFromEmailAddress();
 }
