@@ -33,5 +33,10 @@
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>bootstrap</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.nexblocks.authguard</groupId>
+            <artifactId>service-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

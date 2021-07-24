@@ -23,6 +23,7 @@
 
     <properties>
         <mongo-driver.version>4.0.4</mongo-driver.version>
+        <ssl-context-kickstart.version>6.7.0</ssl-context-kickstart.version>
     </properties>
 
     <dependencyManagement>
@@ -39,6 +40,12 @@
                 <groupId>com.nexblocks.authguard</groupId>
                 <artifactId>mongo-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongo-driver.version}</version>
             </dependency>
 
             <dependency>

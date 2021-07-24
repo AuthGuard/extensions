@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.reactivestreams.client.MongoDatabase;
+import com.mongodb.client.MongoDatabase;
 import com.nexblocks.authguard.bootstrap.BootstrapStep;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
-import com.nexblocks.authguard.dal.mongo.common.subscribers.LogSubscriber;
+import com.nexblocks.authguard.dal.mongo.common.subscribers.WaitForCompletion;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.mongo.config.ImmutableMongoConfiguration;
 import org.bson.conversions.Bson;
@@ -36,8 +36,9 @@ public class CacheIndicesBootstrap implements BootstrapStep {
         final Bson accountLocksAccountIdIndex = Indexes.ascending("accountId");
 
         database.getCollection(accountLocksCollection)
-                .createIndex(accountLocksAccountIdIndex, new IndexOptions().name("account_locks.accountId.index"))
-                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+                .createIndex(accountLocksAccountIdIndex, new IndexOptions().name("account_locks.accountId.index"));
+
+        LOG.info("Created account locks index");
 
         // ---------------
         LOG.info("Bootstrapping account tokens indices");
@@ -48,12 +49,14 @@ public class CacheIndicesBootstrap implements BootstrapStep {
         final Bson accountTokensTokenIndex = Indexes.ascending("token");
 
         database.getCollection(accountTokensCollection)
-                .createIndex(accountTokensAccountIdIndex, new IndexOptions().name("account_tokens.accountId.index"))
-                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+                .createIndex(accountTokensAccountIdIndex, new IndexOptions().name("account_tokens.accountId.index"));
+
+        LOG.info("Created account token account ID index");
 
         database.getCollection(accountTokensCollection)
-                .createIndex(accountTokensTokenIndex, new IndexOptions().name("account_tokens.token.index"))
-                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+                .createIndex(accountTokensTokenIndex, new IndexOptions().name("account_tokens.token.index"));
+
+        LOG.info("Created account token index");
 
         // ----------------
         LOG.info("Bootstrapping sessions indices");
@@ -63,8 +66,9 @@ public class CacheIndicesBootstrap implements BootstrapStep {
         final Bson sessionsTokenIndex = Indexes.ascending("sessionToken");
 
         database.getCollection(sessionsCollection)
-                .createIndex(sessionsTokenIndex, new IndexOptions().name("sessions.sessionToken.index"))
-                .subscribe(new LogSubscriber<>("Created index {}", LOG, this::handleExceptions));
+                .createIndex(sessionsTokenIndex, new IndexOptions().name("sessions.sessionToken.index"));
+
+        LOG.info("Created session token index");
     }
 
     private void handleExceptions(final Throwable e) {

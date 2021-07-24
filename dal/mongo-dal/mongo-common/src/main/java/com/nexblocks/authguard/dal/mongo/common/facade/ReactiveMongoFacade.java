@@ -18,11 +18,11 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class MongoFacade<T> {
+public class ReactiveMongoFacade<T> {
     private final MongoCollection<T> collection;
     private final long timeout;
 
-    public MongoFacade(final MongoCollection<T> collection, final long operationsTimeout) {
+    public ReactiveMongoFacade(final MongoCollection<T> collection, final long operationsTimeout) {
         this.collection = collection;
         this.timeout = operationsTimeout;
     }
@@ -126,7 +126,7 @@ public class MongoFacade<T> {
             return this;
         }
 
-        public <T> MongoFacade<T> buildForType(final Class<T> documentType) {
+        public <T> ReactiveMongoFacade<T> buildForType(final Class<T> documentType) {
             Objects.requireNonNull(mongoClient, "The client cannot be null");
             Objects.requireNonNull(database, "A database name must be provided");
             Objects.requireNonNull(collection, "A collection name must be provided");
@@ -134,7 +134,7 @@ public class MongoFacade<T> {
             final MongoCollection<T> mongoCollection = mongoClient.getDatabase(database)
                     .getCollection(collection, documentType);
 
-            return new MongoFacade<>(mongoCollection, operationsTimeout);
+            return new ReactiveMongoFacade<>(mongoCollection, operationsTimeout);
         }
     }
 }
