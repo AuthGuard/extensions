@@ -46,7 +46,7 @@ public class SessionProvider {
                 .addAnnotatedClass(TokenRestrictionsDO.class);
     }
 
-    Session newSession() {
+    public Session newSession() {
         return factory.openSession();
     }
 }

@@ -7,6 +7,7 @@ import org.hibernate.query.Query;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,6 +36,11 @@ public class QueryExecutor {
                 .thenApply(Optional::ofNullable);
     }
 
+    public <T> CompletableFuture<Optional<T>> getById(final Long id, final Class<T> entityType) {
+        return inNewTransaction(session -> session.get(entityType, id))
+                .thenApply(Optional::ofNullable);
+    }
+
     public <T> CompletableFuture<Optional<T>> getSingleResult(final Function<Session, Query<T>> sessionQuery) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
@@ -58,7 +64,19 @@ public class QueryExecutor {
         return getById(id, entityType)
                 .thenCompose(retrieved -> {
                     if (retrieved.isPresent()) {
-                        return doInNewTransaction(session -> session.delete(id))
+                        return doInNewTransaction(session -> session.delete(retrieved.get()))
+                                .thenApply(ignored -> retrieved);
+                    } else {
+                        return CompletableFuture.completedFuture(Optional.empty());
+                    }
+                });
+    }
+
+    public <T> CompletableFuture<Optional<T>> deleteById(final Long id, final Class<T> entityType) {
+        return getById(id, entityType)
+                .thenCompose(retrieved -> {
+                    if (retrieved.isPresent()) {
+                        return doInNewTransaction(session -> session.delete(retrieved.get()))
                                 .thenApply(ignored -> retrieved);
                     } else {
                         return CompletableFuture.completedFuture(Optional.empty());

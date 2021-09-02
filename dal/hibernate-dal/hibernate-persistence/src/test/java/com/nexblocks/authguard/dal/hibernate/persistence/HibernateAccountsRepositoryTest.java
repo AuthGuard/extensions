@@ -114,4 +114,32 @@ public class HibernateAccountsRepositoryTest {
 
         assertThat(retrieved).containsOnly(persisted);
     }
+
+    @Test
+    public void updateEmail() {
+        final String id = UUID.randomUUID().toString();
+
+        final EmailDO email = EmailDO.builder()
+                .email("updateEmail@test.com")
+                .build();
+
+        final AccountDO account = AccountDO.builder()
+                .id(id)
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .build();
+
+        final AccountDO newAccount = AccountDO.builder()
+                .id(id)
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .build();
+
+        final AccountDO persisted = repository.save(account).join();
+        final Optional<AccountDO> retrieved = repository.update(newAccount).join();
+
+        assertThat(retrieved).contains(persisted);
+    }
 }
