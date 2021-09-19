@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -180,29 +181,36 @@ public class HibernateCredentialsRepositoryTest {
                         .build())
                 .build();
 
-        final CredentialsDO newCredentials = CredentialsDO.builder()
-                .id(id)
-                .accountId("account")
-                .identifiers(Collections.singleton(UserIdentifierDO.builder()
-                        .identifier(newIdentifier)
-                        .type(UserIdentifierDO.Type.USERNAME)
-                        .build()))
-                .hashedPassword(PasswordDO.builder()
-                        .password("password")
-                        .salt("salt")
-                        .build())
-                .build();
-
         repository.save(credentials).join();
+
+        final CredentialsDO beforeUpdate = repository.getById(credentials.getId())
+                .join()
+                .get();
+
+        final CredentialsDO newCredentials = CredentialsDO.builder()
+                .id(beforeUpdate.getId())
+                .accountId(beforeUpdate.getAccountId())
+                .identifiers(beforeUpdate.getIdentifiers()
+                        .stream()
+                        .map(existing -> UserIdentifierDO.builder()
+                                .type(existing.getType())
+                                .identifier(newIdentifier)
+                                .build())
+                        .collect(Collectors.toSet())
+                )
+                .hashedPassword(beforeUpdate.getHashedPassword())
+                .build();
 
         final Optional<CredentialsDO> updated = repository.update(newCredentials).join();
         final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).join();
 
-        final List<UserIdentifierDO> all = userIdentifiersRepository.getAll();
-
         assertThat(updated).contains(newCredentials);
         assertThat(retrieved).contains(newCredentials);
-        assertThat(all).doesNotContain(credentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
-        assertThat(all).contains(newCredentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
+
+        final List<UserIdentifierDO> all = userIdentifiersRepository.getAll();
+        assertThat(all)
+                .doesNotContain(credentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
+        assertThat(all)
+                .contains(newCredentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
     }
 }
