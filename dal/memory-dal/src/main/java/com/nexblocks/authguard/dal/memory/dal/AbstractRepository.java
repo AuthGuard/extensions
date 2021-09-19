@@ -43,11 +43,17 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
             return CompletableFuture.completedFuture(Optional.empty());
         }
 
-        return save(record).thenApply(Optional::of);
+        return override(record);
     }
 
     public CompletableFuture<Optional<T>> delete(final String id) {
         return CompletableFuture.completedFuture(Optional.ofNullable(repo.remove(id)));
+    }
+
+    public CompletableFuture<Optional<T>> override(final T record) {
+        repo.replace(record.getId(), record);
+
+        return CompletableFuture.completedFuture(Optional.of(record));
     }
 
     protected Map<String, T> getRepo() {

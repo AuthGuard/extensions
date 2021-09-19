@@ -35,6 +35,10 @@ public class SendgridEmailProvider implements EmailProvider {
             throw new ConfigurationException("Required configuration property sendgrid.apiKeyVariable was not set");
         }
 
+        if (config.getFromEmailAddress() == null) {
+            throw new ConfigurationException("Required configuration property sendgrid.fromEmailAddress");
+        }
+
         final String apiKey = System.getenv(config.getApiKeyVariable());
 
         if (apiKey == null) {
@@ -57,8 +61,9 @@ public class SendgridEmailProvider implements EmailProvider {
 
         final Mail mail = new Mail();
 
+        mail.setFrom(new Email(config.getFromEmailAddress(), config.getFromName()));
+        mail.addPersonalization(recipient);
         mail.setTemplateId(templateId);
-        mail.getPersonalization().add(recipient);
 
         doSend(mail);
     }
@@ -78,7 +83,6 @@ public class SendgridEmailProvider implements EmailProvider {
     private void doSend(final Mail mail) {
         try {
             final Request request = new Request();
-
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());

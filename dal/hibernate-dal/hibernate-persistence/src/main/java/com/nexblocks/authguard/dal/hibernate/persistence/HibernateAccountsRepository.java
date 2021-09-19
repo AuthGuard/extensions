@@ -5,6 +5,9 @@ import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountDO;
 import com.nexblocks.authguard.dal.persistence.AccountsRepository;
+import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
+import com.nexblocks.authguard.service.exceptions.codes.ErrorCode;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,22 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     @Inject
     public HibernateAccountsRepository(final QueryExecutor queryExecutor) {
         super(AccountDO.class, queryExecutor);
+    }
+
+    @Override
+    public CompletableFuture<AccountDO> save(final AccountDO entity) {
+        return super.save(entity)
+                .exceptionally(e -> {
+                    throw mapExceptions(e);
+                });
+    }
+
+    @Override
+    public CompletableFuture<Optional<AccountDO>> update(final AccountDO entity) {
+        return super.update(entity)
+                .exceptionally(e -> {
+                    throw mapExceptions(e);
+                });
     }
 
     @Override
@@ -49,5 +68,27 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     public CompletableFuture<List<AccountDO>> getByRole(final String role) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ROLE, AccountDO.class)
                 .setParameter(ROLE_FIELD, role));
+    }
+
+    private RuntimeException mapExceptions(final Throwable e) {
+        if (e.getCause() != null && e.getCause() instanceof ConstraintViolationException) {
+            final String innerCauseMessage = Optional.of(e.getCause())
+                    .map(Throwable::getCause)
+                    .map(Throwable::getMessage)
+                    .map(String::toLowerCase)
+                    .orElse(null);
+
+            if (innerCauseMessage != null) {
+                if (innerCauseMessage.contains("email_dup")) {
+                    return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Email already exists");
+                } else if (innerCauseMessage.contains("backup_email_dup")) {
+                    return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
+                } else if (innerCauseMessage.contains("phone_number_dup")) {
+                    return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_PHONE_NUMBER, "Phone number already exists");
+                }
+            }
+        }
+
+        return new RuntimeException(e);
     }
 }

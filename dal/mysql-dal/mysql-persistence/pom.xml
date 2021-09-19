@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mysql-dal</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.7.0</version>
+        <version>0.9.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,12 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql-connector.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nexblocks.authguard</groupId>
+            <artifactId>service-api</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

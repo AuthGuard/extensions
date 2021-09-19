@@ -18,7 +18,7 @@ public class MongoIdempotentRecordsRepository extends AbstractMongoRepository<Id
 
     @Inject
     public MongoIdempotentRecordsRepository(final MongoClientWrapper clientWrapper) {
-        super(clientWrapper, COLLECTION_KEY, Defaults.Collections.APPLICATIONS, IdempotentRecordDO.class);
+        super(clientWrapper, COLLECTION_KEY, Defaults.Collections.IDEMPOTENT_RECORDS, IdempotentRecordDO.class);
     }
 
     @Override

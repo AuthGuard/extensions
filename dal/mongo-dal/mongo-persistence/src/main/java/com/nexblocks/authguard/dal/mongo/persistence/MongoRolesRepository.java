@@ -34,7 +34,7 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
 
     @Override
     public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles) {
-        return facade.find(Filters.in("role", roles))
+        return facade.find(Filters.in("name", roles))
                 .thenApply(Function.identity());
     }
 }

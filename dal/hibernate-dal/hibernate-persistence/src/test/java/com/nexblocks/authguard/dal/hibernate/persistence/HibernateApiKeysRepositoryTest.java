@@ -33,7 +33,7 @@ public class HibernateApiKeysRepositoryTest {
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
                 .id(id)
-                .key("key")
+                .key("saveAndGetById")
                 .build();
 
         final ApiKeyDO persisted = repository.save(apiKey).join();
@@ -74,5 +74,20 @@ public class HibernateApiKeysRepositoryTest {
         final Optional<ApiKeyDO> retrieved = repository.getByKey(key).join();
 
         assertThat(retrieved).contains(persisted);
+    }
+
+    @Test
+    public void saveAndDeleteById() {
+        final String id = UUID.randomUUID().toString();
+
+        final ApiKeyDO apiKey = ApiKeyDO.builder()
+                .id(id)
+                .key("saveAndDeleteById")
+                .build();
+
+        final ApiKeyDO persisted = repository.save(apiKey).join();
+        final Optional<ApiKeyDO> deleted = repository.delete(id).join();
+
+        assertThat(deleted).contains(persisted);
     }
 }
