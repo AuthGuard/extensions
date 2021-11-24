@@ -41,6 +41,7 @@ public class HibernateAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -64,6 +65,7 @@ public class HibernateAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -85,6 +87,7 @@ public class HibernateAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -107,6 +110,7 @@ public class HibernateAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.singleton(role))
                 .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
