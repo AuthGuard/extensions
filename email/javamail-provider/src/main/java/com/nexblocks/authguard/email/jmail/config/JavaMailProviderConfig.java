@@ -20,6 +20,9 @@ public interface JavaMailProviderConfig {
     String getFromAddress();
     String getFromName();
 
+    String getUsername();
+    String getPassword();
+
     @Value.Default
     default Boolean enableFileCache() {
         return true;

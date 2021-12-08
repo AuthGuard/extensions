@@ -11,9 +11,7 @@ import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Optional;
@@ -77,10 +75,23 @@ public class JavaMailProvider implements EmailProvider {
 
     private Session getSession() {
         if (mailSession == null) {
-            mailSession = Session.getInstance(javaMailConfig);
+            if (providerConfig.getUsername() != null) {
+                mailSession = Session.getInstance(javaMailConfig, getAuthenticator());
+            } else {
+                mailSession = Session.getInstance(javaMailConfig);
+            }
         }
 
         return mailSession;
+    }
+
+    private Authenticator getAuthenticator() {
+        return new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(providerConfig.getUsername(), providerConfig.getPassword());
+            }
+        };
     }
 
     private Try<String> loadAndParseTemplate(final ImmutableEmail immutableEmail, final ImmutableTemplateConfig templateConfig) {

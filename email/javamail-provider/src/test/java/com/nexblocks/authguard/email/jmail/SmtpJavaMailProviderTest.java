@@ -27,14 +27,22 @@ class SmtpJavaMailProviderTest {
     private GreenMail greenMail;
     private JavaMailProvider javaMailProvider;
     private JavaMailProvider secureJavaMailProvider;
+    private JavaMailProvider wrongCredentialsJavaMailProvider;
     private GreenMailMessagesVisitor messagesVisitor;
 
     @BeforeAll
     void setup() throws GeneralSecurityException {
-        greenMail = new GreenMail(new ServerSetup[]{ ServerSetupTest.SMTP, ServerSetupTest.SMTPS });
+        greenMail = new GreenMail(new ServerSetup[] {
+                ServerSetupTest.SMTP,
+                ServerSetupTest.SMTPS
+        });
+
+        greenMail.setUser("tester", "secure_password");
         greenMail.start();
 
         final ImmutableJavaMailProviderConfig emailProviderConfig = ImmutableJavaMailProviderConfig.builder()
+                .username("tester")
+                .password("secure_password")
                 .fromAddress("noreply@test.com")
                 .fromName("Unit Tests")
                 .putTemplates("otp", ImmutableTemplateConfig.builder()
@@ -55,11 +63,13 @@ class SmtpJavaMailProviderTest {
 
         secureJavaMailProperties.setProperty("mail.smtp.host", "localhost");
         secureJavaMailProperties.setProperty("mail.smtp.port", "" + greenMail.getSmtps().getPort());
-        secureJavaMailProperties.put("mail.smtp.ssl.enable", "true");
+        secureJavaMailProperties.setProperty("mail.smtp.ssl.enable", "true");
+        secureJavaMailProperties.setProperty("mail.smtp.auth", "true");
         secureJavaMailProperties.put("mail.smtp.ssl.socketFactory", sf);
 
         javaMailProvider = new JavaMailProvider(emailProviderConfig, javaMailProperties);
         secureJavaMailProvider = new JavaMailProvider(emailProviderConfig, secureJavaMailProperties);
+        wrongCredentialsJavaMailProvider = new JavaMailProvider(emailProviderConfig.withPassword("wrong"), secureJavaMailProperties);
         messagesVisitor = new GreenMailMessagesVisitor(greenMail);
     }
 
@@ -107,5 +117,20 @@ class SmtpJavaMailProviderTest {
         assertThat(receivedMessage.getAllRecipients()).hasSize(1);
         assertThat(((InternetAddress)(receivedMessage.getAllRecipients()[0])).getAddress())
                 .isEqualTo(request.getTo());
+    }
+
+    @Test
+    void sendSslWithWrongCredentials() throws MessagingException {
+        final ImmutableEmail request = ImmutableEmail.builder()
+                .template("otp")
+                .putParameters("otp", 148366)
+                .to("receipient@test.com")
+                .build();
+
+        wrongCredentialsJavaMailProvider.send(request);
+
+        final List<MimeMessage> unread = messagesVisitor.getUnread();
+
+        assertThat(unread).isEmpty();
     }
 }
