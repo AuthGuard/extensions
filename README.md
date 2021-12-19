@@ -9,6 +9,8 @@ The extensions are broken down based on the part of AuthGuard they integrate wit
 * **emb**: Event Message Bus bridges
 * **email**: Email providers
 
+**Note: Check the README of an extension to know more about it.**
+
 ### Data Access
 There are currently two supported implementations: one for MongoDB and one for most SQL databases.
 
@@ -28,13 +30,17 @@ events to Kafka for external systems to process.
 
 ### Email
 If you want AuthGuard to trigger sending of emails itself, you need an email provider implementation. We currently 
-provide only one; more to come.
+provide only two: JavaMail and SendGrid.
 
 _Note: Those extensions do not handle retries. You'll need to have your own implementation of a retrying strategy on 
 top of those implementations to support retries._ 
 
 #### JavaMail
-An email provider implementation which uses JavaMail to send emails to users. It supports SMTP, IMAP, and POP3.
+An email provider implementation which uses JavaMail to send emails to users. 
+It supports SMTP, IMAP, and POP3.
+
+#### SendGrid
+A vendor-specific provider which uses SendGrid API.
 
 ### Local Testing Plugins
 In addition to the main plugins, few more are provided to make testing easier, which are:
