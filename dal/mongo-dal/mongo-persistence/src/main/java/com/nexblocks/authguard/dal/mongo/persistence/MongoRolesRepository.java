@@ -22,19 +22,24 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll() {
-        return facade.findAll()
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain) {
+        return facade.find(Filters.eq("domain", domain))
                 .thenApply(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getByName(final String name) {
-        return facade.findOne(Filters.eq("name", name));
+    public CompletableFuture<Optional<RoleDO>> getByName(final String name, final String domain) {
+        return facade.findOne(Filters.and(
+                Filters.eq("name", name),
+                Filters.eq("domain", domain)
+        ));
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles) {
-        return facade.find(Filters.in("name", roles))
-                .thenApply(Function.identity());
+    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles, final String domain) {
+        return facade.find(Filters.and(
+                Filters.in("name", roles),
+                Filters.eq("domain", domain)
+        )).thenApply(Function.identity());
     }
 }

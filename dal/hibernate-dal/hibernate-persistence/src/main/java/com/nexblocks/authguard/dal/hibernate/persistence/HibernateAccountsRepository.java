@@ -24,6 +24,7 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     private static final String EXTERNAL_ID_FIELD = "externalId";
     private static final String EMAIL_FIELD = "email";
     private static final String ROLE_FIELD = "role";
+    private static final String DOMAIN_FIELD = "domain";
 
     @Inject
     public HibernateAccountsRepository(final QueryExecutor queryExecutor) {
@@ -59,15 +60,17 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
+    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EMAIL, AccountDO.class)
-                .setParameter(EMAIL_FIELD, email));
+                .setParameter(EMAIL_FIELD, email)
+                .setParameter(DOMAIN_FIELD, domain));
     }
 
     @Override
-    public CompletableFuture<List<AccountDO>> getByRole(final String role) {
+    public CompletableFuture<List<AccountDO>> getByRole(final String role, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ROLE, AccountDO.class)
-                .setParameter(ROLE_FIELD, role));
+                .setParameter(ROLE_FIELD, role)
+                .setParameter(DOMAIN_FIELD, domain));
     }
 
     private RuntimeException mapExceptions(final Throwable e) {

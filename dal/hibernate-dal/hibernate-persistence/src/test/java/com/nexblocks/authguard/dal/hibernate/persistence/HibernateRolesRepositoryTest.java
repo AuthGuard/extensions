@@ -31,28 +31,30 @@ public class HibernateRolesRepositoryTest {
         first = repository.save(RoleDO.builder()
                 .id(UUID.randomUUID().toString())
                 .name("first")
+                .domain("main")
                 .build()).join();
 
         second = repository.save(RoleDO.builder()
                 .id(UUID.randomUUID().toString())
                 .name("second")
+                .domain("main")
                 .build()).join();
     }
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll().join()).containsOnly(first, second);
+        assertThat(repository.getAll("main").join()).containsOnly(first, second);
     }
 
     @Test
     public void getByName() {
-        assertThat(repository.getByName(first.getName()).join()).contains(first);
-        assertThat(repository.getByName(second.getName()).join()).contains(second);
+        assertThat(repository.getByName(first.getName(), first.getDomain()).join()).contains(first);
+        assertThat(repository.getByName(second.getName(), second.getDomain()).join()).contains(second);
     }
 
     @Test
     public void getMultiple() {
-        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName())).join())
+        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName()), "main").join())
                 .containsOnly(first, second);
     }
 }

@@ -1,6 +1,5 @@
 package com.nexblocks.authguard.dal.mongo.persistence;
 
-import com.mongodb.MongoWriteException;
 import com.nexblocks.authguard.dal.model.AccountDO;
 import com.nexblocks.authguard.dal.model.EmailDO;
 import com.nexblocks.authguard.dal.model.PhoneNumberDO;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,12 +48,52 @@ class MongoAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .domain("main")
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
         final Optional<AccountDO> retrieved = repository.getById(id).join();
 
         assertThat(retrieved).contains(persisted);
+    }
+
+    @Test
+    public void saveAndGetByEmail() {
+        final String id = UUID.randomUUID().toString();
+        final EmailDO email = EmailDO.builder()
+                .email("saveAndGetByEmail@test.com")
+                .build();
+
+        final AccountDO account = AccountDO.builder()
+                .id(id)
+                .createdAt(OffsetDateTime.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .domain("main")
+                .build();
+
+        final AccountDO persisted = repository.save(account).join();
+        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
+
+        assertThat(retrieved).contains(persisted);
+    }
+
+    @Test
+    public void saveAndGetByRole() {
+        final String id = UUID.randomUUID().toString();
+        final AccountDO account = AccountDO.builder()
+                .id(id)
+                .createdAt(OffsetDateTime.now())
+                .roles(Collections.singleton("getByRole"))
+                .permissions(Collections.emptySet())
+                .domain("main")
+                .build();
+
+        final AccountDO persisted = repository.save(account).join();
+        final List<AccountDO> retrieved = repository.getByRole("getByRole", account.getDomain()).join();
+
+        assertThat(retrieved).containsExactly(persisted);
     }
 
     @Test

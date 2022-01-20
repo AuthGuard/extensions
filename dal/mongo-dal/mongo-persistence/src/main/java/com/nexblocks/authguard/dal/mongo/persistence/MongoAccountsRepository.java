@@ -52,12 +52,18 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
-        return facade.findOne(Filters.eq("email.email", email));
+    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email, final String domain) {
+        return facade.findOne(Filters.and(
+                Filters.eq("email.email", email),
+                Filters.eq("domain", domain)
+        ));
     }
 
     @Override
-    public CompletableFuture<List<AccountDO>> getByRole(final String role) {
-        return facade.find(Filters.in("roles", role));
+    public CompletableFuture<List<AccountDO>> getByRole(final String role, final String domain) {
+        return facade.find(Filters.and(
+                Filters.in("roles", role),
+                Filters.eq("domain", domain)
+        ));
     }
 }

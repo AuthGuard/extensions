@@ -13,18 +13,27 @@ import java.util.stream.Collectors;
 public class MockPermissionsRepository extends AbstractRepository<PermissionDO>
         implements PermissionsRepository {
     @Override
-    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name) {
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(permission -> permission.getGroup().equals(group) && permission.getName().equals(name))
+                .filter(permission -> permission.getDomain().equals(domain))
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
+        return CompletableFuture.supplyAsync(() -> getRepo().values()
+                .stream()
+                .filter(permission -> permission.getGroup().equals(group)
+                        && permission.getName().equals(name) && permission.getDomain().equals(domain))
                 .findFirst());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group) {
+    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(permission -> permission.getGroup().equals(group))
+                .filter(permission -> permission.getGroup().equals(group) && permission.getDomain().equals(domain))
                 .collect(Collectors.toList()));
     }
 }

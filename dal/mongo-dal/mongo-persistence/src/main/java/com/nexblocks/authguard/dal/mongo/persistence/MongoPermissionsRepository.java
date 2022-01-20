@@ -22,19 +22,25 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
     }
 
     @Override
-    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name) {
-        return facade.findOne(Filters.and(Filters.eq("group", group), Filters.eq("name", name)));
+    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
+        return facade.findOne(Filters.and(
+                Filters.eq("group", group),
+                Filters.eq("name", name),
+                Filters.eq("domain", domain)
+        ));
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll() {
-        return facade.findAll()
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain) {
+        return facade.find(Filters.eq("domain", domain))
                 .thenApply(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group) {
-        return facade.find(Filters.eq("group", group))
-                .thenApply(Function.identity());
+    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain) {
+        return facade.find(Filters.and(
+                Filters.eq("group", group),
+                Filters.eq("domain", domain)
+        )).thenApply(Function.identity());
     }
 }

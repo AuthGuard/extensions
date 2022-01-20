@@ -21,7 +21,7 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email) {
+    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email, final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(account -> account.getEmail() != null)
@@ -30,7 +30,7 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<List<AccountDO>> getByRole(final String role) {
+    public CompletableFuture<List<AccountDO>> getByRole(final String role, final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(account -> account.getRoles().contains(role))

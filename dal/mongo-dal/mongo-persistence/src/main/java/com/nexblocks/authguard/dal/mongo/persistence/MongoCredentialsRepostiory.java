@@ -36,7 +36,10 @@ public class MongoCredentialsRepostiory extends AbstractMongoRepository<Credenti
     }
 
     @Override
-    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier) {
-        return facade.findOne(Filters.in("identifiers.identifier", identifier));
+    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
+        return facade.findOne(Filters.and(
+                Filters.in("identifiers.identifier", identifier),
+                Filters.eq("identifiers.domain", domain)
+        ));
     }
 }

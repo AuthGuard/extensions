@@ -45,6 +45,7 @@ public class HibernateCredentialsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveAndGetById")
                         .type(UserIdentifierDO.Type.USERNAME)
+                        .domain("main")
                         .build()))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -69,6 +70,7 @@ public class HibernateCredentialsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
+                        .domain("main")
                         .build()))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -77,7 +79,7 @@ public class HibernateCredentialsRepositoryTest {
                 .build();
 
         final CredentialsDO persisted = repository.save(credentials).join();
-        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier).join();
+        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
 
         assertThat(retrieved).contains(persisted);
     }

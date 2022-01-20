@@ -22,6 +22,7 @@ public class HibernateCredentialsRepository extends AbstractHibernateRepository<
     private static final String GET_BY_ID = "credentials.getById";
     private static final String GET_BY_IDENTIFIER = "credentials.getByIdentifier";
     private static final String IDENTIFIER_FIELD = "identifier";
+    private static final String DOMAIN_FIELD = "domain";
 
     private final HibernateUserIdentifiersRepository userIdentifiersRepository;
 
@@ -73,9 +74,10 @@ public class HibernateCredentialsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier) {
+    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_IDENTIFIER, CredentialsDO.class)
-                .setParameter(IDENTIFIER_FIELD, identifier));
+                .setParameter(IDENTIFIER_FIELD, identifier)
+                .setParameter(DOMAIN_FIELD, domain));
     }
 
     private RuntimeException mapExceptions(final Throwable e) {

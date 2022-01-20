@@ -52,16 +52,17 @@ public class MockCredentialsRepository extends AbstractRepository<CredentialsDO>
     }
 
     @Override
-    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier) {
+    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo()
                 .values()
                 .stream()
-                .filter(credentials -> hasIdentifier(credentials, identifier))
+                .filter(credentials -> hasIdentifier(credentials, identifier, domain))
                 .findFirst());
     }
 
-    private boolean hasIdentifier(final CredentialsDO credentials, final String identifier) {
+    private boolean hasIdentifier(final CredentialsDO credentials, final String identifier, final String domain) {
         return credentials.getIdentifiers().stream()
+                .filter(userIdentifier -> userIdentifier.getDomain().equals(domain))
                 .map(UserIdentifierDO::getIdentifier)
                 .anyMatch(identifier::equals);
     }

@@ -42,6 +42,7 @@ public class HibernateAccountsRepositoryTest {
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .metadata(Collections.emptyMap())
+                .domain("main")
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -88,10 +89,11 @@ public class HibernateAccountsRepositoryTest {
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .metadata(Collections.emptyMap())
+                .domain("main")
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
-        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail()).join();
+        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -111,10 +113,11 @@ public class HibernateAccountsRepositoryTest {
                 .roles(Collections.singleton(role))
                 .permissions(Collections.emptySet())
                 .metadata(Collections.emptyMap())
+                .domain("main")
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
-        final List<AccountDO> retrieved = repository.getByRole(role).join();
+        final List<AccountDO> retrieved = repository.getByRole(role, account.getDomain()).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

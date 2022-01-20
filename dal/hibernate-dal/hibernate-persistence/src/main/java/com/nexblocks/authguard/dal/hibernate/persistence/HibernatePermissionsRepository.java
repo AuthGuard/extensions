@@ -21,6 +21,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
 
     private static final String GROUP_FIELD = "group";
     private static final String NAME_FIELD = "name";
+    private static final String DOMAIN_FIELD = "domain";
 
     @Inject
     public HibernatePermissionsRepository(final QueryExecutor queryExecutor) {
@@ -36,22 +37,25 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name) {
+    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_GROUP_AND_NAME, PermissionDO.class)
                 .setParameter(GROUP_FIELD, group)
-                .setParameter(NAME_FIELD, name));
+                .setParameter(NAME_FIELD, name)
+                .setParameter(DOMAIN_FIELD, domain));
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll() {
-        return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class))
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain) {
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class)
+                .setParameter(DOMAIN_FIELD, domain))
                 .thenApply(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group) {
+    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
-                .setParameter(GROUP_FIELD, group))
+                .setParameter(GROUP_FIELD, group)
+                .setParameter(DOMAIN_FIELD, domain))
                 .thenApply(Function.identity());
     }
 }

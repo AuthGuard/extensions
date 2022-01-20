@@ -21,6 +21,7 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
 
     private static final String NAME_FIELD = "name";
     private static final String NAMES_FIELD = "names";
+    private static final String DOMAIN_FIELD = "domain";
 
     @Inject
     public HibernateRolesRepository(final QueryExecutor queryExecutor) {
@@ -36,21 +37,24 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll() {
-        return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class))
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain) {
+        return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class)
+                .setParameter(DOMAIN_FIELD, domain))
                 .thenApply(list -> list);
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getByName(final String role) {
+    public CompletableFuture<Optional<RoleDO>> getByName(final String role, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_NAME, RoleDO.class)
+                .setParameter(DOMAIN_FIELD, domain)
                 .setParameter(NAME_FIELD, role));
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles) {
+    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_MULTIPLE, RoleDO.class)
-                .setParameter(NAMES_FIELD, roles))
+                .setParameter(NAMES_FIELD, roles)
+                .setParameter(DOMAIN_FIELD, domain))
                 .thenApply(Function.identity());
     }
 }

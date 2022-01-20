@@ -42,11 +42,12 @@ public class MongoCredentialsRepositoryTest {
                 .createdAt(OffsetDateTime.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
+                        .domain("main")
                         .build()))
                 .build();
 
         final CredentialsDO persisted = repository.save(credentials).join();
-        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier).join();
+        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
 
         assertThat(retrieved).contains(persisted);
     }

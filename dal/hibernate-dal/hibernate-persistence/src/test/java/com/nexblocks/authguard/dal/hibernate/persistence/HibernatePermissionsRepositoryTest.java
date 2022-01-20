@@ -31,33 +31,35 @@ public class HibernatePermissionsRepositoryTest {
                 .id(UUID.randomUUID().toString())
                 .group("tests")
                 .name("first")
+                .domain("main")
                 .build()).join();
 
         second = repository.save(PermissionDO.builder()
                 .id(UUID.randomUUID().toString())
                 .group("tests")
                 .name("second")
+                .domain("main")
                 .build()).join();
     }
 
     @Test
     public void search() {
-        assertThat(repository.search("tests", "first").join()).contains(first);
-        assertThat(repository.search("tests", "second").join()).contains(second);
+        assertThat(repository.search("tests", "first", "main").join()).contains(first);
+        assertThat(repository.search("tests", "second", "main").join()).contains(second);
     }
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll().join()).containsOnly(first, second);
+        assertThat(repository.getAll("main").join()).containsOnly(first, second);
     }
 
     @Test
     public void getAllForGroup() {
-        assertThat(repository.getAllForGroup("tests").join()).containsOnly(first, second);
+        assertThat(repository.getAllForGroup("tests", "main").join()).containsOnly(first, second);
     }
 
     @Test
     public void getAllForNonexistentGroup() {
-        assertThat(repository.getAllForGroup("nothing").join()).isEmpty();
+        assertThat(repository.getAllForGroup("nothing", "main").join()).isEmpty();
     }
 }

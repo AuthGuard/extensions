@@ -7,7 +7,7 @@
     <parent>
         <artifactId>emb-parent</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.11.0</version>
+        <version>0.12.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
