@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class MongoApiKeysRepository extends AbstractMongoRepository<ApiKeyDO> implements ApiKeysRepository {
-    private static final String COLLECTION_KEY = "apikeys";
+    private static final String COLLECTION_KEY = "api_keys";
 
     @Inject
     public MongoApiKeysRepository(final MongoClientWrapper clientWrapper) {

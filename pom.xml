@@ -9,7 +9,7 @@
     <groupId>com.nexblocks.authguard</groupId>
     <artifactId>extensions</artifactId>
     <packaging>pom</packaging>
-    <version>0.12.0</version>
+    <version>0.13.0</version>
 
     <distributionManagement>
         <repository>
@@ -32,7 +32,7 @@
 
         <authguard.version>${project.version}</authguard.version> <!-- for now both are in sync -->
         <guice.version>4.2.2</guice.version>
-        <jackson.version>2.11.1</jackson.version>
+        <jackson.version>2.12.6</jackson.version>
         <logback.version>1.2.3</logback.version>
         <immutables.version>2.7.4</immutables.version>
 

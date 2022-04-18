@@ -2,6 +2,7 @@ package com.nexblocks.authguard.emb.kafka;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nexblocks.authguard.emb.model.Message;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serializer;
@@ -16,6 +17,8 @@ public class MessageSerializer implements Serializer<Message> {
     public MessageSerializer() {
         this.objectMapper = new ObjectMapper();
         this.jsonSerializer = new JsonSerializer();
+
+        this.objectMapper.registerModule(new JavaTimeModule());
     }
 
 

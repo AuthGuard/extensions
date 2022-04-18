@@ -17,5 +17,6 @@ public class Defaults {
         public static final String PERMISSIONS = "permissions";
         public static final String ROLES = "roles";
         public static final String SESSIONS = "sessions";
+        public static final String EXCHANGE_ATTEMPTS = "exchange_attempts";
     }
 }

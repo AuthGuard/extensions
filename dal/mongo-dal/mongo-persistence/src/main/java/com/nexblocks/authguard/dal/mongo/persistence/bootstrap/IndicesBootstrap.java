@@ -2,13 +2,12 @@ package com.nexblocks.authguard.dal.mongo.persistence.bootstrap;
 
 import com.google.inject.Inject;
 import com.mongodb.DuplicateKeyException;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.MongoDatabase;
 import com.nexblocks.authguard.bootstrap.BootstrapStep;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
-import com.nexblocks.authguard.dal.mongo.common.subscribers.WaitForCompletion;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.mongo.config.ImmutableMongoConfiguration;
 import org.bson.BsonType;
@@ -41,8 +40,11 @@ public class IndicesBootstrap implements BootstrapStep {
                 Indexes.text("name")
         );
 
-        database.getCollection(permissionsCollection)
-                .createIndex(permissionsIndex, new IndexOptions().unique(true).name("permissions.groupAndName.index"));
+        final IndexOptions permissionsIndexOptions = new IndexOptions()
+                .unique(true)
+                .name("permissions.groupAndName.index");
+
+        createIndex(permissionsCollection, permissionsIndex, permissionsIndexOptions);
 
         // ---------------
         LOG.info("Bootstrapping roles index");
@@ -50,42 +52,39 @@ public class IndicesBootstrap implements BootstrapStep {
                 .getOrDefault("roles", Defaults.Collections.ROLES);
 
         final Bson rolesIndex = Indexes.ascending("name");
+        final IndexOptions rolesIndexOptions = new IndexOptions()
+                .unique(true)
+                .name("roles.name.index");
 
-        database.getCollection(rolesCollection)
-                .createIndex(rolesIndex, new IndexOptions().unique(true).name("roles.name.index"));
+        createIndex(rolesCollection, rolesIndex, rolesIndexOptions);
 
         // ---------------
         LOG.info("Bootstrapping accounts index");
         final String accountsCollection = config.getCollections()
                 .getOrDefault("accounts", Defaults.Collections.ACCOUNTS);
 
-        final Bson accountEmailIndex = Indexes.ascending("email.email");
-        final Bson accountBackupEmailIndex = Indexes.ascending("backupEmail.email");
-        final Bson accountPhoneNumberIndex = Indexes.ascending("phoneNumber.number");
+        final Bson emailIndex = Indexes.ascending("email.email");
+        final Bson backupEmailIndex = Indexes.ascending("backupEmail.email");
+        final Bson phoneNumberIndex = Indexes.ascending("phoneNumber.number");
 
-        database.getCollection(accountsCollection)
-                .createIndex(accountEmailIndex, new IndexOptions()
-                        .unique(true)
-                        .partialFilterExpression(Filters.type("email.email", BsonType.STRING))
-                        .name("accounts.email.index"));
+        final IndexOptions emailIndexOptions = new IndexOptions()
+                .unique(true)
+                .partialFilterExpression(Filters.type("email.email", BsonType.STRING))
+                .name("accounts.email.index");
 
-        LOG.info("Created account email index");
+        final IndexOptions backupEmailIndexOptions = new IndexOptions()
+                .unique(true)
+                .partialFilterExpression(Filters.type("backupEmail.email", BsonType.STRING))
+                .name("accounts.backupEmail.index");
 
-        database.getCollection(accountsCollection)
-                .createIndex(accountBackupEmailIndex, new IndexOptions()
-                        .unique(true)
-                        .partialFilterExpression(Filters.type("backupEmail.email", BsonType.STRING))
-                        .name("accounts.backupEmail.index"));
+        final IndexOptions phoneNumberIndexOptions = new IndexOptions()
+                .unique(true)
+                .partialFilterExpression(Filters.type("phoneNumber.number", BsonType.STRING))
+                .name("accounts.phoneNumber.index");
 
-        LOG.info("Created account backup email index");
-
-        database.getCollection(accountsCollection)
-                .createIndex(accountPhoneNumberIndex, new IndexOptions()
-                        .unique(true)
-                        .partialFilterExpression(Filters.type("phoneNumber.number", BsonType.STRING))
-                        .name("accounts.phoneNumber.index"));
-
-        LOG.info("Created phone number index");
+        createIndex(accountsCollection, emailIndex, emailIndexOptions);
+        createIndex(accountsCollection, backupEmailIndex, backupEmailIndexOptions);
+        createIndex(accountsCollection, phoneNumberIndex, phoneNumberIndexOptions);
 
         // ---------------
         LOG.info("Bootstrapping credentials index");
@@ -93,11 +92,23 @@ public class IndicesBootstrap implements BootstrapStep {
                 .getOrDefault("credentials", Defaults.Collections.CREDENTIALS);
 
         final Bson identifiersIndex = Indexes.ascending("identifiers.identifier");
+        final IndexOptions credentialsIndexOptions = new IndexOptions()
+                .unique(true)
+                .name("credentials.identifier.index");
 
-        database.getCollection(credentialsCollection)
-                .createIndex(identifiersIndex, new IndexOptions().unique(true).name("credentials.identifier.index"));
+        createIndex(credentialsCollection, identifiersIndex, credentialsIndexOptions);;
+    }
 
-        LOG.info("Created credentials identifier index");
+    private void createIndex(final String collectionName, final Bson indexDefinition,
+                             final IndexOptions indexOptions) {
+        try {
+            database.getCollection(collectionName)
+                    .createIndex(indexDefinition, indexOptions);
+
+            LOG.info("Created database index {}", indexOptions.getName());
+        } catch (final Throwable e) {
+            handleExceptions(e);
+        }
     }
 
     private void handleExceptions(final Throwable e) {
