@@ -19,7 +19,8 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
 
     @Inject
     public MongoExchangeAttemptsRepository(final MongoClientWrapper clientWrapper) {
-        super(clientWrapper, COLLECTION_KEY, Defaults.Collections.APPLICATIONS, ExchangeAttemptDO.class);
+        super(clientWrapper, COLLECTION_KEY, Defaults.Collections.EXCHANGE_ATTEMPTS,
+                ExchangeAttemptDO.class);
     }
 
     @Override
