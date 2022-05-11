@@ -37,13 +37,12 @@ class MongoAccountsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
         final EmailDO email = EmailDO.builder()
                 .email("saveAndGetById@test.com")
                 .build();
 
         final AccountDO account = AccountDO.builder()
-                .id(id)
+                .id(UUID.randomUUID().toString()) // even if set, it should be replaced with an ObjectId
                 .createdAt(OffsetDateTime.now())
                 .email(email)
                 .roles(Collections.emptySet())
@@ -52,7 +51,7 @@ class MongoAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
-        final Optional<AccountDO> retrieved = repository.getById(id).join();
+        final Optional<AccountDO> retrieved = repository.getById(persisted.getId()).join();
 
         assertThat(retrieved).contains(persisted);
     }

@@ -31,9 +31,7 @@ public abstract class AbstractMongoRepository<T extends AbstractDO> {
     }
 
     public CompletableFuture<T> save(final T record) {
-        if (record.getId() == null) {
-            record.setId(ObjectId.get().toString());
-        }
+        record.setId(ObjectId.get().toString());
 
         return facade.save(record);
     }
