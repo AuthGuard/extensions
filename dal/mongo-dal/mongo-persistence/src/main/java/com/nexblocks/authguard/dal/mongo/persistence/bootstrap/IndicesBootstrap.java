@@ -36,8 +36,9 @@ public class IndicesBootstrap implements BootstrapStep {
                 .getOrDefault("permissions", Defaults.Collections.PERMISSIONS);
 
         final Bson permissionsIndex = Indexes.compoundIndex(
-                Indexes.text("group"),
-                Indexes.text("name")
+                Indexes.ascending("domain"),
+                Indexes.ascending("group"),
+                Indexes.ascending("name")
         );
 
         final IndexOptions permissionsIndexOptions = new IndexOptions()
@@ -51,7 +52,10 @@ public class IndicesBootstrap implements BootstrapStep {
         final String rolesCollection = config.getCollections()
                 .getOrDefault("roles", Defaults.Collections.ROLES);
 
-        final Bson rolesIndex = Indexes.ascending("name");
+        final Bson rolesIndex = Indexes.compoundIndex(
+                Indexes.ascending("domain"),
+                Indexes.ascending("name")
+        );
         final IndexOptions rolesIndexOptions = new IndexOptions()
                 .unique(true)
                 .name("roles.name.index");
@@ -63,9 +67,22 @@ public class IndicesBootstrap implements BootstrapStep {
         final String accountsCollection = config.getCollections()
                 .getOrDefault("accounts", Defaults.Collections.ACCOUNTS);
 
-        final Bson emailIndex = Indexes.ascending("email.email");
-        final Bson backupEmailIndex = Indexes.ascending("backupEmail.email");
-        final Bson phoneNumberIndex = Indexes.ascending("phoneNumber.number");
+        final Bson emailIndex = Indexes.compoundIndex(
+                Indexes.ascending("domain"),
+                Indexes.ascending("email.email")
+        );
+        final Bson backupEmailIndex = Indexes.compoundIndex(
+                Indexes.ascending("domain"),
+                Indexes.ascending("backupEmail.email")
+        );
+        final Bson phoneNumberIndex = Indexes.compoundIndex(
+                Indexes.ascending("domain"),
+                Indexes.ascending("phoneNumber.number")
+        );
+        final Bson identifiersIndex = Indexes.compoundIndex(
+                Indexes.ascending("domain"),
+                Indexes.ascending("identifiers.identifier")
+        );
 
         final IndexOptions emailIndexOptions = new IndexOptions()
                 .unique(true)
@@ -82,21 +99,14 @@ public class IndicesBootstrap implements BootstrapStep {
                 .partialFilterExpression(Filters.type("phoneNumber.number", BsonType.STRING))
                 .name("accounts.phoneNumber.index");
 
+        final IndexOptions credentialsIndexOptions = new IndexOptions()
+                .unique(true)
+                .name("accounts.identifier.index");
+
         createIndex(accountsCollection, emailIndex, emailIndexOptions);
         createIndex(accountsCollection, backupEmailIndex, backupEmailIndexOptions);
         createIndex(accountsCollection, phoneNumberIndex, phoneNumberIndexOptions);
-
-        // ---------------
-        LOG.info("Bootstrapping credentials index");
-        final String credentialsCollection = config.getCollections()
-                .getOrDefault("credentials", Defaults.Collections.CREDENTIALS);
-
-        final Bson identifiersIndex = Indexes.ascending("identifiers.identifier");
-        final IndexOptions credentialsIndexOptions = new IndexOptions()
-                .unique(true)
-                .name("credentials.identifier.index");
-
-        createIndex(credentialsCollection, identifiersIndex, credentialsIndexOptions);;
+        createIndex(accountsCollection, identifiersIndex, credentialsIndexOptions);;
     }
 
     private void createIndex(final String collectionName, final Bson indexDefinition,

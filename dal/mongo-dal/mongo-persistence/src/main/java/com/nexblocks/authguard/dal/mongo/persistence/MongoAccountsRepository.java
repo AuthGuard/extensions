@@ -42,6 +42,10 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
                 throw new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
             }
 
+            if (e.getMessage().contains("identifier")) {
+                throw new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Identifier already exists");
+            }
+
             throw e;
         }
     }
@@ -63,6 +67,14 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
     public CompletableFuture<List<AccountDO>> getByRole(final String role, final String domain) {
         return facade.find(Filters.and(
                 Filters.in("roles", role),
+                Filters.eq("domain", domain)
+        ));
+    }
+
+    @Override
+    public CompletableFuture<Optional<AccountDO>> findByIdentifier(final String identifier, final String domain) {
+        return facade.findOne(Filters.and(
+                Filters.in("identifiers.identifier", identifier),
                 Filters.eq("domain", domain)
         ));
     }

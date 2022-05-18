@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ class KafkaPublisherTest {
 
         final Message message = Message.builder()
                 .eventType(EventType.AUTHENTICATION)
-                .timestamp(OffsetDateTime.now())
+                .timestamp(Instant.now())
                 .messageBody("done")
                 .build();
 

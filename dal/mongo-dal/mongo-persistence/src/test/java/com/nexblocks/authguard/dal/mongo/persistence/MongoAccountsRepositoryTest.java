@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.mongo.persistence;
 import com.nexblocks.authguard.dal.model.AccountDO;
 import com.nexblocks.authguard.dal.model.EmailDO;
 import com.nexblocks.authguard.dal.model.PhoneNumberDO;
+import com.nexblocks.authguard.dal.model.UserIdentifierDO;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.persistence.bootstrap.IndicesBootstrap;
 import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
@@ -48,6 +49,9 @@ class MongoAccountsRepositoryTest {
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -70,10 +74,38 @@ class MongoAccountsRepositoryTest {
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
         final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
+
+        assertThat(retrieved).contains(persisted);
+    }
+
+    @Test
+    public void saveAndGetByIdentifier() {
+        final EmailDO email = EmailDO.builder()
+                .email("saveAndGetByIdentifier@test.com")
+                .build();
+
+        final AccountDO account = AccountDO.builder()
+                .id(UUID.randomUUID().toString()) // even if set, it should be replaced with an ObjectId
+                .createdAt(OffsetDateTime.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
+                .build();
+
+        final AccountDO persisted = repository.save(account).join();
+        final Optional<AccountDO> retrieved = repository.findByIdentifier(email.getEmail(), account.getDomain())
+                .join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -87,6 +119,9 @@ class MongoAccountsRepositoryTest {
                 .roles(Collections.singleton("getByRole"))
                 .permissions(Collections.emptySet())
                 .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveAndGetByRole")
+                        .build()))
                 .build();
 
         final AccountDO persisted = repository.save(account).join();
@@ -107,6 +142,9 @@ class MongoAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -115,6 +153,9 @@ class MongoAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateEmailSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
@@ -134,6 +175,9 @@ class MongoAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullEmailsFirst")
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -142,6 +186,9 @@ class MongoAccountsRepositoryTest {
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullEmailsSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
@@ -160,6 +207,9 @@ class MongoAccountsRepositoryTest {
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -168,6 +218,9 @@ class MongoAccountsRepositoryTest {
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateBackupEmailSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
@@ -187,6 +240,9 @@ class MongoAccountsRepositoryTest {
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullBackupEmailFirst")
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -195,6 +251,9 @@ class MongoAccountsRepositoryTest {
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullBackupEmailSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
@@ -204,7 +263,7 @@ class MongoAccountsRepositoryTest {
     @Test
     public void saveDuplicatePhoneNumbers() {
         final PhoneNumberDO phoneNumber = PhoneNumberDO.builder()
-                .number("saveDuplicateEmails")
+                .number("saveDuplicatePhoneNumbers")
                 .build();
 
         final AccountDO first = AccountDO.builder()
@@ -213,6 +272,9 @@ class MongoAccountsRepositoryTest {
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(phoneNumber.getNumber())
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -221,6 +283,9 @@ class MongoAccountsRepositoryTest {
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicatePhoneNumbersSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
@@ -240,6 +305,9 @@ class MongoAccountsRepositoryTest {
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullPhoneNumbersFirst")
+                        .build()))
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -248,6 +316,9 @@ class MongoAccountsRepositoryTest {
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullPhoneNumbersSecond")
+                        .build()))
                 .build();
 
         repository.save(first).join();
