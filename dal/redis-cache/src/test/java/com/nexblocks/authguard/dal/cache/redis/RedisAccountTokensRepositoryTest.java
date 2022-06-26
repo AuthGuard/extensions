@@ -43,7 +43,7 @@ class RedisAccountTokensRepositoryTest {
         final AccountTokenDO accountToken = AccountTokenDO.builder()
                 .associatedAccountId("account")
                 .token("token")
-                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5))
+                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5).withNano(0))
                 .build();
 
         final AccountTokenDO cached = redisAccountTokensRepository.save(accountToken).join();

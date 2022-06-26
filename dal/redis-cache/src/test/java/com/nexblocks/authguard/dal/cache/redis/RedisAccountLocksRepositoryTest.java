@@ -42,7 +42,7 @@ class RedisAccountLocksRepositoryTest {
     void saveAndGetByAccountId() {
         final AccountLockDO lock = AccountLockDO.builder()
                 .accountId("account")
-                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5))
+                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5).withNano(0))
                 .build();
 
         final AccountLockDO cached = redisAccountLocksRepository.save(lock).join();

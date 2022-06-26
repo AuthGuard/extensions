@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class HibernateSessionsRepositoryTest {
         final SessionDO session = SessionDO.builder()
                 .id(id)
                 .sessionToken(token)
-                .expiresAt(OffsetDateTime.now())
+                .expiresAt(OffsetDateTime.now().withNano(0))
                 .data(Collections.emptyMap())
                 .build();
 

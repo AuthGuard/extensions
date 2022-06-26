@@ -15,7 +15,7 @@
     <artifactId>redis-cache</artifactId>
 
     <properties>
-        <msgpack.version>0.8.22</msgpack.version>
+        <msgpack.version>0.9.2</msgpack.version>
         <lettuce.version>6.0.1.RELEASE</lettuce.version>
 
         <embedded-redis.version>0.7.2</embedded-redis.version>

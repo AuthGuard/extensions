@@ -43,7 +43,7 @@ class RedisSessionsRepositoryTest {
         final SessionDO session = SessionDO.builder()
                 .id("session-id")
                 .sessionToken("session-token")
-                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5))
+                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5).withNano(0))
                 .build();
 
         final SessionDO cached = redisSessionsRepository.save(session).join();

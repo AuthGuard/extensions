@@ -45,7 +45,7 @@ class RedisOtpRepositoryTest {
                 .id("otp-id")
                 .password("password")
                 .accountId("account")
-                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5))
+                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5).withNano(0))
                 .build();
 
         final OneTimePasswordDO cached = redisOtpRepository.save(otp).join();
