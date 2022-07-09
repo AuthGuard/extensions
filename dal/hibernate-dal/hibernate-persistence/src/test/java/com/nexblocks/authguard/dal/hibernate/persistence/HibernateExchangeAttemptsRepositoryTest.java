@@ -7,7 +7,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.OffsetDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,14 +36,14 @@ public class HibernateExchangeAttemptsRepositoryTest {
                 .id("first")
                 .entityId(ENTITY_ID)
                 .exchangeFrom(FROM_EXCHANGE)
-                .createdAt(OffsetDateTime.now().minusHours(1))
+                .createdAt(Instant.now().minus(Duration.ofHours(1)))
                 .build();
 
         secondAttempt = ExchangeAttemptDO.builder()
                 .id("second")
                 .entityId(ENTITY_ID)
                 .exchangeFrom("another")
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .build();
 
         repository.save(firstAttempt).join();
@@ -52,7 +53,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
                 .id("different-entity")
                 .entityId("different")
                 .exchangeFrom(FROM_EXCHANGE)
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .build());
     }
 
@@ -67,7 +68,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
     @Test
     public void findByEntityAndTimestamp() {
         final Collection<ExchangeAttemptDO> retrieved =
-                repository.findByEntityAndTimestamp(ENTITY_ID, OffsetDateTime.now().minusMinutes(30)).join();
+                repository.findByEntityAndTimestamp(ENTITY_ID, Instant.now().minus(Duration.ofMinutes(30))).join();
 
         assertThat(retrieved).containsOnly(secondAttempt);
     }
@@ -76,7 +77,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
     public void findByEntityAndTimestampAndExchange() {
         final Collection<ExchangeAttemptDO> retrieved = repository
                 .findByEntityAndTimestampAndExchange(ENTITY_ID,
-                        OffsetDateTime.now().minusHours(2),
+                        Instant.now().minus(Duration.ofHours(2)),
                         FROM_EXCHANGE)
                 .join();
 

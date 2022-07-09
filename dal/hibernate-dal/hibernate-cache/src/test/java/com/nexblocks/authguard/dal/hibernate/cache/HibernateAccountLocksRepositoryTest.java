@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +35,7 @@ class HibernateAccountLocksRepositoryTest {
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)
                 .accountId("getById-account")
-                .expiresAt(OffsetDateTime.now().withNano(0))
+                .expiresAt(Instant.now())
                 .build();
 
         final AccountLockDO persisted = repository.save(accountLock).join();
@@ -51,7 +51,7 @@ class HibernateAccountLocksRepositoryTest {
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)
                 .accountId("getByAccountId-account")
-                .expiresAt(OffsetDateTime.now().withNano(0))
+                .expiresAt(Instant.now())
                 .build();
 
         final AccountLockDO persisted = repository.save(accountLock).join();

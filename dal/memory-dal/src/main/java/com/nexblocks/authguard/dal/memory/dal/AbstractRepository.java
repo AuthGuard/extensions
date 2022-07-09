@@ -3,7 +3,7 @@ package com.nexblocks.authguard.dal.memory.dal;
 import com.nexblocks.authguard.dal.model.AbstractDO;
 import com.nexblocks.authguard.dal.repository.Repository;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
     }
 
     public CompletableFuture<T> save(final T record) {
-        final OffsetDateTime now = OffsetDateTime.now();
+        final Instant now = Instant.now();
 
         if (record.getCreatedAt() == null) {
             record.setCreatedAt(now);

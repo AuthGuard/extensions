@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class HibernateAccountTokensRepositoryTest {
                 .id(id)
                 .associatedAccountId("account")
                 .token("token")
-                .expiresAt(OffsetDateTime.now().withNano(0))
+                .expiresAt(Instant.now())
                 .additionalInformation(Collections.emptyMap())
                 .tokenRestrictions(TokenRestrictionsDO.builder()
                         .permissions(Collections.emptySet())
@@ -60,7 +60,7 @@ public class HibernateAccountTokensRepositoryTest {
                 .id(id)
                 .associatedAccountId("account")
                 .token(token)
-                .expiresAt(OffsetDateTime.now().withNano(0))
+                .expiresAt(Instant.now())
                 .additionalInformation(Collections.emptyMap())
                 .tokenRestrictions(TokenRestrictionsDO.builder()
                         .permissions(Collections.emptySet())
