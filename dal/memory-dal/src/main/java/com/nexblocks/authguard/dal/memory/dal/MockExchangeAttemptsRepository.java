@@ -4,7 +4,7 @@ import com.google.inject.Singleton;
 import com.nexblocks.authguard.dal.model.ExchangeAttemptDO;
 import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class MockExchangeAttemptsRepository extends AbstractRepository<ExchangeA
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final String entityId,
-                                                                                     final OffsetDateTime fromTimestamp) {
+                                                                                     final Instant fromTimestamp) {
         return CompletableFuture.completedFuture(getRepo().values()
                 .stream()
                 .filter(attempt -> attempt.getEntityId().equals(entityId))
@@ -31,7 +31,7 @@ public class MockExchangeAttemptsRepository extends AbstractRepository<ExchangeA
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final String entityId,
-                                                                                                final OffsetDateTime fromTimestamp,
+                                                                                                final Instant fromTimestamp,
                                                                                                 final String exchangeFrom) {
         return CompletableFuture.completedFuture(getRepo().values()
                 .stream()

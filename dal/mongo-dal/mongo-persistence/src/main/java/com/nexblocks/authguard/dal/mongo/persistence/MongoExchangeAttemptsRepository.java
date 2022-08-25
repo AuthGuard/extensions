@@ -8,7 +8,7 @@ import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp
             (final String entityId,
-             final OffsetDateTime fromTimestamp) {
+             final Instant fromTimestamp) {
         return facade.find(Filters.and(
                 Filters.eq("entityId", entityId),
                 Filters.gte("createdAt", fromTimestamp)
@@ -42,7 +42,7 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange
             (final String entityId,
-             final OffsetDateTime fromTimestamp,
+             final Instant fromTimestamp,
              final String fromExchange) {
         return facade.find(Filters.and(
                 Filters.eq("entityId", entityId),

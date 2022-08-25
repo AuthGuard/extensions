@@ -3,7 +3,7 @@ package com.nexblocks.authguard.dal.mongo.common.setup;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistry;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 
 public class Java8TimeCodecRegistry implements CodecRegistry {
@@ -21,7 +21,7 @@ public class Java8TimeCodecRegistry implements CodecRegistry {
             return (Codec<T>) zonedDateTimeCodec;
         }
 
-        if (OffsetDateTime.class.isAssignableFrom(clazz)) {
+        if (Instant.class.isAssignableFrom(clazz)) {
             return (Codec<T>) offsetDateTimeCodec;
         }
 

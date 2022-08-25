@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
 
     @Override
     public CompletableFuture<AccountLockDO> save(final AccountLockDO lock) {
-        final Duration ttl = Duration.between(OffsetDateTime.now(), lock.getExpiresAt());
+        final Duration ttl = Duration.between(Instant.now(), lock.getExpiresAt());
 
         LOG.debug("Storing lock for account {}", lock.getAccountId());
 

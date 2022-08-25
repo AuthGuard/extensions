@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,7 +39,7 @@ public class MongoCredentialsRepositoryTest {
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .domain("main")
@@ -58,7 +58,7 @@ public class MongoCredentialsRepositoryTest {
 
         final CredentialsDO first = CredentialsDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .build()))
@@ -66,7 +66,7 @@ public class MongoCredentialsRepositoryTest {
 
         final CredentialsDO second = CredentialsDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .build()))

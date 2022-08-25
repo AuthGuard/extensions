@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +44,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO account = AccountDO.builder()
                 .id(UUID.randomUUID().toString()) // even if set, it should be replaced with an ObjectId
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -69,7 +69,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO account = AccountDO.builder()
                 .id(id)
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -93,7 +93,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO account = AccountDO.builder()
                 .id(UUID.randomUUID().toString()) // even if set, it should be replaced with an ObjectId
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -115,7 +115,7 @@ class MongoAccountsRepositoryTest {
         final String id = UUID.randomUUID().toString();
         final AccountDO account = AccountDO.builder()
                 .id(id)
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .roles(Collections.singleton("getByRole"))
                 .permissions(Collections.emptySet())
                 .domain("main")
@@ -138,7 +138,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -149,7 +149,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -171,7 +171,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -182,7 +182,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -203,7 +203,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -214,7 +214,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -236,7 +236,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -247,7 +247,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -268,7 +268,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -279,7 +279,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -301,7 +301,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO first = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
@@ -312,7 +312,7 @@ class MongoAccountsRepositoryTest {
 
         final AccountDO second = AccountDO.builder()
                 .id(UUID.randomUUID().toString())
-                .createdAt(OffsetDateTime.now())
+                .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())

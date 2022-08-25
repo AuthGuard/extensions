@@ -10,8 +10,9 @@ import org.junit.jupiter.api.TestInstance;
 import redis.embedded.RedisServer;
 
 import java.time.Clock;
-import java.time.OffsetDateTime;
-import java.time.OffsetDateTime;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +46,7 @@ class RedisOtpRepositoryTest {
                 .id("otp-id")
                 .password("password")
                 .accountId("account")
-                .expiresAt(OffsetDateTime.now(Clock.systemUTC()).plusMinutes(5).withNano(0))
+                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
                 .build();
 
         final OneTimePasswordDO cached = redisOtpRepository.save(otp).join();

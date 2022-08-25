@@ -6,7 +6,7 @@ import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.ExchangeAttemptDO;
 import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -36,7 +36,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final String entityId,
-                                                                                     final OffsetDateTime fromTimestamp) {
+                                                                                     final Instant fromTimestamp) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY_FROM_TIMESTAMP, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
@@ -46,7 +46,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final String entityId,
-                                                                                                final OffsetDateTime fromTimestamp,
+                                                                                                final Instant fromTimestamp,
                                                                                                 final String fromExchange) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ALL, ExchangeAttemptDO.class)

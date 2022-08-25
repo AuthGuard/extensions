@@ -8,7 +8,6 @@ import org.bson.codecs.EncoderContext;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 public class OffsetDateTimeCodec implements Codec<OffsetDateTime> {
