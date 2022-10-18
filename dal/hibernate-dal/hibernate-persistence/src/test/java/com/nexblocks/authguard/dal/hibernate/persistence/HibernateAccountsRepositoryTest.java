@@ -3,10 +3,12 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.*;
+import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HibernateAccountsRepositoryTest {
@@ -368,5 +371,212 @@ public class HibernateAccountsRepositoryTest {
                 .doesNotContain(credentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
         assertThat(all)
                 .contains(newCredentials.getIdentifiers().toArray(new UserIdentifierDO[0]));
+    }
+
+    @Test
+    public void saveDuplicateEmails() {
+        final EmailDO email = EmailDO.builder()
+                .email("saveDuplicateEmails@test.com")
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateEmailSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+
+        assertThatThrownBy(() -> repository.save(second).join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
+    }
+
+    @Test
+    public void saveDuplicateNullEmails() {
+        final EmailDO email = EmailDO.builder()
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullEmailsFirst")
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullEmailsSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+        repository.save(second).join();
+    }
+
+    @Test
+    public void saveDuplicateBackupEmails() {
+        final EmailDO email = EmailDO.builder()
+                .email("saveDuplicateBackupEmails@test.com")
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .backupEmail(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(email.getEmail())
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .backupEmail(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateBackupEmailSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+
+        assertThatThrownBy(() -> repository.save(second).join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
+    }
+
+    @Test
+    public void saveDuplicateNullBackupEmails() {
+        final EmailDO email = EmailDO.builder()
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .backupEmail(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullBackupEmailFirst")
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .backupEmail(email)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullBackupEmailSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+        repository.save(second).join();
+    }
+
+    @Test
+    public void saveDuplicatePhoneNumbers() {
+        final PhoneNumberDO phoneNumber = PhoneNumberDO.builder()
+                .number("saveDuplicatePhoneNumbers")
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .phoneNumber(phoneNumber)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(phoneNumber.getNumber())
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .phoneNumber(phoneNumber)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicatePhoneNumbersSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+
+        assertThatThrownBy(() -> repository.save(second).join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
+    }
+
+    @Test
+    public void saveDuplicateNullPhoneNumbers() {
+        final PhoneNumberDO phoneNumber = PhoneNumberDO.builder()
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .phoneNumber(phoneNumber)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullPhoneNumbersFirst")
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .phoneNumber(phoneNumber)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("saveDuplicateNullPhoneNumbersSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+        repository.save(second).join();
     }
 }

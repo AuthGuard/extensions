@@ -86,14 +86,14 @@ public class QueryExecutor {
 
     CompletableFuture<Void> doInNewTransaction(final Consumer<Session> consumer) {
         return CompletableFuture.runAsync(() -> {
-            final Session session = sessionProvider.newSession();
 
-            session.beginTransaction();
+            try (Session session = sessionProvider.newSession()) {
+                session.beginTransaction();
 
-            consumer.accept(session);
+                consumer.accept(session);
 
-            session.getTransaction().commit();
-            session.close();
+                session.getTransaction().commit();
+            }
         });
     }
 

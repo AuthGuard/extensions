@@ -120,15 +120,33 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     }
 
     private RuntimeException mapException(final ConstraintViolationException e) {
+        // check the constraint name first
+        final String constraintName = e.getConstraintName();
+        RuntimeException mappedException;
+
+        if (constraintName != null) {
+            mappedException = mapConstraintName(constraintName.toLowerCase());
+
+            if (mappedException != null) {
+                return mappedException;
+            }
+        }
+
+        // then the first cause message
         final String outerCauseMessage = Optional.of(e.getCause())
                 .map(Throwable::getMessage)
                 .map(String::toLowerCase)
                 .orElse(null);
 
-        if (outerCauseMessage != null && outerCauseMessage.contains("identifier_dup")) {
-            return new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Identifier already exists");
+        if (outerCauseMessage != null) {
+            mappedException = mapConstraintName(outerCauseMessage);
+
+            if (mappedException != null) {
+                return mappedException;
+            }
         }
 
+        // then the inner cause message
         final String innerCauseMessage = Optional.of(e.getCause())
                 .map(Throwable::getCause)
                 .map(Throwable::getMessage)
@@ -136,15 +154,27 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
                 .orElse(null);
 
         if (innerCauseMessage != null) {
-            if (innerCauseMessage.contains("email_dup")) {
-                return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Email already exists");
-            } else if (innerCauseMessage.contains("backup_email_dup")) {
-                return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
-            } else if (innerCauseMessage.contains("phone_number_dup")) {
-                return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_PHONE_NUMBER, "Phone number already exists");
+            mappedException = mapConstraintName(innerCauseMessage);
+
+            if (mappedException != null) {
+                return mappedException;
             }
         }
 
         return new RuntimeException(e);
+    }
+
+    private RuntimeException mapConstraintName(final String constraintName) {
+        if (constraintName.contains("email_dup")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Email already exists");
+        } else if (constraintName.contains("backup_email_dup")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
+        } else if (constraintName.contains("phone_number_dup")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_PHONE_NUMBER, "Phone number already exists");
+        } else if (constraintName.contains("identifier_dup")) {
+            return new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Identifier already exists");
+        }
+
+        return null;
     }
 }
