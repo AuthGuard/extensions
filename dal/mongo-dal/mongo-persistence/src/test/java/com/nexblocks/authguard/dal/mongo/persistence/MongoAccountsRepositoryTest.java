@@ -145,6 +145,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(email.getEmail())
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -156,6 +157,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateEmailSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
@@ -178,6 +180,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullEmailsFirst")
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -189,6 +192,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullEmailsSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
@@ -210,6 +214,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(email.getEmail())
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -221,6 +226,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateBackupEmailSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
@@ -243,6 +249,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullBackupEmailFirst")
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -254,6 +261,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullBackupEmailSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
@@ -275,6 +283,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(phoneNumber.getNumber())
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -286,6 +295,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicatePhoneNumbersSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
@@ -308,6 +318,7 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullPhoneNumbersFirst")
                         .build()))
+                .domain("main")
                 .build();
 
         final AccountDO second = AccountDO.builder()
@@ -319,9 +330,53 @@ class MongoAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveDuplicateNullPhoneNumbersSecond")
                         .build()))
+                .domain("main")
                 .build();
 
         repository.save(first).join();
         repository.save(second).join();
+    }
+
+    @Test
+    public void updateDuplicateEmails() {
+        final EmailDO firstEmail = EmailDO.builder()
+                .email("updateDuplicateEmailsFirst@test.com")
+                .build();
+
+        final EmailDO secondEmail = EmailDO.builder()
+                .email("updateDuplicateEmailsSecond@test.com")
+                .build();
+
+        final AccountDO first = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(firstEmail)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(firstEmail.getEmail())
+                        .build()))
+                .domain("main")
+                .build();
+
+        final AccountDO second = AccountDO.builder()
+                .id(UUID.randomUUID().toString())
+                .createdAt(Instant.now())
+                .email(secondEmail)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier("updateDuplicateEmailsSecond")
+                        .build()))
+                .domain("main")
+                .build();
+
+        repository.save(first).join();
+        repository.save(second).join();
+
+        second.setEmail(firstEmail);
+
+        assertThatThrownBy(() -> repository.update(second))
+                .isInstanceOf(ServiceConflictException.class);
     }
 }

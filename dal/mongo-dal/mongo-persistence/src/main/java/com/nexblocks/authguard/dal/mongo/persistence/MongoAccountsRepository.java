@@ -1,7 +1,6 @@
 package com.nexblocks.authguard.dal.mongo.persistence;
 
 import com.google.inject.Inject;
-import com.mongodb.DuplicateKeyException;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.model.Filters;
@@ -26,27 +25,20 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
     }
 
     @Override
+    public CompletableFuture<Optional<AccountDO>> update(AccountDO record) {
+        try {
+            return super.update(record);
+        } catch (final MongoWriteException e) {
+            throw mapWriteErrors(e);
+        }
+    }
+
+    @Override
     public CompletableFuture<AccountDO> save(final AccountDO account) {
         try {
             return super.save(account);
         } catch (final MongoWriteException e) {
-            if (e.getMessage().contains("email")) {
-                throw new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Email already exists");
-            }
-
-            if (e.getMessage().contains("phone")) {
-                throw new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_PHONE_NUMBER, "Phone number already exists");
-            }
-
-            if (e.getMessage().contains("backupEmail")) {
-                throw new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
-            }
-
-            if (e.getMessage().contains("identifier")) {
-                throw new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Identifier already exists");
-            }
-
-            throw e;
+            throw mapWriteErrors(e);
         }
     }
 
@@ -77,5 +69,33 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
                 Filters.in("identifiers.identifier", identifier),
                 Filters.eq("domain", domain)
         ));
+    }
+
+    private RuntimeException mapWriteErrors(final MongoWriteException e) {
+        if (e.getError().getCategory() == ErrorCategory.DUPLICATE_KEY) {
+            return mapDuplicateError(e);
+        }
+
+        return e;
+    }
+
+    private RuntimeException mapDuplicateError(final MongoWriteException e) {
+        if (e.getMessage().contains("email")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Email already exists");
+        }
+
+        if (e.getMessage().contains("phone")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_PHONE_NUMBER, "Phone number already exists");
+        }
+
+        if (e.getMessage().contains("backupEmail")) {
+            return new ServiceConflictException(ErrorCode.ACCOUNT_DUPLICATE_EMAILS, "Backup email already exists");
+        }
+
+        if (e.getMessage().contains("identifier")) {
+            return new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Identifier already exists");
+        }
+
+        return e;
     }
 }
