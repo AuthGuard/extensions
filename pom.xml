@@ -9,7 +9,7 @@
     <groupId>com.nexblocks.authguard</groupId>
     <artifactId>extensions</artifactId>
     <packaging>pom</packaging>
-    <version>0.17.1</version>
+    <version>0.18.0</version>
 
     <repositories>
         <repository>
