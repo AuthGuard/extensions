@@ -17,4 +17,5 @@ public interface SendGridConfig {
     Map<String, String> getEmailTemplates();
     String getFromName();
     String getFromEmailAddress();
+    Map<String, String> getDefaultParameters();
 }

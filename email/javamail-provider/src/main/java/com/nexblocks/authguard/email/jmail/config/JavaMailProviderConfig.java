@@ -16,6 +16,7 @@ public interface JavaMailProviderConfig {
     Map<String, ImmutableTemplateConfig> getTemplates();
 
     Map<String, String> getSubjects();
+    Map<String, String> getDefaultParameters();
 
     String getFromAddress();
     String getFromName();
