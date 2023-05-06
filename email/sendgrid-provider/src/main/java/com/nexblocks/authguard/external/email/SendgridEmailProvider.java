@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class SendgridEmailProvider implements EmailProvider {
     private static final String MESSAGE_ID_HEADER = "X-Message-ID";
@@ -70,11 +71,13 @@ public class SendgridEmailProvider implements EmailProvider {
 
     private Personalization recipientPersonalization(final ImmutableEmail email) {
         final Personalization recipient = new Personalization();
+        final Map<String, Object> parameters = EmailParametersHelper.combineParameters(config.getDefaultParameters(),
+                email.getParameters());
 
         recipient.addTo(new Email(email.getTo()));
 
-        for (String key : email.getParameters().keySet()) {
-            recipient.addDynamicTemplateData(key, email.getParameters().get(key));
+        for (String key : parameters.keySet()) {
+            recipient.addDynamicTemplateData(key, parameters.get(key));
         }
 
         return recipient;

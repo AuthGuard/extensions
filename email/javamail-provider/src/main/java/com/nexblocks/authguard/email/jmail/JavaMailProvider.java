@@ -7,6 +7,7 @@ import com.nexblocks.authguard.email.jmail.config.ImmutableJavaMailProviderConfi
 import com.nexblocks.authguard.email.jmail.config.ImmutableTemplateConfig;
 import com.nexblocks.authguard.external.email.EmailProvider;
 import com.nexblocks.authguard.external.email.ImmutableEmail;
+import com.nexblocks.authguard.external.email.EmailParametersHelper;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -28,7 +31,7 @@ import java.util.Properties;
  *    includes template file and subjects mapping, from
  *    address ..etc.
  *
- * It only support Handlebars templates for now.
+ * It only supports Handlebars templates for now.
  */
 public class JavaMailProvider implements EmailProvider {
     private static final Logger LOG = LoggerFactory.getLogger(JavaMailProvider.class);
@@ -96,11 +99,13 @@ public class JavaMailProvider implements EmailProvider {
 
     private Try<String> loadAndParseTemplate(final ImmutableEmail immutableEmail, final ImmutableTemplateConfig templateConfig) {
         final String templateFile = templateConfig.getFile();
+        final Map<String, Object> parameters = EmailParametersHelper.combineParameters(providerConfig.getDefaultParameters(),
+                immutableEmail.getParameters());
 
         LOG.debug("Template {} was mapped to file {}", immutableEmail.getTemplate(), templateFile);
 
         Try<String> contentTry = templatesLoader.get(templateFile, providerConfig.enableFileCache())
-                .flatMap(template -> templateResolver.resolve(template, immutableEmail.getParameters()));
+                .flatMap(template -> templateResolver.resolve(template, parameters));
 
         if (contentTry.isFailure()) {
             LOG.error("Failed to process template ({}, {})", immutableEmail.getTemplate(),
