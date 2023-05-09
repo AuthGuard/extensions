@@ -38,11 +38,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>email</artifactId>
         </dependency>
