@@ -37,6 +37,7 @@ public class SessionProvider {
                 .addAnnotatedClass(AccountLockDO.class)
                 .addAnnotatedClass(CredentialsAuditDO.class)
                 .addAnnotatedClass(AppDO.class)
+                .addAnnotatedClass(ClientDO.class)
                 .addAnnotatedClass(ApiKeyDO.class)
                 .addAnnotatedClass(ExchangeAttemptDO.class)
                 .addAnnotatedClass(AccountTokenDO.class)
