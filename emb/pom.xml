@@ -7,14 +7,14 @@
     <parent>
         <artifactId>extensions</artifactId>
         <groupId>com.nexblocks.authguard</groupId>
-        <version>0.19.0</version>
+        <version>0.20.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <name>Extensions :: EMB</name>
 
     <artifactId>emb-parent</artifactId>
-    <version>0.19.0</version>
+    <version>0.20.0</version>
 
     <packaging>pom</packaging>
 
