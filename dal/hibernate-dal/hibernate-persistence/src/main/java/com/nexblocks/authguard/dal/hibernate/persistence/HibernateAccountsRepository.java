@@ -75,7 +75,7 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getById(final String id) {
+    public CompletableFuture<Optional<AccountDO>> getById(final long id) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_ID, AccountDO.class)
                 .setParameter(ID_FIELD, id));
     }

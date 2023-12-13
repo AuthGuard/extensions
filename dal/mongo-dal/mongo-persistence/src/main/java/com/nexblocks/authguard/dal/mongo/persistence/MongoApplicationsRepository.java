@@ -26,7 +26,7 @@ public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> 
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final String accountId) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId) {
         return facade.find(Filters.eq("parentAccountId", accountId));
     }
 }

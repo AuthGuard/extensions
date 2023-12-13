@@ -21,7 +21,7 @@ public class MongoApiKeysRepository extends AbstractMongoRepository<ApiKeyDO> im
     }
 
     @Override
-    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final String appId) {
+    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final long appId) {
         return facade.find(Filters.eq("appId", appId))
                 .thenApply(list -> list);
     }

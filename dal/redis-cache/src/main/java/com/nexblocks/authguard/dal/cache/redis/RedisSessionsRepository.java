@@ -33,7 +33,7 @@ public class RedisSessionsRepository implements SessionsRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> getById(final String s) {
+    public CompletableFuture<Optional<SessionDO>> getById(final long s) {
         throw new UnsupportedOperationException("Sessions cannot be retrieved by ID");
     }
 

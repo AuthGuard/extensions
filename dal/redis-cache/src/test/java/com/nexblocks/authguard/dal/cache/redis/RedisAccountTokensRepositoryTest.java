@@ -42,7 +42,7 @@ class RedisAccountTokensRepositoryTest {
     @Test
     void saveAndGetByToken() {
         final AccountTokenDO accountToken = AccountTokenDO.builder()
-                .associatedAccountId("account")
+                .associatedAccountId(101)
                 .token("token")
                 .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
                 .build();

@@ -24,14 +24,14 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final String entityId) {
+    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
         return facade.find(Filters.eq("entityId", entityId))
                 .thenApply(Function.identity());
     }
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp
-            (final String entityId,
+            (final long entityId,
              final Instant fromTimestamp) {
         return facade.find(Filters.and(
                 Filters.eq("entityId", entityId),
@@ -41,7 +41,7 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
 
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange
-            (final String entityId,
+            (final long entityId,
              final Instant fromTimestamp,
              final String fromExchange) {
         return facade.find(Filters.and(

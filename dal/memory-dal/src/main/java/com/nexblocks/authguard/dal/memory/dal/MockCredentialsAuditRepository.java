@@ -13,10 +13,10 @@ public class MockCredentialsAuditRepository extends AbstractRepository<Credentia
         implements CredentialsAuditRepository {
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final String credentialsId) {
+    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(record -> record.getCredentialsId().equals(credentialsId))
+                .filter(record -> record.getCredentialsId() == credentialsId)
                 .collect(Collectors.toList()));
     }
 }

@@ -42,7 +42,7 @@ class RedisAccountLocksRepositoryTest {
     @Test
     void saveAndGetByAccountId() {
         final AccountLockDO lock = AccountLockDO.builder()
-                .accountId("account")
+                .accountId(101)
                 .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
                 .build();
 

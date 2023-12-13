@@ -27,7 +27,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final String entityId) {
+    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
@@ -35,7 +35,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final String entityId,
+    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final long entityId,
                                                                                      final Instant fromTimestamp) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY_FROM_TIMESTAMP, ExchangeAttemptDO.class)
@@ -45,7 +45,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final String entityId,
+    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final long entityId,
                                                                                                 final Instant fromTimestamp,
                                                                                                 final String fromExchange) {
         return queryExecutor

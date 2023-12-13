@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HibernateExchangeAttemptsRepositoryTest {
-    private static final String ENTITY_ID = "account";
+    private static final long ENTITY_ID = 101;
     private static final String FROM_EXCHANGE = "basic";
 
     private HibernateExchangeAttemptsRepository repository;
@@ -33,14 +33,14 @@ public class HibernateExchangeAttemptsRepositoryTest {
         repository = new HibernateExchangeAttemptsRepository(new QueryExecutor(sessionProvider));
 
         firstAttempt = ExchangeAttemptDO.builder()
-                .id("first")
+                .id(1)
                 .entityId(ENTITY_ID)
                 .exchangeFrom(FROM_EXCHANGE)
                 .createdAt(Instant.now().minus(Duration.ofHours(1)))
                 .build();
 
         secondAttempt = ExchangeAttemptDO.builder()
-                .id("second")
+                .id(2)
                 .entityId(ENTITY_ID)
                 .exchangeFrom("another")
                 .createdAt(Instant.now())
@@ -50,8 +50,8 @@ public class HibernateExchangeAttemptsRepositoryTest {
         repository.save(secondAttempt).join();
 
         repository.save(ExchangeAttemptDO.builder()
-                .id("different-entity")
-                .entityId("different")
+                .id(3)
+                .entityId(102)
                 .exchangeFrom(FROM_EXCHANGE)
                 .createdAt(Instant.now())
                 .build());

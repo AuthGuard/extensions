@@ -29,7 +29,7 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getById(final String id) {
+    public CompletableFuture<Optional<RoleDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, RoleDO.class)
                         .setParameter(CommonFields.ID, id))

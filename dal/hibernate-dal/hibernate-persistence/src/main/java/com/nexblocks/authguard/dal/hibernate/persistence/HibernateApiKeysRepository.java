@@ -27,7 +27,7 @@ public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiK
     }
 
     @Override
-    public CompletableFuture<Optional<ApiKeyDO>> getById(final String id) {
+    public CompletableFuture<Optional<ApiKeyDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, ApiKeyDO.class)
                         .setParameter(CommonFields.ID, id))
@@ -35,7 +35,7 @@ public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiK
     }
 
     @Override
-    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final String appId) {
+    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final long appId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_APP_ID, ApiKeyDO.class)
                 .setParameter(APP_ID_FIELD, appId))
                 .thenApply(Function.identity());

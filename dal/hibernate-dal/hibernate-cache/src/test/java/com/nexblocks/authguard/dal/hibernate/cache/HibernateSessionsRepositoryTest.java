@@ -31,7 +31,7 @@ public class HibernateSessionsRepositoryTest {
 
     @Test
     public void getByToken() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String token = "getByToken-token";
 
         final SessionDO session = SessionDO.builder()

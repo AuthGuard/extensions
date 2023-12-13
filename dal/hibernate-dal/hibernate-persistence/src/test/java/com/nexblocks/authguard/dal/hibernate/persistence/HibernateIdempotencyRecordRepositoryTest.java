@@ -28,16 +28,14 @@ public class HibernateIdempotencyRecordRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = "record-id";
-
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
-                .id(id)
-                .entityId("entity-id")
+                .id(1)
+                .entityId(101)
                 .entityType("entity")
                 .idempotentKey("key")
                 .build()).join();
 
-        final Optional<IdempotentRecordDO> retrieved = repository.getById(id).join();
+        final Optional<IdempotentRecordDO> retrieved = repository.getById(1).join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -47,8 +45,8 @@ public class HibernateIdempotencyRecordRepositoryTest {
         final String key = "by-key-key";
 
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
-                .id("by-key-id")
-                .entityId("by-key-entity-id")
+                .id(2)
+                .entityId(102)
                 .entityType("by-key-entity")
                 .idempotentKey(key)
                 .build()).join();
@@ -64,8 +62,8 @@ public class HibernateIdempotencyRecordRepositoryTest {
         final String entityType = "by-key-and-entity-entity";
 
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
-                .id("by-key-and-entity-id")
-                .entityId("by-key-and-entity-entity-id")
+                .id(3)
+                .entityId(103)
                 .entityType(entityType)
                 .idempotentKey(key)
                 .build()).join();

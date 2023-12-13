@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @Singleton
 public class MockCredentialsRepository extends AbstractRepository<CredentialsDO> implements CredentialsRepository {
 
-    private Map<String, String> identifiersToAccountId = new HashMap<>();
+    private Map<String, Long> identifiersToAccountId = new HashMap<>();
 
     @Override
     public CompletableFuture<CredentialsDO> save(final CredentialsDO credentials) {
@@ -38,7 +38,7 @@ public class MockCredentialsRepository extends AbstractRepository<CredentialsDO>
         credentials.getIdentifiers()
                 .stream()
                 .filter(identifier -> {
-                    final String existing = identifiersToAccountId.get(identifier.getIdentifier());
+                    final Long existing = identifiersToAccountId.get(identifier.getIdentifier());
 
                     if (existing != null && !existing.equals(credentials.getAccountId())) {
                         throw new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Duplicate identifier found " + identifier.getIdentifier());

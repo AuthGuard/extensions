@@ -26,7 +26,7 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     }
 
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final String accountId) {
+    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         LOG.debug("Getting lock for account {}", accountId);
 
         return redisRepository.get(key(accountId))
@@ -45,13 +45,13 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<AccountLockDO>> delete(final String accountId) {
+    public CompletableFuture<Optional<AccountLockDO>> delete(final long accountId) {
         LOG.debug("Removing lock for account {}", accountId);
 
         return redisRepository.delete(key(accountId));
     }
 
-    private String key(final String accountId) {
+    private String key(final long accountId) {
         return "lock:" + accountId;
     }
 }

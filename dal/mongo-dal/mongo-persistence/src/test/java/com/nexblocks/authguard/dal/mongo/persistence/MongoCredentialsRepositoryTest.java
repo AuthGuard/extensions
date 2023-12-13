@@ -38,7 +38,7 @@ public class MongoCredentialsRepositoryTest {
         final String identifier = "saveAndGetByIdentifier";
 
         final CredentialsDO credentials = CredentialsDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
@@ -57,7 +57,7 @@ public class MongoCredentialsRepositoryTest {
         final String identifier = "saveDuplicateIdentifiers";
 
         final CredentialsDO first = CredentialsDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
@@ -65,7 +65,7 @@ public class MongoCredentialsRepositoryTest {
                 .build();
 
         final CredentialsDO second = CredentialsDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
                         .identifier(identifier)
