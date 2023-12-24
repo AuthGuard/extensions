@@ -21,4 +21,6 @@ jobs:
         with:
           java-version: 11
       - name: Build with Maven
-        run: mvn -P github_actions -B package --file pom.xml
+        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -P github_actions -B package --file pom.xml
+        env:
+          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
