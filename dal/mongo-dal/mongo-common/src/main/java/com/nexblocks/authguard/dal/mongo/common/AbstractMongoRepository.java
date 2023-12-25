@@ -1,11 +1,9 @@
 package com.nexblocks.authguard.dal.mongo.common;
 
 import com.nexblocks.authguard.dal.model.AbstractDO;
-import com.nexblocks.authguard.dal.mongo.common.facade.ReactiveMongoFacade;
 import com.nexblocks.authguard.dal.mongo.common.facade.SyncMongoFacade;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.ImmutableMongoConfiguration;
-import org.bson.types.ObjectId;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -31,12 +29,10 @@ public abstract class AbstractMongoRepository<T extends AbstractDO> {
     }
 
     public CompletableFuture<T> save(final T record) {
-        record.setId(ObjectId.get().toString());
-
         return facade.save(record);
     }
 
-    public CompletableFuture<Optional<T>> getById(final String id) {
+    public CompletableFuture<Optional<T>> getById(final long id) {
         return facade.findById(id);
     }
 
@@ -44,7 +40,7 @@ public abstract class AbstractMongoRepository<T extends AbstractDO> {
         return facade.replaceById(record.getId(), record);
     }
 
-    public CompletableFuture<Optional<T>> delete(final String id) {
+    public CompletableFuture<Optional<T>> delete(final long id) {
         return facade.deleteById(id);
     }
 }

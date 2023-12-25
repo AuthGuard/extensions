@@ -31,11 +31,11 @@ public class HibernateAccountTokensRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final AccountTokenDO accountToken = AccountTokenDO.builder()
                 .id(id)
-                .associatedAccountId("account")
+                .associatedAccountId(101)
                 .token("token")
                 .expiresAt(Instant.now())
                 .additionalInformation(Collections.emptyMap())
@@ -53,12 +53,12 @@ public class HibernateAccountTokensRepositoryTest {
 
     @Test
     void getByToken() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String token = "getByToken-token";
 
         final AccountTokenDO accountToken = AccountTokenDO.builder()
                 .id(id)
-                .associatedAccountId("account")
+                .associatedAccountId(101)
                 .token(token)
                 .expiresAt(Instant.now())
                 .additionalInformation(Collections.emptyMap())

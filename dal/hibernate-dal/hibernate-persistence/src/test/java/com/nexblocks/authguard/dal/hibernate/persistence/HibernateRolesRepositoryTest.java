@@ -29,13 +29,13 @@ public class HibernateRolesRepositoryTest {
         repository = new HibernateRolesRepository(new QueryExecutor(sessionProvider));
 
         first = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .name("first")
                 .domain("main")
                 .build()).join();
 
         second = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .name("second")
                 .domain("main")
                 .build()).join();

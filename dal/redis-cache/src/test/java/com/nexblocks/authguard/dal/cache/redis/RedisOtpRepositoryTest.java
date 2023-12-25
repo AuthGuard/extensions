@@ -43,9 +43,9 @@ class RedisOtpRepositoryTest {
     @Test
     void saveAndGetById() {
         final OneTimePasswordDO otp = OneTimePasswordDO.builder()
-                .id("otp-id")
+                .id(1)
                 .password("password")
-                .accountId("account")
+                .accountId(101)
                 .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
                 .build();
 

@@ -33,7 +33,7 @@ public class RedisOtpRepository implements OtpRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<OneTimePasswordDO>> getById(final String id) {
+    public CompletableFuture<Optional<OneTimePasswordDO>> getById(final long id) {
         LOG.debug("Getting OTP {}", id);
 
         return redisRepository.get(id);

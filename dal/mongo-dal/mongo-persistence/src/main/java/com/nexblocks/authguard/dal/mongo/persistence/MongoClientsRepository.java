@@ -26,7 +26,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final String accountId) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId) {
         return facade.find(Filters.eq("parentAccountId", accountId));
     }
 

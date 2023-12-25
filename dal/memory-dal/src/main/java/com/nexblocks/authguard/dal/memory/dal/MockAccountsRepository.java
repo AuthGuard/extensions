@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class MockAccountsRepository extends AbstractRepository<AccountDO> implements AccountsRepository {
-    private Map<String, String> identifiersToAccountId = new HashMap<>();
+    private Map<String, Long> identifiersToAccountId = new HashMap<>();
 
     @Override
     public CompletableFuture<AccountDO> save(final AccountDO account) {
@@ -37,7 +37,7 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
         account.getIdentifiers()
                 .stream()
                 .filter(identifier -> {
-                    final String existing = identifiersToAccountId.get(identifier.getIdentifier());
+                    final Long existing = identifiersToAccountId.get(identifier.getIdentifier());
 
                     if (existing != null && !existing.equals(account.getId())) {
                         throw new ServiceConflictException(ErrorCode.IDENTIFIER_ALREADY_EXISTS, "Duplicate identifier found " + identifier.getIdentifier());

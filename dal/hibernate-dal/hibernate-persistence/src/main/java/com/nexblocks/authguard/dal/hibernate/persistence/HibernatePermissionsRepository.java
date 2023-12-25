@@ -29,7 +29,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Optional<PermissionDO>> getById(final String id) {
+    public CompletableFuture<Optional<PermissionDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, PermissionDO.class)
                         .setParameter(CommonFields.ID, id))

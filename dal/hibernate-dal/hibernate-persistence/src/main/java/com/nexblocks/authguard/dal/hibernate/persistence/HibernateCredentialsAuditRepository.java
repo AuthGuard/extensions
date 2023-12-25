@@ -21,7 +21,7 @@ public class HibernateCredentialsAuditRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final String credentialsId) {
+    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_CREDENTIALS_ID, CredentialsAuditDO.class)
                 .setParameter(CREDENTIALS_ID_FIELD, credentialsId));
     }

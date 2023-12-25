@@ -42,7 +42,7 @@ class RedisSessionsRepositoryTest {
     @Test
     void saveAndGetById() {
         final SessionDO session = SessionDO.builder()
-                .id("session-id")
+                .id(1)
                 .sessionToken("session-token")
                 .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
                 .build();

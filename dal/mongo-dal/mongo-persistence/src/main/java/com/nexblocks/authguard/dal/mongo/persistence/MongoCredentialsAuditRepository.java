@@ -20,7 +20,7 @@ public class MongoCredentialsAuditRepository extends AbstractMongoRepository<Cre
     }
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final String credentialsId) {
+    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
         return facade.find(Filters.eq("credentialsId", credentialsId));
     }
 }

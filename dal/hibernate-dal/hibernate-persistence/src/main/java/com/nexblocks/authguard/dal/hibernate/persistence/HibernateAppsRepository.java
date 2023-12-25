@@ -27,7 +27,7 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     }
 
     @Override
-    public CompletableFuture<Optional<AppDO>> getById(final String id) {
+    public CompletableFuture<Optional<AppDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, AppDO.class)
                         .setParameter(CommonFields.ID, id))
@@ -41,7 +41,7 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final String accountId) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId));
     }

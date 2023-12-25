@@ -29,6 +29,10 @@ public class RedisRepository<T extends AbstractDO> {
                 });
     }
 
+    public CompletableFuture<Optional<T>> get(final long key) {
+        return get(String.valueOf(key));
+    }
+
     public CompletableFuture<T> save(final String key, final T value, final long ttl) {
         final byte[] serialized = entityCodec.serialize(value);
         final RedisAsyncCommands<String, byte[]> commands = clientWrapper.getConnection().async();
@@ -46,6 +50,10 @@ public class RedisRepository<T extends AbstractDO> {
         return commands.set(key, serialized)
                 .toCompletableFuture()
                 .thenApply(stored -> value);
+    }
+
+    public CompletableFuture<T> save(final long key, final T value) {
+        return save(String.valueOf(key), value);
     }
 
     public CompletableFuture<Optional<T>> delete(final String key) {

@@ -38,7 +38,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final EmailDO email = EmailDO.builder()
                 .email("saveAndGetById@test.com")
                 .build();
@@ -66,7 +66,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void getByExternalId() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String externalId = UUID.randomUUID().toString();
 
         final EmailDO email = EmailDO.builder()
@@ -97,7 +97,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void getByEmail() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final EmailDO email = EmailDO.builder()
                 .email("getByEmaild@test.com")
@@ -126,7 +126,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void findByIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "accountsFindByIdentifier";
 
         final AccountDO account = AccountDO.builder()
@@ -154,7 +154,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void getByRole() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String role = "test-role";
 
         final EmailDO email = EmailDO.builder()
@@ -184,7 +184,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void updateEmail() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final EmailDO email = EmailDO.builder()
                 .email("updateEmail@test.com")
@@ -214,7 +214,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void updatePassword() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "updatePassword";
         final EmailDO email = EmailDO.builder()
                 .email("updatePassword@test.com")
@@ -260,7 +260,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void removeIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "removeIdentifier";
 
         final EmailDO email = EmailDO.builder()
@@ -313,7 +313,7 @@ public class HibernateAccountsRepositoryTest {
 
     @Test
     public void updateIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "updateIdentifier";
         final String newIdentifier = "updateIdentifierNew";
 
@@ -380,7 +380,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
@@ -392,7 +392,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
@@ -415,7 +415,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
@@ -427,7 +427,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .email(email)
                 .roles(Collections.emptySet())
@@ -449,7 +449,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
@@ -461,7 +461,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
@@ -484,7 +484,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
@@ -496,7 +496,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .backupEmail(email)
                 .roles(Collections.emptySet())
@@ -518,7 +518,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
@@ -530,7 +530,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
@@ -553,7 +553,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO first = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())
@@ -565,7 +565,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO second = AccountDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .createdAt(Instant.now())
                 .phoneNumber(phoneNumber)
                 .roles(Collections.emptySet())

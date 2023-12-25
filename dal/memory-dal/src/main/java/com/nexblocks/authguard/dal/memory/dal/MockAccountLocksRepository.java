@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class MockAccountLocksRepository extends AbstractRepository<AccountLockDO>
         implements AccountLocksRepository {
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final String s) {
+    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long s) {
         return CompletableFuture.completedFuture(getRepo().values()
                 .stream()
-                .filter(lock -> s.equals(lock.getAccountId()))
+                .filter(lock -> s == lock.getAccountId())
                 .collect(Collectors.toList()));
     }
 }

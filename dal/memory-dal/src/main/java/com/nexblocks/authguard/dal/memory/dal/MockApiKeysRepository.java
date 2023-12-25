@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 @Singleton
 public class MockApiKeysRepository extends AbstractRepository<ApiKeyDO> implements ApiKeysRepository {
     @Override
-    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final String id) {
+    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final long id) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(key -> key.getAppId().equals(id))
+                .filter(key -> key.getAppId() == id)
                 .collect(Collectors.toList()));
     }
 

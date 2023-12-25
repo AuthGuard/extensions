@@ -28,14 +28,14 @@ public class HibernatePermissionsRepositoryTest {
         repository = new HibernatePermissionsRepository(new QueryExecutor(sessionProvider));
 
         first = repository.save(PermissionDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .group("tests")
                 .name("first")
                 .domain("main")
                 .build()).join();
 
         second = repository.save(PermissionDO.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().getMostSignificantBits())
                 .group("tests")
                 .name("second")
                 .domain("main")

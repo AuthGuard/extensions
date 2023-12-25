@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
-    private final Map<String, T> repo;
+    private final Map<Long, T> repo;
 
     public AbstractRepository() {
         repo = new HashMap<>();
@@ -30,7 +30,7 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
         return CompletableFuture.completedFuture(record);
     }
 
-    public CompletableFuture<Optional<T>> getById(final String id) {
+    public CompletableFuture<Optional<T>> getById(final long id) {
         return CompletableFuture.completedFuture(Optional.ofNullable(repo.get(id)));
     }
 
@@ -46,7 +46,7 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
         return override(record);
     }
 
-    public CompletableFuture<Optional<T>> delete(final String id) {
+    public CompletableFuture<Optional<T>> delete(final long id) {
         return CompletableFuture.completedFuture(Optional.ofNullable(repo.remove(id)));
     }
 
@@ -56,7 +56,7 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
         return CompletableFuture.completedFuture(Optional.of(record));
     }
 
-    protected Map<String, T> getRepo() {
+    protected Map<Long, T> getRepo() {
         return repo;
     }
 }

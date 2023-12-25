@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
-import com.nexblocks.authguard.dal.model.AppDO;
 import com.nexblocks.authguard.dal.model.ClientDO;
-import com.nexblocks.authguard.dal.persistence.ApplicationsRepository;
 import com.nexblocks.authguard.dal.persistence.ClientsRepository;
 
 import java.util.List;
@@ -33,7 +31,7 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     }
 
     @Override
-    public CompletableFuture<Optional<ClientDO>> getById(final String id) {
+    public CompletableFuture<Optional<ClientDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, ClientDO.class)
                         .setParameter(CommonFields.ID, id))
@@ -47,7 +45,7 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final String accountId) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, ClientDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId));
     }

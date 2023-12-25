@@ -34,7 +34,7 @@ public class SyncMongoFacade<T> {
         return CompletableFuture.completedFuture(document);
     }
 
-    public CompletableFuture<Optional<T>> findById(final String id) {
+    public CompletableFuture<Optional<T>> findById(final long id) {
         return findOne(Filters.eq("_id", id));
     }
 
@@ -44,7 +44,7 @@ public class SyncMongoFacade<T> {
         return CompletableFuture.completedFuture(Optional.ofNullable(result));
     }
 
-    public CompletableFuture<Optional<T>> replaceById(final String id, final T document) {
+    public CompletableFuture<Optional<T>> replaceById(final long id, final T document) {
         return replaceOne(Filters.eq("_id", id), document);
     }
 
@@ -80,7 +80,7 @@ public class SyncMongoFacade<T> {
         return CompletableFuture.completedFuture(list);
     }
 
-    public CompletableFuture<Optional<T>> deleteById(final String id) {
+    public CompletableFuture<Optional<T>> deleteById(final long id) {
         return delete(Filters.eq("_id", id));
     }
 

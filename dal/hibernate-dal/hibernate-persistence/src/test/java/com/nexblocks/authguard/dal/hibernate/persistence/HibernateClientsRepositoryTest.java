@@ -30,7 +30,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -45,7 +45,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void getByExternalId() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String externalId = "getByExternalId";
 
         final ClientDO client = ClientDO.builder()
@@ -62,8 +62,8 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void getAllForAccount() {
-        final String id = UUID.randomUUID().toString();
-        final String accountId = "account";
+        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long accountId = 101;
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -79,7 +79,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     void getByType() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -94,7 +94,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     void getByDomain() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final ClientDO client = ClientDO.builder()
                 .id(id)

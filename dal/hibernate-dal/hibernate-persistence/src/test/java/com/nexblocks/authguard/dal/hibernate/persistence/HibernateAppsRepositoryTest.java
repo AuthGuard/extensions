@@ -30,7 +30,7 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final AppDO app = AppDO.builder()
                 .id(id)
@@ -46,7 +46,7 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void getByExternalId() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String externalId = "getByExternalId";
 
         final AppDO app = AppDO.builder()
@@ -64,18 +64,17 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void getAllForAccount() {
-        final String id = UUID.randomUUID().toString();
-        final String accountId = "account";
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final AppDO app = AppDO.builder()
                 .id(id)
-                .parentAccountId(accountId)
+                .parentAccountId(101L)
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .build();
 
         final AppDO persisted = repository.save(app).join();
-        final List<AppDO> retrieved = repository.getAllForAccount(accountId).join();
+        final List<AppDO> retrieved = repository.getAllForAccount(101).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

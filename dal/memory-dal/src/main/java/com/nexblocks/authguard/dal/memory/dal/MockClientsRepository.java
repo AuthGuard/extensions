@@ -22,7 +22,7 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final String accountId) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(app -> app.getAccountId().equals(accountId))

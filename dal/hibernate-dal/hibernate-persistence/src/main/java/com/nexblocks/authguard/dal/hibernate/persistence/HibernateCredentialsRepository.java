@@ -66,7 +66,7 @@ public class HibernateCredentialsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Optional<CredentialsDO>> getById(final String id) {
+    public CompletableFuture<Optional<CredentialsDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, CredentialsDO.class)
                         .setParameter(CommonFields.ID, id))

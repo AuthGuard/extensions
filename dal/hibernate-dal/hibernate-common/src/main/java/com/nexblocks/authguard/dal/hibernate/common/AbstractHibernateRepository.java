@@ -24,7 +24,7 @@ public abstract class AbstractHibernateRepository<T> implements Repository<T> {
         return queryExecutor.persistAndReturn(entity);
     }
     
-    public CompletableFuture<Optional<T>> getById(final String id) {
+    public CompletableFuture<Optional<T>> getById(final long id) {
         return queryExecutor.getById(id, entityType);
     }
 
@@ -32,7 +32,7 @@ public abstract class AbstractHibernateRepository<T> implements Repository<T> {
         return queryExecutor.updateAndReturn(entity);
     }
 
-    public CompletableFuture<Optional<T>> delete(final String id) {
+    public CompletableFuture<Optional<T>> delete(final long id) {
         return queryExecutor.deleteById(id, entityType);
     }
 }

@@ -23,7 +23,7 @@ public class HibernateAccountLocksRepository extends AbstractHibernateRepository
     }
 
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final String accountId) {
+    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AccountLockDO.class)
                         .setParameter(ACCOUNT_ID_FIELD, accountId))

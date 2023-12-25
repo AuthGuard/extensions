@@ -37,11 +37,11 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier("saveAndGetById")
                         .type(UserIdentifierDO.Type.USERNAME)
@@ -61,12 +61,12 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void findByIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "findByIdentifier";
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
@@ -86,12 +86,12 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void updatePassword() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "updatePassword";
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
@@ -104,7 +104,7 @@ public class HibernateCredentialsRepositoryTest {
 
         final CredentialsDO newCredentials = CredentialsDO.builder()
                 .id(credentials.getId())
-                .accountId("account")
+                .accountId(101)
                 .identifiers(credentials.getIdentifiers())
                 .hashedPassword(PasswordDO.builder()
                         .password("new_password")
@@ -123,12 +123,12 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void removeIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "removeIdentifier";
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
@@ -141,7 +141,7 @@ public class HibernateCredentialsRepositoryTest {
 
         final CredentialsDO newCredentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.emptySet())
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -166,13 +166,13 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void updateIdentifier() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
         final String identifier = "updateIdentifier";
         final String newIdentifier = "updateIdentifierNew";
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
-                .accountId("account")
+                .accountId(101)
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)

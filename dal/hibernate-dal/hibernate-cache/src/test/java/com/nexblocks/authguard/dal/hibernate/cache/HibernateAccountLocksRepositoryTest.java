@@ -30,11 +30,11 @@ class HibernateAccountLocksRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)
-                .accountId("getById-account")
+                .accountId(101)
                 .expiresAt(Instant.now())
                 .build();
 
@@ -46,11 +46,11 @@ class HibernateAccountLocksRepositoryTest {
 
     @Test
     void getByToken() {
-        final String id = UUID.randomUUID().toString();
+        final long id = UUID.randomUUID().getMostSignificantBits();
 
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)
-                .accountId("getByAccountId-account")
+                .accountId(102)
                 .expiresAt(Instant.now())
                 .build();
 
@@ -62,7 +62,7 @@ class HibernateAccountLocksRepositoryTest {
 
     @Test
     void getByTokenNonExistent() {
-        assertThat(repository.findByAccountId("nothing").join()).isEmpty();
+        assertThat(repository.findByAccountId(0).join()).isEmpty();
     }
 
 }
