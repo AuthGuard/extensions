@@ -22,8 +22,10 @@ jobs:
           distribution: 'adopt'
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
 
-      - name: Build with Maven
-        run: mvn -P github_actions -B package --file pom.xml
+      - name: Package Maven
+        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -P github_actions -B package --file pom.xml
+        env:
+          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
 
       - name: Publish to GitHub Packages
         run: mvn --batch-mode deploy -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -P github_actions
