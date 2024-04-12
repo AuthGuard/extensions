@@ -31,7 +31,7 @@ public class HibernateAccountTokensRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final AccountTokenDO accountToken = AccountTokenDO.builder()
                 .id(id)
@@ -53,7 +53,7 @@ public class HibernateAccountTokensRepositoryTest {
 
     @Test
     void getByToken() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String token = "getByToken-token";
 
         final AccountTokenDO accountToken = AccountTokenDO.builder()

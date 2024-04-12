@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.RoleDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.RolesRepository;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     private static final String NAME_FIELD = "name";
     private static final String NAMES_FIELD = "names";
     private static final String DOMAIN_FIELD = "domain";
+    private static final String CURSOR_FIELD = "cursor";
 
     @Inject
     public HibernateRolesRepository(final QueryExecutor queryExecutor) {
@@ -37,9 +39,10 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain) {
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class)
-                .setParameter(DOMAIN_FIELD, domain))
+                        .setParameter(DOMAIN_FIELD, domain)
+                        .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
                 .thenApply(list -> list);
     }
 
@@ -53,8 +56,8 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     @Override
     public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_MULTIPLE, RoleDO.class)
-                .setParameter(NAMES_FIELD, roles)
-                .setParameter(DOMAIN_FIELD, domain))
+                        .setParameter(NAMES_FIELD, roles)
+                        .setParameter(DOMAIN_FIELD, domain))
                 .thenApply(Function.identity());
     }
 }

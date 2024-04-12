@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.PermissionDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.PermissionsRepository;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     private static final String GROUP_FIELD = "group";
     private static final String NAME_FIELD = "name";
     private static final String DOMAIN_FIELD = "domain";
+    private static final String CURSOR_FIELD = "cursor";
 
     @Inject
     public HibernatePermissionsRepository(final QueryExecutor queryExecutor) {
@@ -45,17 +47,20 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain) {
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class)
-                .setParameter(DOMAIN_FIELD, domain))
+                        .setParameter(DOMAIN_FIELD, domain)
+                        .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
                 .thenApply(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain) {
+    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain,
+                                                                      final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
-                .setParameter(GROUP_FIELD, group)
-                .setParameter(DOMAIN_FIELD, domain))
+                        .setParameter(GROUP_FIELD, group)
+                        .setParameter(DOMAIN_FIELD, domain)
+                        .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
                 .thenApply(Function.identity());
     }
 }

@@ -30,7 +30,7 @@ class HibernateAccountLocksRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)
@@ -46,7 +46,7 @@ class HibernateAccountLocksRepositoryTest {
 
     @Test
     void getByToken() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final AccountLockDO accountLock = AccountLockDO.builder()
                 .id(id)

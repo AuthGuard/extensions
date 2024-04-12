@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.memory.dal;
 
 import com.nexblocks.authguard.dal.model.RoleDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.RolesRepository;
 
 import javax.inject.Singleton;
@@ -12,10 +13,11 @@ import java.util.stream.Collectors;
 @Singleton
 public class MockRolesRepository extends AbstractRepository<RoleDO> implements RolesRepository {
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain) {
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(role -> role.getDomain().equals(domain))
+                .filter(role -> role.getDomain().equals(domain) && role.getId() > page.getCursor())
+                .limit(page.getCount())
                 .collect(Collectors.toList()));
     }
 

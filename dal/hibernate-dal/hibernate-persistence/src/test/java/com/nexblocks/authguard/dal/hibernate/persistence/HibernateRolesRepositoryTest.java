@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.RoleDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -29,13 +30,13 @@ public class HibernateRolesRepositoryTest {
         repository = new HibernateRolesRepository(new QueryExecutor(sessionProvider));
 
         first = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().getMostSignificantBits())
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("first")
                 .domain("main")
                 .build()).join();
 
         second = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().getMostSignificantBits())
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("second")
                 .domain("main")
                 .build()).join();
@@ -43,7 +44,7 @@ public class HibernateRolesRepositoryTest {
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main").join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", Page.of(null, 20)).join()).containsOnly(first, second);
     }
 
     @Test

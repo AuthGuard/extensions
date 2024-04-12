@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AppDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,7 +31,7 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final AppDO app = AppDO.builder()
                 .id(id)
@@ -46,7 +47,7 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void getByExternalId() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String externalId = "getByExternalId";
 
         final AppDO app = AppDO.builder()
@@ -64,7 +65,7 @@ public class HibernateAppsRepositoryTest {
 
     @Test
     public void getAllForAccount() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final AppDO app = AppDO.builder()
                 .id(id)
@@ -74,7 +75,7 @@ public class HibernateAppsRepositoryTest {
                 .build();
 
         final AppDO persisted = repository.save(app).join();
-        final List<AppDO> retrieved = repository.getAllForAccount(101).join();
+        final List<AppDO> retrieved = repository.getAllForAccount(101, Page.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

@@ -6,6 +6,7 @@ import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.ClientDO;
 import com.nexblocks.authguard.dal.persistence.ClientsRepository;
+import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     private static final String ACCOUNT_ID_FIELD = "parentAccountId";
     private static final String DOMAIN_FIELD = "domain";
     private static final String CLIENT_TYPE_FIELD = "clientType";
+    private static final String CURSOR_FIELD = "cursor";
 
     @Inject
     public HibernateClientsRepository(final QueryExecutor queryExecutor) {
@@ -45,20 +47,23 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, ClientDO.class)
-                .setParameter(ACCOUNT_ID_FIELD, accountId));
+                .setParameter(ACCOUNT_ID_FIELD, accountId)
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(String clientType) {
+    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_CLIENT_TYPE, ClientDO.class)
-                .setParameter(CLIENT_TYPE_FIELD, clientType));
+                .setParameter(CLIENT_TYPE_FIELD, clientType)
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(String domain) {
+    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, ClientDO.class)
-                .setParameter(DOMAIN_FIELD, domain));
+                .setParameter(DOMAIN_FIELD, domain)
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
     }
 }
