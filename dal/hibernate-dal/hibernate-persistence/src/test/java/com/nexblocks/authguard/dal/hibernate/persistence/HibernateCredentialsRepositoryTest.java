@@ -37,7 +37,7 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final CredentialsDO credentials = CredentialsDO.builder()
                 .id(id)
@@ -61,7 +61,7 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void findByIdentifier() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String identifier = "findByIdentifier";
 
         final CredentialsDO credentials = CredentialsDO.builder()
@@ -86,7 +86,7 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void updatePassword() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String identifier = "updatePassword";
 
         final CredentialsDO credentials = CredentialsDO.builder()
@@ -123,7 +123,7 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void removeIdentifier() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String identifier = "removeIdentifier";
 
         final CredentialsDO credentials = CredentialsDO.builder()
@@ -166,7 +166,7 @@ public class HibernateCredentialsRepositoryTest {
 
     @Test
     public void updateIdentifier() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String identifier = "updateIdentifier";
         final String newIdentifier = "updateIdentifierNew";
 

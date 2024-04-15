@@ -7,6 +7,7 @@ import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.ClientsRepository;
+import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,17 +27,26 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId) {
-        return facade.find(Filters.eq("parentAccountId", accountId));
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page page) {
+        return facade.find(Filters.and(
+                Filters.eq("parentAccountId", accountId),
+                Filters.gt("_id", page.getCursor())
+        ), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(String clientType) {
-        return facade.find(Filters.eq("clientType", clientType));
+    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page page) {
+        return facade.find(Filters.and(
+                Filters.eq("clientType", clientType),
+                Filters.gt("_id", page.getCursor())
+        ), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(String domain) {
-        return facade.find(Filters.eq("domain", domain));
+    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page page) {
+        return facade.find(Filters.and(
+                Filters.eq("domain", domain),
+                Filters.gt("_id", page.getCursor())
+        ), page.getCount());
     }
 }

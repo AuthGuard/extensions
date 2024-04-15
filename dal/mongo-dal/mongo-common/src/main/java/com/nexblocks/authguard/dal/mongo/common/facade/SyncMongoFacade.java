@@ -69,6 +69,17 @@ public class SyncMongoFacade<T> {
         return CompletableFuture.completedFuture(list);
     }
 
+    public CompletableFuture<List<T>> find(final Bson filter, final int limit) {
+        final FindIterable<T> resultIterable = collection.find(filter).limit(limit);
+        final List<T> list = new ArrayList<>();
+
+        for (T result : resultIterable) {
+            list.add(result);
+        }
+
+        return CompletableFuture.completedFuture(list);
+    }
+
     public CompletableFuture<List<T>> findAll() {
         final FindIterable<T> resultIterable = collection.find();
         final List<T> list = new ArrayList<>();

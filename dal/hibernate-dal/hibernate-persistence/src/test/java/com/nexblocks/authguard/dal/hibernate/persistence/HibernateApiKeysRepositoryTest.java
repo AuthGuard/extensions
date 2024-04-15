@@ -29,7 +29,7 @@ public class HibernateApiKeysRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
                 .id(id)
@@ -44,7 +44,7 @@ public class HibernateApiKeysRepositoryTest {
 
     @Test
     public void getByAppId() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final long appId = 201;
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
@@ -61,7 +61,7 @@ public class HibernateApiKeysRepositoryTest {
 
     @Test
     public void getByKey() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String key = "getByKey";
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
@@ -78,7 +78,7 @@ public class HibernateApiKeysRepositoryTest {
 
     @Test
     public void saveAndDeleteById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final ApiKeyDO apiKey = ApiKeyDO.builder()
                 .id(id)

@@ -6,6 +6,7 @@ import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.model.AppDO;
 import com.nexblocks.authguard.dal.persistence.ApplicationsRepository;
+import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
 
     private static final String EXTERNAL_ID_FIELD = "externalId";
     private static final String ACCOUNT_ID_FIELD = "parentAccountId";
+    private static final String CURSOR_FIELD = "cursor";
 
     @Inject
     public HibernateAppsRepository(final QueryExecutor queryExecutor) {
@@ -41,8 +43,9 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
-                .setParameter(ACCOUNT_ID_FIELD, accountId));
+                .setParameter(ACCOUNT_ID_FIELD, accountId)
+                .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount());
     }
 }

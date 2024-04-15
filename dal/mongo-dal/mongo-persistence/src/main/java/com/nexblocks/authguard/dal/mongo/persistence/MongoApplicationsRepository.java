@@ -7,6 +7,7 @@ import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.ApplicationsRepository;
+import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,10 @@ public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> 
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId) {
-        return facade.find(Filters.eq("parentAccountId", accountId));
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page page) {
+        return facade.find(Filters.and(
+                Filters.eq("parentAccountId", accountId),
+                Filters.gt("_id", page.getCursor())
+        ), page.getCount());
     }
 }

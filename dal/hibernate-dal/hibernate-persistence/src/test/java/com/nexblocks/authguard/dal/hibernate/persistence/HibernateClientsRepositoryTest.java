@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.ClientDO;
+import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,7 +31,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void saveAndGetById() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -45,7 +46,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void getByExternalId() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final String externalId = "getByExternalId";
 
         final ClientDO client = ClientDO.builder()
@@ -62,7 +63,7 @@ public class HibernateClientsRepositoryTest {
 
     @Test
     public void getAllForAccount() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
         final long accountId = 101;
 
         final ClientDO client = ClientDO.builder()
@@ -72,14 +73,14 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getAllForAccount(accountId).join();
+        final List<ClientDO> retrieved = repository.getAllForAccount(accountId, Page.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
 
     @Test
     void getByType() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -87,14 +88,14 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getByType("AUTH").join();
+        final List<ClientDO> retrieved = repository.getByType("AUTH", Page.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
 
     @Test
     void getByDomain() {
-        final long id = UUID.randomUUID().getMostSignificantBits();
+        final long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
 
         final ClientDO client = ClientDO.builder()
                 .id(id)
@@ -102,7 +103,7 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getByDomain("test").join();
+        final List<ClientDO> retrieved = repository.getByDomain("test", Page.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

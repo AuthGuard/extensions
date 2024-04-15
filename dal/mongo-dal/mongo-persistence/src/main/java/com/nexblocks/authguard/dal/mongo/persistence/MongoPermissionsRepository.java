@@ -6,6 +6,7 @@ import com.nexblocks.authguard.dal.model.PermissionDO;
 import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
+import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.PermissionsRepository;
 
 import java.util.Collection;
@@ -31,16 +32,22 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain) {
-        return facade.find(Filters.eq("domain", domain))
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page page) {
+        return facade.find(Filters.and(
+                        Filters.eq("domain", domain),
+                        Filters.gt("_id", page.getCursor())
+                ), page.getCount())
                 .thenApply(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain) {
+    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group,
+                                                                      final String domain,
+                                                                      final Page page) {
         return facade.find(Filters.and(
                 Filters.eq("group", group),
-                Filters.eq("domain", domain)
-        )).thenApply(Function.identity());
+                Filters.eq("domain", domain),
+                Filters.gt("_id", page.getCursor())
+        ), page.getCount()).thenApply(Function.identity());
     }
 }

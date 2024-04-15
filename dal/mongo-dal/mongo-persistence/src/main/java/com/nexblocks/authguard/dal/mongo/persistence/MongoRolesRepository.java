@@ -6,6 +6,7 @@ import com.nexblocks.authguard.dal.model.RoleDO;
 import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
+import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.RolesRepository;
 
 import java.util.Collection;
@@ -22,8 +23,11 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain) {
-        return facade.find(Filters.eq("domain", domain))
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
+        return facade.find(Filters.and(
+                        Filters.eq("domain", domain),
+                        Filters.gt("_id", page.getCursor())
+                ), page.getCount())
                 .thenApply(Function.identity());
     }
 

@@ -2,6 +2,7 @@ package com.nexblocks.authguard.dal.mongo.persistence;
 
 import com.nexblocks.authguard.dal.model.RoleDO;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
+import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,13 +28,13 @@ class MongoRolesRepositoryTest {
         repository = new MongoRolesRepository(clientWrapper);
 
         first = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().getMostSignificantBits())
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("first")
                 .domain("main")
                 .build()).join();
 
         second = repository.save(RoleDO.builder()
-                .id(UUID.randomUUID().getMostSignificantBits())
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("second")
                 .domain("main")
                 .build()).join();
@@ -41,7 +42,7 @@ class MongoRolesRepositoryTest {
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main").join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", Page.of(null, 20)).join()).containsOnly(first, second);
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.memory.dal;
 import com.google.inject.Singleton;
 import com.nexblocks.authguard.dal.model.AppDO;
 import com.nexblocks.authguard.dal.persistence.ApplicationsRepository;
+import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +22,11 @@ public class MockApplicationsRepository extends AbstractRepository<AppDO> implem
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(app -> app.getParentAccountId().equals(accountId))
+                .filter(app -> app.getParentAccountId().equals(accountId) && app.getId() > page.getCursor())
+                .limit(page.getCount())
                 .collect(Collectors.toList()));
     }
 }

@@ -60,6 +60,16 @@ public class QueryExecutor {
         });
     }
 
+    public <T> CompletableFuture<List<T>> getAList(final Function<Session, Query<T>> sessionQuery,
+                                                   final int limit) {
+        return inNewTransaction(session -> {
+            final Query<T> query = sessionQuery.apply(session);
+            query.setMaxResults(limit);
+
+            return query.getResultList();
+        });
+    }
+
     public <T> CompletableFuture<Optional<T>> deleteById(final String id, final Class<T> entityType) {
         return getById(id, entityType)
                 .thenCompose(retrieved -> {
