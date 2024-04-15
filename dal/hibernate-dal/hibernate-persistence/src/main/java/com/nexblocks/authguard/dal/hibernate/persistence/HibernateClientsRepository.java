@@ -47,21 +47,21 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page page) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, ClientDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId)
                 .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_CLIENT_TYPE, ClientDO.class)
                 .setParameter(CLIENT_TYPE_FIELD, clientType)
                 .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, ClientDO.class)
                 .setParameter(DOMAIN_FIELD, domain)
                 .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());

@@ -43,7 +43,7 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page page) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId)
                 .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount());

@@ -23,7 +23,7 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
         return facade.find(Filters.and(
                         Filters.eq("domain", domain),
                         Filters.gt("_id", page.getCursor())

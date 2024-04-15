@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.ClientDO;
+import com.nexblocks.authguard.dal.persistence.LongPage;
 import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,7 +74,7 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getAllForAccount(accountId, Page.of(null, 20)).join();
+        final List<ClientDO> retrieved = repository.getAllForAccount(accountId, LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
@@ -88,7 +89,7 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getByType("AUTH", Page.of(null, 20)).join();
+        final List<ClientDO> retrieved = repository.getByType("AUTH", LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
@@ -103,7 +104,7 @@ public class HibernateClientsRepositoryTest {
                 .build();
 
         final ClientDO persisted = repository.save(client).join();
-        final List<ClientDO> retrieved = repository.getByDomain("test", Page.of(null, 20)).join();
+        final List<ClientDO> retrieved = repository.getByDomain("test", LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

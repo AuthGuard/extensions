@@ -27,7 +27,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page page) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return facade.find(Filters.and(
                 Filters.eq("parentAccountId", accountId),
                 Filters.gt("_id", page.getCursor())
@@ -35,7 +35,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
         return facade.find(Filters.and(
                 Filters.eq("clientType", clientType),
                 Filters.gt("_id", page.getCursor())
@@ -43,7 +43,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.gt("_id", page.getCursor())

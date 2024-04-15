@@ -1,7 +1,5 @@
 package com.nexblocks.authguard.dal.mongo.common.facade;
 
-import com.mongodb.ErrorCategory;
-import com.mongodb.MongoWriteException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -9,8 +7,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
-import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
-import com.nexblocks.authguard.service.exceptions.codes.ErrorCode;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
@@ -71,6 +67,20 @@ public class SyncMongoFacade<T> {
 
     public CompletableFuture<List<T>> find(final Bson filter, final int limit) {
         final FindIterable<T> resultIterable = collection.find(filter).limit(limit);
+        final List<T> list = new ArrayList<>();
+
+        for (T result : resultIterable) {
+            list.add(result);
+        }
+
+        return CompletableFuture.completedFuture(list);
+    }
+
+    public CompletableFuture<List<T>> find(final Bson filter, final Bson sort,
+                                           final int limit) {
+        final FindIterable<T> resultIterable = collection.find(filter)
+                .sort(sort)
+                .limit(limit);
         final List<T> list = new ArrayList<>();
 
         for (T result : resultIterable) {

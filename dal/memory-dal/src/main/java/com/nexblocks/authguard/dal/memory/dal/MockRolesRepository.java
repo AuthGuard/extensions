@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class MockRolesRepository extends AbstractRepository<RoleDO> implements RolesRepository {
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(role -> role.getDomain().equals(domain) && role.getId() > page.getCursor())
