@@ -39,7 +39,7 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page page) {
+    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())

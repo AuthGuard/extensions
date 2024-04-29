@@ -23,7 +23,7 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page page) {
+    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(client -> client.getAccountId().equals(accountId) && client.getId() > page.getCursor())
@@ -32,7 +32,7 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(client -> Objects.equals(client.getClientType(), clientType) && client.getId() > page.getCursor())
@@ -41,7 +41,7 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page page) {
+    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(client -> Objects.equals(client.getDomain(), domain) && client.getId() > page.getCursor())

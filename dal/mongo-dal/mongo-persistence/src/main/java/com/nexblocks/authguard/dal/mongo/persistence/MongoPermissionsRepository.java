@@ -32,7 +32,7 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page page) {
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page<Long> page) {
         return facade.find(Filters.and(
                         Filters.eq("domain", domain),
                         Filters.gt("_id", page.getCursor())
@@ -43,7 +43,7 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
     @Override
     public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group,
                                                                       final String domain,
-                                                                      final Page page) {
+                                                                      final Page<Long> page) {
         return facade.find(Filters.and(
                 Filters.eq("group", group),
                 Filters.eq("domain", domain),

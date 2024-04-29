@@ -47,7 +47,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page page) {
+    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
@@ -56,7 +56,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
 
     @Override
     public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain,
-                                                                      final Page page) {
+                                                                      final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
                         .setParameter(GROUP_FIELD, group)
                         .setParameter(DOMAIN_FIELD, domain)

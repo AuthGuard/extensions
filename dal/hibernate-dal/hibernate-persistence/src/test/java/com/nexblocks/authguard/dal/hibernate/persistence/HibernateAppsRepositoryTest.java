@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AppDO;
+import com.nexblocks.authguard.dal.persistence.LongPage;
 import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ public class HibernateAppsRepositoryTest {
                 .build();
 
         final AppDO persisted = repository.save(app).join();
-        final List<AppDO> retrieved = repository.getAllForAccount(101, Page.of(null, 20)).join();
+        final List<AppDO> retrieved = repository.getAllForAccount(101, LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

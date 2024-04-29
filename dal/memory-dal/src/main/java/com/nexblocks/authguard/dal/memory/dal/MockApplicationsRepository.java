@@ -22,7 +22,7 @@ public class MockApplicationsRepository extends AbstractRepository<AppDO> implem
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page page) {
+    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
                 .filter(app -> app.getParentAccountId().equals(accountId) && app.getId() > page.getCursor())

@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.RoleDO;
+import com.nexblocks.authguard.dal.persistence.LongPage;
 import com.nexblocks.authguard.dal.persistence.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public class HibernateRolesRepositoryTest {
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main", Page.of(null, 20)).join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", LongPage.of(null, 20)).join()).containsOnly(first, second);
     }
 
     @Test
