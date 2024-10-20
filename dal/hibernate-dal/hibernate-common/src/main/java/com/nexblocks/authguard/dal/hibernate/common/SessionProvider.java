@@ -45,6 +45,7 @@ public class SessionProvider {
                 .addAnnotatedClass(OneTimePasswordDO.class)
                 .addAnnotatedClass(IdempotentRecordDO.class)
                 .addAnnotatedClass(TokenRestrictionsDO.class)
+                .addAnnotatedClass(TotpKeyDO.class)
                 .addAnnotatedClass(EventDO.class)
                 .addAnnotatedClass(CryptoKeyDO.class);
     }
