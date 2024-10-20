@@ -44,14 +44,10 @@ public class SessionProvider {
                 .addAnnotatedClass(SessionDO.class)
                 .addAnnotatedClass(OneTimePasswordDO.class)
                 .addAnnotatedClass(IdempotentRecordDO.class)
-<<<<<<< Updated upstream
-                .addAnnotatedClass(TokenRestrictionsDO.class);
-=======
                 .addAnnotatedClass(TokenRestrictionsDO.class)
+                .addAnnotatedClass(TotpKeyDO.class)
                 .addAnnotatedClass(EventDO.class)
-                .addAnnotatedClass(CryptoKeyDO.class)
-                .addAnnotatedClass(TotpKeyDO.class);
->>>>>>> Stashed changes
+                .addAnnotatedClass(CryptoKeyDO.class);
     }
 
     public Session newSession() {
