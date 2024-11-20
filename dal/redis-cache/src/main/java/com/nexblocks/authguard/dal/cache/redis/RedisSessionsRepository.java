@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,5 +48,11 @@ public class RedisSessionsRepository implements SessionsRepository {
     @Override
     public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
         return redisRepository.delete(sessionToken);
+    }
+
+    @Override
+    public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
+        throw new UnsupportedOperationException("Retrieving sessions by account ID isn't " +
+                "currently supported by Redis cache implementation");
     }
 }

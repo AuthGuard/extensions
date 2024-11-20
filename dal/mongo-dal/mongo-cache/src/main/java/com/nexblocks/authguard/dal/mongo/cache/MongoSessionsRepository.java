@@ -8,6 +8,7 @@ import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,5 +28,11 @@ public class MongoSessionsRepository extends AbstractMongoRepository<SessionDO> 
     @Override
     public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
         return facade.deleteByFilter(Filters.eq("sessionToken", sessionToken));
+    }
+
+    @Override
+    public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
+        return facade.find(Filters.and(Filters.eq("accountId", accountId),
+                Filters.eq("domain", domain)));
     }
 }
