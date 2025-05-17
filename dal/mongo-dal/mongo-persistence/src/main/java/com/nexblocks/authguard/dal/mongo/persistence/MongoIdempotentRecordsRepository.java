@@ -23,13 +23,14 @@ public class MongoIdempotentRecordsRepository extends AbstractMongoRepository<Id
 
     @Override
     public CompletableFuture<List<IdempotentRecordDO>> findByKey(final String key) {
-        return facade.find(Filters.eq("idempotentKey", key));
+        return facade.find(Filters.eq("idempotentKey", key))
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key,
                                                                                   final String entityType) {
         return facade.findOne(Filters.and(Filters.eq("idempotentKey", key),
-                Filters.eq("entityType", entityType)));
+                Filters.eq("entityType", entityType))).subscribeAsCompletionStage();
     }
 }

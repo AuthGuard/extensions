@@ -2,7 +2,7 @@ package com.nexblocks.authguard.email.jmail;
 
 import com.icegreen.greenmail.util.GreenMail;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -26,6 +26,7 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
     @Override
     public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
         return facade.find(Filters.eq("entityId", entityId))
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 
@@ -36,7 +37,7 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
         return facade.find(Filters.and(
                 Filters.eq("entityId", entityId),
                 Filters.gte("createdAt", fromTimestamp)
-        )).thenApply(Function.identity());
+        )).subscribeAsCompletionStage().thenApply(Function.identity());
     }
 
     @Override
@@ -48,6 +49,6 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
                 Filters.eq("entityId", entityId),
                 Filters.gte("createdAt", fromTimestamp),
                 Filters.eq("exchangeFrom", fromExchange)
-        )).thenApply(Function.identity());
+        )).subscribeAsCompletionStage().thenApply(Function.identity());
     }
 }

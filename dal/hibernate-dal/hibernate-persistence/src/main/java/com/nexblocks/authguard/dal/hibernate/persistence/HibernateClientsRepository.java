@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.ClientDO;
 import com.nexblocks.authguard.dal.persistence.ClientsRepository;
 import com.nexblocks.authguard.dal.persistence.Page;
+import io.smallrye.mutiny.Uni;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,42 +30,45 @@ public class HibernateClientsRepository extends AbstractHibernateRepository<Clie
     private static final String CURSOR_FIELD = "cursor";
 
     @Inject
-    public HibernateClientsRepository(final QueryExecutor queryExecutor) {
+    public HibernateClientsRepository(final ReactiveQueryExecutor queryExecutor) {
         super(ClientDO.class, queryExecutor);
     }
 
     @Override
-    public CompletableFuture<Optional<ClientDO>> getById(final long id) {
+    public Uni<Optional<ClientDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, ClientDO.class)
-                        .setParameter(CommonFields.ID, id))
-                .thenApply(Function.identity());
+                        .setParameter(CommonFields.ID, id));
     }
 
     @Override
     public CompletableFuture<Optional<ClientDO>> getByExternalId(final String externalId) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, ClientDO.class)
-                .setParameter(EXTERNAL_ID_FIELD, externalId));
+                .setParameter(EXTERNAL_ID_FIELD, externalId))
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, ClientDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId)
-                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_CLIENT_TYPE, ClientDO.class)
                 .setParameter(CLIENT_TYPE_FIELD, clientType)
-                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, ClientDO.class)
                 .setParameter(DOMAIN_FIELD, domain)
-                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount());
+                .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
+                .subscribeAsCompletionStage();
     }
 }

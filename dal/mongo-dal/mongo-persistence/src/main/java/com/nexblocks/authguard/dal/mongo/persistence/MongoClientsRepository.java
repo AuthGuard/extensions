@@ -23,7 +23,8 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
 
     @Override
     public CompletableFuture<Optional<ClientDO>> getByExternalId(final String externalId) {
-        return facade.findOne(Filters.eq("externalId", externalId));
+        return facade.findOne(Filters.eq("externalId", externalId))
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -31,7 +32,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
         return facade.find(Filters.and(
                 Filters.eq("parentAccountId", accountId),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount());
+        ), page.getCount()).subscribeAsCompletionStage();
     }
 
     @Override
@@ -39,7 +40,7 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
         return facade.find(Filters.and(
                 Filters.eq("clientType", clientType),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount());
+        ), page.getCount()).subscribeAsCompletionStage();
     }
 
     @Override
@@ -47,6 +48,6 @@ public class MongoClientsRepository extends AbstractMongoRepository<ClientDO> im
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount());
+        ), page.getCount()).subscribeAsCompletionStage();
     }
 }

@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.IdempotentRecordDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,7 +24,7 @@ public class HibernateIdempotencyRecordRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateIdempotencyRecordRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateIdempotencyRecordRepository(new ReactiveQueryExecutor(sessionProvider));
     }
 
     @Test
@@ -33,9 +34,13 @@ public class HibernateIdempotencyRecordRepositoryTest {
                 .entityId(101)
                 .entityType("entity")
                 .idempotentKey("key")
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage()
+                .join();
 
-        final Optional<IdempotentRecordDO> retrieved = repository.getById(1).join();
+        final Optional<IdempotentRecordDO> retrieved = repository.getById(1)
+                .subscribeAsCompletionStage()
+                .join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -49,7 +54,9 @@ public class HibernateIdempotencyRecordRepositoryTest {
                 .entityId(102)
                 .entityType("by-key-entity")
                 .idempotentKey(key)
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage()
+                .join();
 
         final List<IdempotentRecordDO> retrieved = repository.findByKey(key).join();
 
@@ -66,7 +73,8 @@ public class HibernateIdempotencyRecordRepositoryTest {
                 .entityId(103)
                 .entityType(entityType)
                 .idempotentKey(key)
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
 
         final Optional<IdempotentRecordDO> retrieved = repository.findByKeyAndEntityType(key, entityType).join();
 

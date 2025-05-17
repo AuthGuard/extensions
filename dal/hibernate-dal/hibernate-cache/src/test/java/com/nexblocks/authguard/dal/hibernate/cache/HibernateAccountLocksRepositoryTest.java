@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.cache;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AccountLockDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +26,7 @@ class HibernateAccountLocksRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateAccountLocksRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateAccountLocksRepository(new ReactiveQueryExecutor(sessionProvider));
     }
 
     @Test
@@ -38,8 +39,8 @@ class HibernateAccountLocksRepositoryTest {
                 .expiresAt(Instant.now())
                 .build();
 
-        final AccountLockDO persisted = repository.save(accountLock).join();
-        final Optional<AccountLockDO> retrieved = repository.getById(id).join();
+        final AccountLockDO persisted = repository.save(accountLock).subscribeAsCompletionStage().join();
+        final Optional<AccountLockDO> retrieved = repository.getById(id).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -54,7 +55,7 @@ class HibernateAccountLocksRepositoryTest {
                 .expiresAt(Instant.now())
                 .build();
 
-        final AccountLockDO persisted = repository.save(accountLock).join();
+        final AccountLockDO persisted = repository.save(accountLock).subscribeAsCompletionStage().join();
         final Collection<AccountLockDO> retrieved = repository.findByAccountId(accountLock.getAccountId()).join();
 
         assertThat(retrieved).containsOnly(persisted);
@@ -64,5 +65,4 @@ class HibernateAccountLocksRepositoryTest {
     void getByTokenNonExistent() {
         assertThat(repository.findByAccountId(0).join()).isEmpty();
     }
-
 }

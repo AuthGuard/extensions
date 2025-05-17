@@ -9,14 +9,13 @@ import com.mongodb.reactivestreams.client.MongoCollection;
 import com.nexblocks.authguard.dal.mongo.common.subscribers.SubscribeMultipleResults;
 import com.nexblocks.authguard.dal.mongo.common.subscribers.SubscribeSingleResult;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
+import io.smallrye.mutiny.Uni;
 import org.bson.conversions.Bson;
 import org.reactivestreams.Publisher;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class ReactiveMongoFacade<T> {
     private final MongoCollection<T> collection;
@@ -27,41 +26,38 @@ public class ReactiveMongoFacade<T> {
         this.timeout = operationsTimeout;
     }
 
-    public CompletableFuture<T> save(final T document) {
+    public Uni<T> save(final T document) {
         final Publisher<InsertOneResult> publisher = collection.insertOne(document);
         final SubscribeSingleResult<InsertOneResult> subscriber = SubscribeSingleResult.toPublisher(publisher);
 
-        return subscriber.getFuture()
-                .orTimeout(timeout, TimeUnit.MILLISECONDS)
-                .thenApply(result -> document);
+        return Uni.createFrom().completionStage(subscriber.getFuture())
+                .map(result -> document);
     }
 
-    public CompletableFuture<Optional<T>> findById(final String id) {
+    public Uni<Optional<T>> findById(final long id) {
         return findOne(Filters.eq("_id", id));
     }
 
-    public CompletableFuture<Optional<T>> findOne(final Bson filter) {
+    public Uni<Optional<T>> findOne(final Bson filter) {
         final Publisher<T> publisher = collection.find(filter)
                 .first();
 
         final SubscribeSingleResult<T> subscriber = SubscribeSingleResult.toPublisher(publisher);
 
-        return subscriber.getFuture()
-                .orTimeout(timeout, TimeUnit.MILLISECONDS)
-                .thenApply(Optional::ofNullable);
+        return Uni.createFrom().completionStage(subscriber.getFuture())
+                .map(Optional::ofNullable);
     }
 
-    public CompletableFuture<Optional<T>> replaceById(final String id, final T document) {
+    public Uni<Optional<T>> replaceById(final long id, final T document) {
         return replaceOne(Filters.eq("_id", id), document);
     }
 
-    public CompletableFuture<Optional<T>> replaceOne(final Bson filter, final T document) {
+    public Uni<Optional<T>> replaceOne(final Bson filter, final T document) {
         final Publisher<UpdateResult> publisher = collection.replaceOne(filter, document);
         final SubscribeSingleResult<UpdateResult> subscriber = SubscribeSingleResult.toPublisher(publisher);
 
-        return subscriber.getFuture()
-                .orTimeout(timeout, TimeUnit.MILLISECONDS)
-                .thenApply(result -> {
+        return Uni.createFrom().completionStage(subscriber.getFuture())
+                .map(result -> {
                     if (result.getMatchedCount() == 0) {
                         return Optional.empty();
                     } else {
@@ -70,34 +66,52 @@ public class ReactiveMongoFacade<T> {
                 });
     }
 
-    public CompletableFuture<List<T>> find(final Bson filter) {
+    public Uni<List<T>> find(final Bson filter) {
         final FindPublisher<T> publisher = collection.find(filter);
         final SubscribeMultipleResults<T> subscriber = SubscribeMultipleResults.toPublisher(publisher);
 
-        return subscriber.getFuture();
+        return Uni.createFrom().completionStage(subscriber.getFuture());
     }
 
-    public CompletableFuture<List<T>> findAll() {
+    public Uni<List<T>> find(final Bson filter, final int limit) {
+        final FindPublisher<T> publisher = collection.find(filter).limit(limit);
+        final SubscribeMultipleResults<T> subscriber = SubscribeMultipleResults.toPublisher(publisher);
+
+        return Uni.createFrom().completionStage(subscriber.getFuture());
+    }
+
+    public Uni<List<T>> find(final Bson filter, final Bson sort,
+                                           final int limit) {
+        final FindPublisher<T> publisher = collection.find(filter)
+                .sort(sort)
+                .limit(limit);
+        final SubscribeMultipleResults<T> subscriber = SubscribeMultipleResults.toPublisher(publisher);
+
+        return Uni.createFrom().completionStage(subscriber.getFuture());
+    }
+
+
+    public Uni<List<T>> findAll() {
         final FindPublisher<T> publisher = collection.find();
         final SubscribeMultipleResults<T> subscriber = SubscribeMultipleResults.toPublisher(publisher);
 
-        return subscriber.getFuture();
+        return Uni.createFrom().completionStage(subscriber.getFuture());
     }
 
-    public CompletableFuture<Optional<T>> deleteById(final String id) {
+    public Uni<Optional<T>> deleteById(final long id) {
         return delete(Filters.eq("_id", id));
     }
 
-    public CompletableFuture<Optional<T>> deleteByFilter(final Bson filter) {
+    public Uni<Optional<T>> deleteByFilter(final Bson filter) {
         return delete(filter);
     }
 
-    public CompletableFuture<Optional<T>> delete(final Bson filter) {
+    public Uni<Optional<T>> delete(final Bson filter) {
         final Publisher<T> publisher = collection.findOneAndDelete(filter);
         final SubscribeSingleResult<T> subscriber = SubscribeSingleResult.toPublisher(publisher);
 
-        return subscriber.getFuture()
-                .thenApply(Optional::ofNullable);
+        return Uni.createFrom().completionStage(subscriber.getFuture())
+                .map(Optional::ofNullable);
     }
 
     public static class Builder {

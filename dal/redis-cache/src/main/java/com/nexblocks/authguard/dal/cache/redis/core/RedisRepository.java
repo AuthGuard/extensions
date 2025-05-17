@@ -2,6 +2,7 @@ package com.nexblocks.authguard.dal.cache.redis.core;
 
 import com.nexblocks.authguard.dal.model.AbstractDO;
 import io.lettuce.core.api.async.RedisAsyncCommands;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -33,26 +34,26 @@ public class RedisRepository<T extends AbstractDO> {
         return get(String.valueOf(key));
     }
 
-    public CompletableFuture<T> save(final String key, final T value, final long ttl) {
+    public Uni<T> save(final String key, final T value, final long ttl) {
         final byte[] serialized = entityCodec.serialize(value);
         final RedisAsyncCommands<String, byte[]> commands = clientWrapper.getConnection().async();
 
-        return commands.set(key, serialized)
+        return Uni.createFrom().completionStage(commands.set(key, serialized)
                 .thenCompose(ignored -> commands.expire(key, ttl))
                 .toCompletableFuture()
-                .thenApply(stored -> value);
+                .thenApply(stored -> value));
     }
 
-    public CompletableFuture<T> save(final String key, final T value) {
+    public Uni<T> save(final String key, final T value) {
         final byte[] serialized = entityCodec.serialize(value);
         final RedisAsyncCommands<String, byte[]> commands = clientWrapper.getConnection().async();
 
-        return commands.set(key, serialized)
+        return Uni.createFrom().completionStage(commands.set(key, serialized)
                 .toCompletableFuture()
-                .thenApply(stored -> value);
+                .thenApply(stored -> value));
     }
 
-    public CompletableFuture<T> save(final long key, final T value) {
+    public Uni<T> save(final long key, final T value) {
         return save(String.valueOf(key), value);
     }
 
@@ -60,7 +61,6 @@ public class RedisRepository<T extends AbstractDO> {
         final RedisAsyncCommands<String, byte[]> commands = clientWrapper.getConnection().async();
 
         return get(key)
-                .toCompletableFuture()
                 .thenCompose(value -> {
                     if (value.isPresent()) {
                         return commands.del(key)

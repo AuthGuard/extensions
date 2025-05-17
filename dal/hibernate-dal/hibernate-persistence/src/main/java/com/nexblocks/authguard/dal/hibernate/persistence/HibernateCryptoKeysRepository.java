@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.CryptoKeyDO;
 import com.nexblocks.authguard.dal.persistence.CryptoKeysRepository;
 import com.nexblocks.authguard.dal.persistence.Page;
+import io.smallrye.mutiny.Uni;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,16 +24,15 @@ public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<
     private static final String GET_BY_APP_ID = "crypto_keys.getByAppId";
 
     @Inject
-    public HibernateCryptoKeysRepository(final QueryExecutor queryExecutor) {
+    public HibernateCryptoKeysRepository(final ReactiveQueryExecutor queryExecutor) {
         super(CryptoKeyDO.class, queryExecutor);
     }
 
     @Override
-    public CompletableFuture<Optional<CryptoKeyDO>> getById(final long id) {
+    public Uni<Optional<CryptoKeyDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, CryptoKeyDO.class)
-                        .setParameter(CommonFields.ID, id))
-                .thenApply(Function.identity());
+                        .setParameter(CommonFields.ID, id));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<
                 .getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, CryptoKeyDO.class)
                         .setParameter(CommonFields.DOMAIN, domain)
                         .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .thenApply(Function.identity());
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -51,7 +52,7 @@ public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<
                         .setParameter(CommonFields.DOMAIN, domain)
                         .setParameter(CommonFields.ACCOUNT_ID, accountId)
                         .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .thenApply(Function.identity());
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -62,6 +63,6 @@ public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<
                         .setParameter(CommonFields.DOMAIN, domain)
                         .setParameter(CommonFields.APP_ID, appId)
                         .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .thenApply(Function.identity());
+                .subscribeAsCompletionStage();
     }
 }

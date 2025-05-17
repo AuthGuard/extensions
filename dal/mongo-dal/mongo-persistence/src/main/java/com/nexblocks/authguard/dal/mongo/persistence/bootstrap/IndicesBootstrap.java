@@ -2,18 +2,25 @@ package com.nexblocks.authguard.dal.mongo.persistence.bootstrap;
 
 import com.google.inject.Inject;
 import com.mongodb.DuplicateKeyException;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.result.UpdateResult;
+import com.mongodb.reactivestreams.client.MongoDatabase;
 import com.nexblocks.authguard.bootstrap.BootstrapStep;
+import com.nexblocks.authguard.bootstrap.BootstrapStepResult;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
+import com.nexblocks.authguard.dal.mongo.common.subscribers.SubscribeSingleResult;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.mongo.config.ImmutableMongoConfiguration;
+import io.smallrye.mutiny.Uni;
 import org.bson.BsonType;
 import org.bson.conversions.Bson;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public class IndicesBootstrap implements BootstrapStep {
     private static final Logger LOG = LoggerFactory.getLogger(IndicesBootstrap.class);
@@ -30,7 +37,7 @@ public class IndicesBootstrap implements BootstrapStep {
 
     // TODO use WaitForCompletion.wait() after moving back to the reactive driver
     @Override
-    public void run() {
+    public Uni<BootstrapStepResult> run() {
         LOG.info("Bootstrapping permissions indices");
         final String permissionsCollection = config.getCollections()
                 .getOrDefault("permissions", Defaults.Collections.PERMISSIONS);
@@ -103,22 +110,34 @@ public class IndicesBootstrap implements BootstrapStep {
                 .unique(true)
                 .name("accounts.identifier.index");
 
-        createIndex(accountsCollection, emailIndex, emailIndexOptions);
-        createIndex(accountsCollection, backupEmailIndex, backupEmailIndexOptions);
-        createIndex(accountsCollection, phoneNumberIndex, phoneNumberIndexOptions);
-        createIndex(accountsCollection, identifiersIndex, credentialsIndexOptions);;
+        Uni<Void> emailIndexUni = createIndex(accountsCollection, emailIndex, emailIndexOptions);
+        Uni<Void> backupEmailIndexUni = createIndex(accountsCollection, backupEmailIndex, backupEmailIndexOptions);
+        Uni<Void> phoneNumberIndexUni = createIndex(accountsCollection, phoneNumberIndex, phoneNumberIndexOptions);
+        Uni<Void> identifierIndexUni = createIndex(accountsCollection, identifiersIndex, credentialsIndexOptions);
+
+        return Uni.combine().all().unis(emailIndexUni, backupEmailIndexUni, phoneNumberIndexUni, identifierIndexUni)
+                .with(results -> BootstrapStepResult.success());
     }
 
-    private void createIndex(final String collectionName, final Bson indexDefinition,
+    private Uni<Void> createIndex(final String collectionName, final Bson indexDefinition,
                              final IndexOptions indexOptions) {
-        try {
-            database.getCollection(collectionName)
-                    .createIndex(indexDefinition, indexOptions);
+        Publisher<String> publisher = database.getCollection(collectionName)
+                .createIndex(indexDefinition, indexOptions);
 
-            LOG.info("Created database index {}", indexOptions.getName());
-        } catch (final Throwable e) {
-            handleExceptions(e);
-        }
+        SubscribeSingleResult<String> subscriber = SubscribeSingleResult.toPublisher(publisher);
+
+        return Uni.createFrom().completionStage(subscriber.getFuture())
+                .map(result -> {
+                    LOG.info("Created database index {}", indexOptions.getName());
+
+                    return result;
+                })
+                .replaceWithVoid()
+                .onFailure()
+                .call(throwable -> {
+                    handleExceptions(throwable);
+                    return Uni.createFrom().nullItem();
+                });
     }
 
     private void handleExceptions(final Throwable e) {

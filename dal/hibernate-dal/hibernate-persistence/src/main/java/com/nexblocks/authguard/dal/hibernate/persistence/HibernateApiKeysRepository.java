@@ -4,8 +4,10 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.ApiKeyDO;
 import com.nexblocks.authguard.dal.persistence.ApiKeysRepository;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -22,28 +24,27 @@ public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiK
     private static final String KEY_FIELD = "key";
 
     @Inject
-    public HibernateApiKeysRepository(final QueryExecutor queryExecutor) {
+    public HibernateApiKeysRepository(final ReactiveQueryExecutor queryExecutor) {
         super(ApiKeyDO.class, queryExecutor);
     }
 
     @Override
-    public CompletableFuture<Optional<ApiKeyDO>> getById(final long id) {
+    public Uni<Optional<ApiKeyDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, ApiKeyDO.class)
-                        .setParameter(CommonFields.ID, id))
-                .thenApply(Function.identity());
+                        .setParameter(CommonFields.ID, id));
     }
 
     @Override
-    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final long appId) {
+    public Uni<Collection<ApiKeyDO>> getByAppId(final long appId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_APP_ID, ApiKeyDO.class)
                 .setParameter(APP_ID_FIELD, appId))
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Optional<ApiKeyDO>> getByKey(final String key) {
+    public Uni<Optional<ApiKeyDO>> getByKey(final String key) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY, ApiKeyDO.class)
-                .setParameter(KEY_FIELD, key)).thenApply(Function.identity());
+                .setParameter(KEY_FIELD, key)).map(Function.identity());
     }
 }

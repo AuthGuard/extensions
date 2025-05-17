@@ -19,62 +19,62 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MongoCredentialsRepositoryTest {
-    private MongoCredentialsRepostiory repository;
-
-//    @BeforeAll
-    public void setup() {
-        MongoDbTestContainer.start();
-        final MongoClientWrapper clientWrapper = new MongoClientWrapper(MongoDbTestContainer.configuration());
-
-        repository = new MongoCredentialsRepostiory(clientWrapper);
-
-        final IndicesBootstrap bootstrap = new IndicesBootstrap(clientWrapper);
-
-        bootstrap.run();
-    }
-
-//    @Test
-    public void saveAndGetByIdentifier() {
-        final String identifier = "saveAndGetByIdentifier";
-
-        final CredentialsDO credentials = CredentialsDO.builder()
-                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .createdAt(Instant.now())
-                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
-                        .identifier(identifier)
-                        .domain("main")
-                        .build()))
-                .build();
-
-        final CredentialsDO persisted = repository.save(credentials).join();
-        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
-
-        assertThat(retrieved).contains(persisted);
-    }
-
-//    @Test
-    public void saveDuplicateIdentifiers() {
-        final String identifier = "saveDuplicateIdentifiers";
-
-        final CredentialsDO first = CredentialsDO.builder()
-                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .createdAt(Instant.now())
-                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
-                        .identifier(identifier)
-                        .build()))
-                .build();
-
-        final CredentialsDO second = CredentialsDO.builder()
-                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .createdAt(Instant.now())
-                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
-                        .identifier(identifier)
-                        .build()))
-                .build();
-
-        repository.save(first).join();
-
-        assertThatThrownBy(() -> repository.save(second))
-                .isInstanceOf(ServiceConflictException.class);
-    }
+//    private MongoCredentialsRepostiory repository;
+//
+////    @BeforeAll
+//    public void setup() {
+//        MongoDbTestContainer.start();
+//        final MongoClientWrapper clientWrapper = new MongoClientWrapper(MongoDbTestContainer.configuration());
+//
+//        repository = new MongoCredentialsRepostiory(clientWrapper);
+//
+//        final IndicesBootstrap bootstrap = new IndicesBootstrap(clientWrapper);
+//
+//        bootstrap.run();
+//    }
+//
+////    @Test
+//    public void saveAndGetByIdentifier() {
+//        final String identifier = "saveAndGetByIdentifier";
+//
+//        final CredentialsDO credentials = CredentialsDO.builder()
+//                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+//                .createdAt(Instant.now())
+//                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
+//                        .identifier(identifier)
+//                        .domain("main")
+//                        .build()))
+//                .build();
+//
+//        final CredentialsDO persisted = repository.save(credentials).join();
+//        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
+//
+//        assertThat(retrieved).contains(persisted);
+//    }
+//
+////    @Test
+//    public void saveDuplicateIdentifiers() {
+//        final String identifier = "saveDuplicateIdentifiers";
+//
+//        final CredentialsDO first = CredentialsDO.builder()
+//                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+//                .createdAt(Instant.now())
+//                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
+//                        .identifier(identifier)
+//                        .build()))
+//                .build();
+//
+//        final CredentialsDO second = CredentialsDO.builder()
+//                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+//                .createdAt(Instant.now())
+//                .identifiers(ImmutableSet.of(UserIdentifierDO.builder()
+//                        .identifier(identifier)
+//                        .build()))
+//                .build();
+//
+//        repository.save(first).join();
+//
+//        assertThatThrownBy(() -> repository.save(second))
+//                .isInstanceOf(ServiceConflictException.class);
+//    }
 }

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.cache.AccountTokensRepository;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
 
 import java.util.Optional;
@@ -16,14 +17,15 @@ public class HibernateAccountTokensRepository extends AbstractHibernateRepositor
     private static final String TOKEN_FIELD = "token";
 
     @Inject
-    public HibernateAccountTokensRepository(final QueryExecutor queryExecutor) {
+    public HibernateAccountTokensRepository(final ReactiveQueryExecutor queryExecutor) {
         super(AccountTokenDO.class, queryExecutor);
     }
 
     @Override
     public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, AccountTokenDO.class)
-                .setParameter(TOKEN_FIELD, token));
+                .setParameter(TOKEN_FIELD, token))
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -31,7 +33,7 @@ public class HibernateAccountTokensRepository extends AbstractHibernateRepositor
         return getByToken(token)
                 .thenCompose(opt -> {
                     if (opt.isPresent()) {
-                        return delete(opt.get().getId());
+                        return delete(opt.get().getId()).subscribeAsCompletionStage();
                     }
 
                     return CompletableFuture.completedFuture(Optional.empty());

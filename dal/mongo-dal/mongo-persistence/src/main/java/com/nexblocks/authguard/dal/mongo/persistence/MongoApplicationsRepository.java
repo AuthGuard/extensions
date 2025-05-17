@@ -23,7 +23,8 @@ public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> 
 
     @Override
     public CompletableFuture<Optional<AppDO>> getByExternalId(final String externalId) {
-        return facade.findOne(Filters.eq("externalId", externalId));
+        return facade.findOne(Filters.eq("externalId", externalId))
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -31,6 +32,6 @@ public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> 
         return facade.find(Filters.and(
                 Filters.eq("parentAccountId", accountId),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount());
+        ), page.getCount()).subscribeAsCompletionStage();
     }
 }

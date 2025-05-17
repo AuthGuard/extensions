@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.model.EmailDO;
 import com.nexblocks.authguard.dal.model.PhoneNumberDO;
 import com.nexblocks.authguard.dal.model.UserIdentifierDO;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
+//import com.nexblocks.authguard.dal.mongo.persistence.bootstrap.IndicesBootstrap;
 import com.nexblocks.authguard.dal.mongo.persistence.bootstrap.IndicesBootstrap;
 import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +34,7 @@ class MongoAccountsRepositoryTest {
 
         final IndicesBootstrap bootstrap = new IndicesBootstrap(clientWrapper);
 
-        bootstrap.run();
+        bootstrap.run().subscribeAsCompletionStage().join();
     }
 
     @Test
@@ -54,8 +55,8 @@ class MongoAccountsRepositoryTest {
                         .build()))
                 .build();
 
-        final AccountDO persisted = repository.save(account).join();
-        final Optional<AccountDO> retrieved = repository.getById(persisted.getId()).join();
+        final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.getById(persisted.getId()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -79,7 +80,7 @@ class MongoAccountsRepositoryTest {
                         .build()))
                 .build();
 
-        final AccountDO persisted = repository.save(account).join();
+        final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
         final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
 
         assertThat(retrieved).contains(persisted);
@@ -103,9 +104,9 @@ class MongoAccountsRepositoryTest {
                         .build()))
                 .build();
 
-        final AccountDO persisted = repository.save(account).join();
+        final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
         final Optional<AccountDO> retrieved = repository.findByIdentifier(email.getEmail(), account.getDomain())
-                .join();
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -124,8 +125,8 @@ class MongoAccountsRepositoryTest {
                         .build()))
                 .build();
 
-        final AccountDO persisted = repository.save(account).join();
-        final List<AccountDO> retrieved = repository.getByRole("getByRole", account.getDomain()).join();
+        final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
+        final List<AccountDO> retrieved = repository.getByRole("getByRole", account.getDomain()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsExactly(persisted);
     }
@@ -160,10 +161,10 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
+        repository.save(first).subscribeAsCompletionStage().join();
 
-        assertThatThrownBy(() -> repository.save(second).join())
-                .isInstanceOf(ServiceConflictException.class);
+        assertThatThrownBy(() -> repository.save(second).subscribeAsCompletionStage().join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
     }
 
     @Test
@@ -195,8 +196,8 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
-        repository.save(second).join();
+        repository.save(first).subscribeAsCompletionStage().join();
+        repository.save(second).subscribeAsCompletionStage().join();
     }
 
     @Test
@@ -229,10 +230,10 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
+        repository.save(first).subscribeAsCompletionStage().join();
 
-        assertThatThrownBy(() -> repository.save(second).join())
-                .isInstanceOf(ServiceConflictException.class);
+        assertThatThrownBy(() -> repository.save(second).subscribeAsCompletionStage().join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
     }
 
     @Test
@@ -264,8 +265,8 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
-        repository.save(second).join();
+        repository.save(first).subscribeAsCompletionStage().join();
+        repository.save(second).subscribeAsCompletionStage().join();
     }
 
     @Test
@@ -298,10 +299,10 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
+        repository.save(first).subscribeAsCompletionStage().join();
 
-        assertThatThrownBy(() -> repository.save(second).join())
-                .isInstanceOf(ServiceConflictException.class);
+        assertThatThrownBy(() -> repository.save(second).subscribeAsCompletionStage().join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
     }
 
     @Test
@@ -333,8 +334,8 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
-        repository.save(second).join();
+        repository.save(first).subscribeAsCompletionStage().join();
+        repository.save(second).subscribeAsCompletionStage().join();
     }
 
     @Test
@@ -371,12 +372,12 @@ class MongoAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first).join();
-        repository.save(second).join();
+        repository.save(first).subscribeAsCompletionStage().join();
+        repository.save(second).subscribeAsCompletionStage().join();
 
         second.setEmail(firstEmail);
 
-        assertThatThrownBy(() -> repository.update(second))
-                .isInstanceOf(ServiceConflictException.class);
+        assertThatThrownBy(() -> repository.update(second).subscribeAsCompletionStage().join())
+                .hasCauseInstanceOf(ServiceConflictException.class);
     }
 }

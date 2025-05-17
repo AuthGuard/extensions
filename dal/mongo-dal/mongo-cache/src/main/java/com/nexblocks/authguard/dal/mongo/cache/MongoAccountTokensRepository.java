@@ -21,11 +21,13 @@ public class MongoAccountTokensRepository extends AbstractMongoRepository<Accoun
 
     @Override
     public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
-        return facade.findOne(Filters.eq("token", token));
+        return facade.findOne(Filters.eq("token", token))
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<Optional<AccountTokenDO>> deleteToken(final String token) {
-        return facade.deleteByFilter(Filters.eq("token", token));
+        return facade.deleteByFilter(Filters.eq("token", token))
+                .subscribeAsCompletionStage();
     }
 }

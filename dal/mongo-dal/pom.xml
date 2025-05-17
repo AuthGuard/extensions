@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <mongo-driver.version>4.0.4</mongo-driver.version>
+        <mongo-driver.version>4.10.0</mongo-driver.version>
         <ssl-context-kickstart.version>6.7.0</ssl-context-kickstart.version>
     </properties>
 
@@ -45,6 +45,18 @@
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongo-driver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-core</artifactId>
+                <version>${mongo-driver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>bson</artifactId>
                 <version>${mongo-driver.version}</version>
             </dependency>
 

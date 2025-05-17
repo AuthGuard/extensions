@@ -28,6 +28,7 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
                         Filters.eq("domain", domain),
                         Filters.gt("_id", page.getCursor())
                 ), page.getCount())
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 
@@ -36,7 +37,7 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
         return facade.findOne(Filters.and(
                 Filters.eq("name", name),
                 Filters.eq("domain", domain)
-        ));
+        )).subscribeAsCompletionStage();
     }
 
     @Override
@@ -44,6 +45,6 @@ public class MongoRolesRepository extends AbstractMongoRepository<RoleDO> implem
         return facade.find(Filters.and(
                 Filters.in("name", roles),
                 Filters.eq("domain", domain)
-        )).thenApply(Function.identity());
+        )).subscribeAsCompletionStage().thenApply(Function.identity());
     }
 }

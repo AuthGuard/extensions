@@ -24,6 +24,7 @@ public class MongoAccountLocksRepository extends AbstractMongoRepository<Account
     @Override
     public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         return facade.find(Filters.eq("accountId", accountId))
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 }

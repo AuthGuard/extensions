@@ -31,7 +31,7 @@ public class MongoCryptoKeysRepository extends AbstractMongoRepository<CryptoKey
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).thenApply(Function.identity());
+        ), sort, page.getCount()).subscribeAsCompletionStage();
 
     }
 
@@ -44,7 +44,7 @@ public class MongoCryptoKeysRepository extends AbstractMongoRepository<CryptoKey
                 Filters.eq("domain", domain),
                 Filters.eq("accountId", accountId),
                 Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).thenApply(Function.identity());
+        ), sort, page.getCount()).subscribeAsCompletionStage();
     }
 
     @Override
@@ -56,6 +56,6 @@ public class MongoCryptoKeysRepository extends AbstractMongoRepository<CryptoKey
                 Filters.eq("domain", domain),
                 Filters.eq("appId", appId),
                 Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).thenApply(Function.identity());
+        ), sort, page.getCount()).subscribeAsCompletionStage();
     }
 }

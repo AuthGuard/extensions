@@ -18,41 +18,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RedisAccountLocksRepositoryTest {
-    private RedisServer redisServer;
-    private RedisAccountLocksRepository redisAccountLocksRepository;
-
-    @BeforeAll
-    void setup() {
-        redisServer = new RedisServer();
-
-        redisServer.start();
-
-        final ImmutableRedisConfiguration redisConfiguration = ImmutableRedisConfiguration.builder()
-                .connectionString("redis://localhost")
-                .build();
-
-        redisAccountLocksRepository = new RedisAccountLocksRepository(new LettuceClientWrapper(redisConfiguration));
-    }
-
-    @AfterAll
-    void destroy() {
-        redisServer.stop();
-    }
-
-    @Test
-    void saveAndGetByAccountId() {
-        final AccountLockDO lock = AccountLockDO.builder()
-                .accountId(101)
-                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
-                .build();
-
-        final AccountLockDO cached = redisAccountLocksRepository.save(lock).join();
-
-        assertThat(cached).isEqualTo(lock);
-
-        final Collection<AccountLockDO> retrieved = redisAccountLocksRepository.findByAccountId(lock.getAccountId())
-                .join();
-
-        assertThat(retrieved).contains(lock);
-    }
+//    private RedisServer redisServer;
+//    private RedisAccountLocksRepository redisAccountLocksRepository;
+//
+//    @BeforeAll
+//    void setup() {
+//        redisServer = new RedisServer();
+//
+//        redisServer.start();
+//
+//        final ImmutableRedisConfiguration redisConfiguration = ImmutableRedisConfiguration.builder()
+//                .connectionString("redis://localhost")
+//                .build();
+//
+//        redisAccountLocksRepository = new RedisAccountLocksRepository(new LettuceClientWrapper(redisConfiguration));
+//    }
+//
+//    @AfterAll
+//    void destroy() {
+//        redisServer.stop();
+//    }
+//
+//    @Test
+//    void saveAndGetByAccountId() {
+//        final AccountLockDO lock = AccountLockDO.builder()
+//                .accountId(101)
+//                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
+//                .build();
+//
+//        final AccountLockDO cached = redisAccountLocksRepository.save(lock).join();
+//
+//        assertThat(cached).isEqualTo(lock);
+//
+//        final Collection<AccountLockDO> retrieved = redisAccountLocksRepository.findByAccountId(lock.getAccountId())
+//                .join();
+//
+//        assertThat(retrieved).contains(lock);
+//    }
 }

@@ -16,11 +16,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>hibernate-common</artifactId>
         </dependency>
