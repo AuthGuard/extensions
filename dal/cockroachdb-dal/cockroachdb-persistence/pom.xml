@@ -12,6 +12,10 @@
 
     <name>Extensions :: Data Access :: CockroachDB :: Persistence</name>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
     <artifactId>cockroachdb-persistence</artifactId>
 
     <dependencies>

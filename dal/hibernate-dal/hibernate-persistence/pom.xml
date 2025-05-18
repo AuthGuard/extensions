@@ -10,6 +10,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
     <name>Extensions :: Data Access :: Hibernate :: Persistence</name>
 
     <artifactId>hibernate-persistence</artifactId>

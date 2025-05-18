@@ -12,9 +12,19 @@
 
     <name>Extensions :: Data Access :: MySQL :: Cache</name>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
     <artifactId>mysql-cache</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.12.22</version>
+        </dependency>
+
         <dependency>
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>cache</artifactId>

@@ -28,6 +28,7 @@ public class MysqlTestContainer {
             String u = container.getJdbcUrl();
 
             hibernateProperties.put("hibernate.connection.url", container.getJdbcUrl());
+            hibernateProperties.put("hibernate.reactive.url", container.getJdbcUrl());
 
             sessionProvider = new SessionProvider(hibernateProperties);
         }
