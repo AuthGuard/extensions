@@ -6,6 +6,7 @@ import com.nexblocks.authguard.dal.model.UserIdentifierDO;
 import com.nexblocks.authguard.dal.persistence.AccountsRepository;
 import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import com.nexblocks.authguard.service.exceptions.codes.ErrorCode;
+import io.smallrye.mutiny.Uni;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     private Map<String, Long> identifiersToAccountId = new HashMap<>();
 
     @Override
-    public CompletableFuture<AccountDO> save(final AccountDO account) {
+    public Uni<AccountDO> save(final AccountDO account) {
         account.getIdentifiers()
                 .stream()
                 .peek(identifier -> {
@@ -33,7 +34,7 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> update(final AccountDO account) {
+    public Uni<Optional<AccountDO>> update(final AccountDO account) {
         account.getIdentifiers()
                 .stream()
                 .filter(identifier -> {
@@ -69,16 +70,16 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<List<AccountDO>> getByRole(final String role, final String domain) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<List<AccountDO>> getByRole(final String role, final String domain) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(account -> account.getRoles().contains(role))
                 .collect(Collectors.toList()));
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> findByIdentifier(final String identifier, final String domain) {
-        return CompletableFuture.supplyAsync(() -> getRepo()
+    public Uni<Optional<AccountDO>> findByIdentifier(final String identifier, final String domain) {
+        return Uni.createFrom().item(() -> getRepo()
                 .values()
                 .stream()
                 .filter(credentials -> hasIdentifier(credentials, identifier, domain))

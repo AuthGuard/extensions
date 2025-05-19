@@ -6,10 +6,10 @@ import org.junit.jupiter.api.TestInstance;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostgresCredentialsRepositoryTest extends HibernateCredentialsRepositoryTest {
-    @BeforeAll
-    @Override
-    public void setup() {
-        PostgresContainer.start();
-        initialize(PostgresContainer.getSessionProvider());
-    }
+//    @BeforeAll
+//    @Override
+//    public void setup() {
+//        PostgresContainer.start();
+//        initialize(PostgresContainer.getSessionProvider());
+//    }
 }

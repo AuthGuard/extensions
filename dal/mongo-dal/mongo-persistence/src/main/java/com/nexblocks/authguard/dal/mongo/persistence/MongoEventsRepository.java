@@ -31,7 +31,7 @@ public class MongoEventsRepository extends AbstractMongoRepository<EventDO>
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.gte("createdAt", page.getCursor())
-        ), page.getCount()).thenApply(Function.identity());
+        ), page.getCount()).subscribeAsCompletionStage();
     }
 
     @Override
@@ -44,6 +44,6 @@ public class MongoEventsRepository extends AbstractMongoRepository<EventDO>
                 Filters.eq("domain", domain),
                 Filters.eq("channel", channel),
                 Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).thenApply(Function.identity());
+        ), sort, page.getCount()).subscribeAsCompletionStage();
     }
 }

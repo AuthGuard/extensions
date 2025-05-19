@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.PermissionDO;
 import com.nexblocks.authguard.dal.persistence.LongPage;
@@ -27,21 +28,23 @@ public class HibernatePermissionsRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernatePermissionsRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernatePermissionsRepository(new ReactiveQueryExecutor(sessionProvider));
 
         first = repository.save(PermissionDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .group("tests")
+                .permissionGroup("tests")
                 .name("first")
                 .domain("main")
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
 
         second = repository.save(PermissionDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
-                .group("tests")
+                .permissionGroup("tests")
                 .name("second")
                 .domain("main")
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.ExchangeAttemptDO;
 import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
@@ -22,7 +23,7 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     private static final String FROM_EXCHANGE_FIELD = "exchangeFrom";
 
     @Inject
-    protected HibernateExchangeAttemptsRepository(final QueryExecutor queryExecutor) {
+    protected HibernateExchangeAttemptsRepository(final ReactiveQueryExecutor queryExecutor) {
         super(ExchangeAttemptDO.class, queryExecutor);
     }
 
@@ -31,7 +32,9 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
-                ).thenApply(Function.identity());
+                )
+                .subscribeAsCompletionStage()
+                .thenApply(Function.identity());
     }
 
     @Override
@@ -41,7 +44,9 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY_FROM_TIMESTAMP, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)
-                ).thenApply(Function.identity());
+                )
+                .subscribeAsCompletionStage()
+                .thenApply(Function.identity());
     }
 
     @Override
@@ -53,6 +58,8 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
                         .setParameter(ENTITY_ID_FIELD, entityId)
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)
                         .setParameter(FROM_EXCHANGE_FIELD, fromExchange)
-                ).thenApply(Function.identity());
+                )
+                .subscribeAsCompletionStage()
+                .thenApply(Function.identity());
     }
 }

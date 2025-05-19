@@ -28,6 +28,7 @@ public class MysqlTestContainer {
             String u = container.getJdbcUrl();
 
             hibernateProperties.put("hibernate.connection.url", container.getJdbcUrl());
+            hibernateProperties.put("hibernate.reactive.url", container.getJdbcUrl());
 
             sessionProvider = new SessionProvider(hibernateProperties);
         }
@@ -47,7 +48,7 @@ public class MysqlTestContainer {
         properties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         properties.put("hibernate.connection.username", "admin");
         properties.put("hibernate.connection.password", "secret_password");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         properties.put("hibernate.auto_quote_keyword", "true");
         properties.put("hibernate.hbm2ddl.auto", "update");
 

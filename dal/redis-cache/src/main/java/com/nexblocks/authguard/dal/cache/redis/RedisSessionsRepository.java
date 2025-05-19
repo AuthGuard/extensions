@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.cache.SessionsRepository;
 import com.nexblocks.authguard.dal.cache.redis.core.LettuceClientWrapper;
 import com.nexblocks.authguard.dal.cache.redis.core.RedisRepository;
 import com.nexblocks.authguard.dal.model.SessionDO;
+import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class RedisSessionsRepository implements SessionsRepository {
     }
 
     @Override
-    public CompletableFuture<SessionDO> save(final SessionDO session) {
+    public Uni<SessionDO> save(final SessionDO session) {
         final Duration ttl = Duration.between(Instant.now(), session.getExpiresAt());
 
         LOG.debug("Storing session {}", session.getSessionToken());
@@ -34,7 +35,7 @@ public class RedisSessionsRepository implements SessionsRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> getById(final long s) {
+    public Uni<Optional<SessionDO>> getById(final long s) {
         throw new UnsupportedOperationException("Sessions cannot be retrieved by ID");
     }
 

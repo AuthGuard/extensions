@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.ApiKeyDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +25,7 @@ public class HibernateApiKeysRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateApiKeysRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateApiKeysRepository(new ReactiveQueryExecutor(sessionProvider));
     }
 
     @Test
@@ -36,8 +37,10 @@ public class HibernateApiKeysRepositoryTest {
                 .key("saveAndGetById")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey).join();
-        final Optional<ApiKeyDO> retrieved = repository.getById(id).join();
+        final ApiKeyDO persisted = repository.save(apiKey)
+                .subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> retrieved = repository.getById(id)
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -53,8 +56,10 @@ public class HibernateApiKeysRepositoryTest {
                 .key("getByAppId")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey).join();
-        final Collection<ApiKeyDO> retrieved = repository.getByAppId(appId).join();
+        final ApiKeyDO persisted = repository.save(apiKey)
+                .subscribeAsCompletionStage().join();
+        final Collection<ApiKeyDO> retrieved = repository.getByAppId(appId)
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -70,8 +75,10 @@ public class HibernateApiKeysRepositoryTest {
                 .key(key)
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey).join();
-        final Optional<ApiKeyDO> retrieved = repository.getByKey(key).join();
+        final ApiKeyDO persisted = repository.save(apiKey)
+                .subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> retrieved = repository.getByKey(key)
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -85,8 +92,10 @@ public class HibernateApiKeysRepositoryTest {
                 .key("saveAndDeleteById")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey).join();
-        final Optional<ApiKeyDO> deleted = repository.delete(id).join();
+        final ApiKeyDO persisted = repository.save(apiKey)
+                .subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> deleted = repository.delete(id)
+                .subscribeAsCompletionStage().join();
 
         assertThat(deleted).contains(persisted);
     }

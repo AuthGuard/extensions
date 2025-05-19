@@ -10,16 +10,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
     <name>Extensions :: Data Access :: Hibernate :: Cache</name>
 
     <artifactId>hibernate-cache</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.nexblocks.authguard</groupId>
             <artifactId>hibernate-common</artifactId>

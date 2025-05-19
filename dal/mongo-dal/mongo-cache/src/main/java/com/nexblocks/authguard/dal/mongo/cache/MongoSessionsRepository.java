@@ -22,17 +22,19 @@ public class MongoSessionsRepository extends AbstractMongoRepository<SessionDO> 
 
     @Override
     public CompletableFuture<Optional<SessionDO>> getByToken(final String token) {
-        return facade.findOne(Filters.eq("sessionToken", token));
+        return facade.findOne(Filters.eq("sessionToken", token))
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
-        return facade.deleteByFilter(Filters.eq("sessionToken", sessionToken));
+        return facade.deleteByFilter(Filters.eq("sessionToken", sessionToken))
+                .subscribeAsCompletionStage();
     }
 
     @Override
     public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
         return facade.find(Filters.and(Filters.eq("accountId", accountId),
-                Filters.eq("domain", domain)));
+                Filters.eq("domain", domain))).subscribeAsCompletionStage();
     }
 }

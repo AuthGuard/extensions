@@ -1,11 +1,10 @@
 package com.nexblocks.authguard.dal.hibernate.common;
 
-import com.nexblocks.authguard.dal.repository.Repository;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractHibernateRepository<T> implements Repository<T> {
+public abstract class AbstractHibernateRepository<T> {
     private final Class<T> entityType;
 
     /*
@@ -13,26 +12,26 @@ public abstract class AbstractHibernateRepository<T> implements Repository<T> {
      *  It was added as a quick hack to support passing configuration from ConfigContext. We need
      *  a better way.
      */
-    protected final QueryExecutor queryExecutor;
+    protected final ReactiveQueryExecutor queryExecutor;
 
-    protected AbstractHibernateRepository(final Class<T> entityType, final QueryExecutor queryExecutor) {
+    protected AbstractHibernateRepository(final Class<T> entityType, final ReactiveQueryExecutor queryExecutor) {
         this.entityType = entityType;
         this.queryExecutor = queryExecutor;
     }
 
-    public CompletableFuture<T> save(final T entity) {
+    public Uni<T> save(final T entity) {
         return queryExecutor.persistAndReturn(entity);
     }
     
-    public CompletableFuture<Optional<T>> getById(final long id) {
+    public Uni<Optional<T>> getById(final long id) {
         return queryExecutor.getById(id, entityType);
     }
 
-    public CompletableFuture<Optional<T>> update(final T entity) {
+    public Uni<Optional<T>> update(final T entity) {
         return queryExecutor.updateAndReturn(entity);
     }
 
-    public CompletableFuture<Optional<T>> delete(final long id) {
+    public Uni<Optional<T>> delete(final long id) {
         return queryExecutor.deleteById(id, entityType);
     }
 }

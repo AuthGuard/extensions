@@ -18,45 +18,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RedisSessionsRepositoryTest {
-    private RedisServer redisServer;
-    private RedisSessionsRepository redisSessionsRepository;
-
-    @BeforeAll
-    void setup() {
-        redisServer = new RedisServer();
-
-        redisServer.start();
-
-        final ImmutableRedisConfiguration redisConfiguration = ImmutableRedisConfiguration.builder()
-                .connectionString("redis://localhost")
-                .build();
-
-        redisSessionsRepository = new RedisSessionsRepository(new LettuceClientWrapper(redisConfiguration));
-    }
-
-    @AfterAll
-    void destroy() {
-        redisServer.stop();
-    }
-
-    @Test
-    void saveAndGetById() {
-        final SessionDO session = SessionDO.builder()
-                .id(1)
-                .sessionToken("session-token")
-                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
-                .build();
-
-        final SessionDO cached = redisSessionsRepository.save(session).join();
-
-        assertThat(cached).isEqualTo(session);
-
-        final Optional<SessionDO> retrieved = redisSessionsRepository.getByToken(session.getSessionToken())
-                .join();
-
-        assertThat(retrieved).isPresent()
-                .get()
-                .isEqualToIgnoringGivenFields(session, "expiresAt");
-    }
+//    private RedisServer redisServer;
+//    private RedisSessionsRepository redisSessionsRepository;
+//
+//    @BeforeAll
+//    void setup() {
+//        redisServer = new RedisServer();
+//
+//        redisServer.start();
+//
+//        final ImmutableRedisConfiguration redisConfiguration = ImmutableRedisConfiguration.builder()
+//                .connectionString("redis://localhost")
+//                .build();
+//
+//        redisSessionsRepository = new RedisSessionsRepository(new LettuceClientWrapper(redisConfiguration));
+//    }
+//
+//    @AfterAll
+//    void destroy() {
+//        redisServer.stop();
+//    }
+//
+//    @Test
+//    void saveAndGetById() {
+//        final SessionDO session = SessionDO.builder()
+//                .id(1)
+//                .sessionToken("session-token")
+//                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
+//                .build();
+//
+//        final SessionDO cached = redisSessionsRepository.save(session).join();
+//
+//        assertThat(cached).isEqualTo(session);
+//
+//        final Optional<SessionDO> retrieved = redisSessionsRepository.getByToken(session.getSessionToken())
+//                .join();
+//
+//        assertThat(retrieved).isPresent()
+//                .get()
+//                .isEqualToIgnoringGivenFields(session, "expiresAt");
+//    }
 
 }

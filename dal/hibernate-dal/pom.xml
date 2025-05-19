@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <hibernate-core.verion>5.4.21.Final</hibernate-core.verion>
+        <hibernate-core.verion>6.6.13.Final</hibernate-core.verion>
 
         <h2.version>1.4.200</h2.version>
     </properties>
@@ -35,12 +35,6 @@
                 <version>${authguard.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate-core.verion}</version>
             </dependency>
 
             <dependency>

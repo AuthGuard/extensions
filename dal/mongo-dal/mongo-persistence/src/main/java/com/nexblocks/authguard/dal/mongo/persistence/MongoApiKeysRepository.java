@@ -7,6 +7,7 @@ import com.nexblocks.authguard.dal.mongo.common.AbstractMongoRepository;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.ApiKeysRepository;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -21,13 +22,13 @@ public class MongoApiKeysRepository extends AbstractMongoRepository<ApiKeyDO> im
     }
 
     @Override
-    public CompletableFuture<Collection<ApiKeyDO>> getByAppId(final long appId) {
+    public Uni<Collection<ApiKeyDO>> getByAppId(final long appId) {
         return facade.find(Filters.eq("appId", appId))
-                .thenApply(list -> list);
+                .map(list -> list);
     }
 
     @Override
-    public CompletableFuture<Optional<ApiKeyDO>> getByKey(final String key) {
+    public Uni<Optional<ApiKeyDO>> getByKey(final String key) {
         return facade.findOne(Filters.eq("key", key));
     }
 }

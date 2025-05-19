@@ -2,6 +2,7 @@ package com.nexblocks.authguard.dal.memory.dal;
 
 import com.nexblocks.authguard.dal.model.AbstractDO;
 import com.nexblocks.authguard.dal.repository.Repository;
+import io.smallrye.mutiny.Uni;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -17,7 +18,7 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
         repo = new HashMap<>();
     }
 
-    public CompletableFuture<T> save(final T record) {
+    public Uni<T> save(final T record) {
         final Instant now = Instant.now();
 
         if (record.getCreatedAt() == null) {
@@ -27,33 +28,33 @@ public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
         record.setLastModified(now);
 
         repo.put(record.getId(), record);
-        return CompletableFuture.completedFuture(record);
+        return Uni.createFrom().item(record);
     }
 
-    public CompletableFuture<Optional<T>> getById(final long id) {
-        return CompletableFuture.completedFuture(Optional.ofNullable(repo.get(id)));
+    public Uni<Optional<T>> getById(final long id) {
+        return Uni.createFrom().item(Optional.ofNullable(repo.get(id)));
     }
 
-    public CompletableFuture<Collection<T>> getAll() {
-        return CompletableFuture.completedFuture(repo.values());
+    public Uni<Collection<T>> getAll() {
+        return Uni.createFrom().item(repo.values());
     }
 
-    public CompletableFuture<Optional<T>> update(final T record) {
+    public Uni<Optional<T>> update(final T record) {
         if (!repo.containsKey(record.getId())) {
-            return CompletableFuture.completedFuture(Optional.empty());
+            return Uni.createFrom().item(Optional.empty());
         }
 
         return override(record);
     }
 
-    public CompletableFuture<Optional<T>> delete(final long id) {
-        return CompletableFuture.completedFuture(Optional.ofNullable(repo.remove(id)));
+    public Uni<Optional<T>> delete(final long id) {
+        return Uni.createFrom().item(Optional.ofNullable(repo.remove(id)));
     }
 
-    public CompletableFuture<Optional<T>> override(final T record) {
+    public Uni<Optional<T>> override(final T record) {
         repo.replace(record.getId(), record);
 
-        return CompletableFuture.completedFuture(Optional.of(record));
+        return Uni.createFrom().item(Optional.of(record));
     }
 
     protected Map<Long, T> getRepo() {

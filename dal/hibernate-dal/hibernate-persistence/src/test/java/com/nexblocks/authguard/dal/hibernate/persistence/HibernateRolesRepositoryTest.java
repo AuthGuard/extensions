@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.RoleDO;
 import com.nexblocks.authguard.dal.persistence.LongPage;
@@ -28,19 +29,23 @@ public class HibernateRolesRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateRolesRepository(new QueryExecutor(sessionProvider));
+        ReactiveQueryExecutor queryExecutor = new ReactiveQueryExecutor(sessionProvider);
+
+        repository = new HibernateRolesRepository(queryExecutor);
 
         first = repository.save(RoleDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("first")
                 .domain("main")
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
 
         second = repository.save(RoleDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("second")
                 .domain("main")
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.cache.AccountLocksRepository;
 import com.nexblocks.authguard.dal.cache.redis.core.LettuceClientWrapper;
 import com.nexblocks.authguard.dal.cache.redis.core.RedisRepository;
 import com.nexblocks.authguard.dal.model.AccountLockDO;
+import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     }
 
     @Override
-    public CompletableFuture<AccountLockDO> save(final AccountLockDO lock) {
+    public Uni<AccountLockDO> save(final AccountLockDO lock) {
         final Duration ttl = Duration.between(Instant.now(), lock.getExpiresAt());
 
         LOG.debug("Storing lock for account {}", lock.getAccountId());
@@ -45,10 +46,10 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<AccountLockDO>> delete(final long accountId) {
+    public Uni<Optional<AccountLockDO>> delete(final long accountId) {
         LOG.debug("Removing lock for account {}", accountId);
 
-        return redisRepository.delete(key(accountId));
+        return Uni.createFrom().completionStage(redisRepository.delete(key(accountId)));
     }
 
     private String key(final long accountId) {

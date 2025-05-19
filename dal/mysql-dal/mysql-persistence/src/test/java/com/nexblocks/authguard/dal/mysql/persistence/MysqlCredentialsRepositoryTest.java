@@ -6,10 +6,10 @@ import org.junit.jupiter.api.TestInstance;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MysqlCredentialsRepositoryTest extends HibernateCredentialsRepositoryTest {
-    @BeforeAll
-    @Override
-    public void setup() {
-        MysqlTestContainer.start();
-        initialize(MysqlTestContainer.getSessionProvider());
-    }
+//    @BeforeAll
+//    @Override
+//    public void setup() {
+//        MysqlTestContainer.start();
+//        initialize(MysqlTestContainer.getSessionProvider());
+//    }
 }

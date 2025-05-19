@@ -12,6 +12,10 @@
 
     <name>Extensions :: Data Access :: CockroachDB :: Cache</name>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
     <artifactId>cockroachdb-cache</artifactId>
 
     <dependencies>

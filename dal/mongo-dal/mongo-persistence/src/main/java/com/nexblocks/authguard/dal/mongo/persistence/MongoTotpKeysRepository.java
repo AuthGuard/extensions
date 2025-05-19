@@ -26,6 +26,6 @@ public class MongoTotpKeysRepository  extends AbstractMongoRepository<TotpKeyDO>
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.eq("accountId", accountId)
-        )).thenApply(Function.identity());
+        )).subscribeAsCompletionStage();
     }
 }

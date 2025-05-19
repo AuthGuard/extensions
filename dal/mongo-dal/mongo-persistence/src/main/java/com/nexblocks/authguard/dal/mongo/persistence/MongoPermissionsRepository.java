@@ -28,7 +28,7 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
                 Filters.eq("group", group),
                 Filters.eq("name", name),
                 Filters.eq("domain", domain)
-        ));
+        )).subscribeAsCompletionStage();
     }
 
     @Override
@@ -37,6 +37,7 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
                         Filters.eq("domain", domain),
                         Filters.gt("_id", page.getCursor())
                 ), page.getCount())
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 
@@ -48,6 +49,6 @@ public class MongoPermissionsRepository extends AbstractMongoRepository<Permissi
                 Filters.eq("group", group),
                 Filters.eq("domain", domain),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount()).thenApply(Function.identity());
+        ), page.getCount()).subscribeAsCompletionStage().thenApply(Function.identity());
     }
 }

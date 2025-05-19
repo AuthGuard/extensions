@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.AppDO;
 import com.nexblocks.authguard.dal.persistence.LongPage;
@@ -27,7 +28,7 @@ public class HibernateAppsRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateAppsRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateAppsRepository(new ReactiveQueryExecutor(sessionProvider));
     }
 
     @Test
@@ -40,8 +41,10 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app).join();
-        final Optional<AppDO> retrieved = repository.getById(id).join();
+        final AppDO persisted = repository.save(app)
+                .subscribeAsCompletionStage().join();
+        final Optional<AppDO> retrieved = repository.getById(id)
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -58,7 +61,8 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app).join();
+        final AppDO persisted = repository.save(app)
+                .subscribeAsCompletionStage().join();
         final Optional<AppDO> retrieved = repository.getByExternalId(externalId).join();
 
         assertThat(retrieved).contains(persisted);
@@ -75,7 +79,8 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app).join();
+        final AppDO persisted = repository.save(app)
+                .subscribeAsCompletionStage().join();
         final List<AppDO> retrieved = repository.getAllForAccount(101, LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);

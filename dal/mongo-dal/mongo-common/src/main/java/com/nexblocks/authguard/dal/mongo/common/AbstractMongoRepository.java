@@ -1,23 +1,23 @@
 package com.nexblocks.authguard.dal.mongo.common;
 
 import com.nexblocks.authguard.dal.model.AbstractDO;
-import com.nexblocks.authguard.dal.mongo.common.facade.SyncMongoFacade;
+import com.nexblocks.authguard.dal.mongo.common.facade.ReactiveMongoFacade;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.ImmutableMongoConfiguration;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractMongoRepository<T extends AbstractDO> {
-    protected final SyncMongoFacade<T> facade;
+    protected final ReactiveMongoFacade<T> facade;
 
-    protected AbstractMongoRepository(final SyncMongoFacade<T> facade) {
+    protected AbstractMongoRepository(final ReactiveMongoFacade<T> facade) {
         this.facade = facade;
     }
 
     protected AbstractMongoRepository(final MongoClientWrapper clientWrapper, final String collectionKey,
                                       final String collectionDefault, final Class<T> documentType) {
-        this(new SyncMongoFacade.Builder()
+        this(new ReactiveMongoFacade.Builder()
                 .client(clientWrapper.getClient())
                 .database(clientWrapper.getConfig().getDatabase())
                 .collection(Optional.of(clientWrapper.getConfig())
@@ -28,19 +28,19 @@ public abstract class AbstractMongoRepository<T extends AbstractDO> {
                 .buildForType(documentType));
     }
 
-    public CompletableFuture<T> save(final T record) {
+    public Uni<T> save(final T record) {
         return facade.save(record);
     }
 
-    public CompletableFuture<Optional<T>> getById(final long id) {
+    public Uni<Optional<T>> getById(final long id) {
         return facade.findById(id);
     }
 
-    public CompletableFuture<Optional<T>> update(final T record) {
+    public Uni<Optional<T>> update(final T record) {
         return facade.replaceById(record.getId(), record);
     }
 
-    public CompletableFuture<Optional<T>> delete(final long id) {
+    public Uni<Optional<T>> delete(final long id) {
         return facade.deleteById(id);
     }
 }

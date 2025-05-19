@@ -26,7 +26,7 @@ public class MockPermissionsRepository extends AbstractRepository<PermissionDO>
     public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(permission -> permission.getGroup().equals(group)
+                .filter(permission -> permission.getPermissionGroup().equals(group)
                         && permission.getName().equals(name) && permission.getDomain().equals(domain))
                 .findFirst());
     }
@@ -36,7 +36,7 @@ public class MockPermissionsRepository extends AbstractRepository<PermissionDO>
                                                                       final Page<Long> page) {
         return CompletableFuture.supplyAsync(() -> getRepo().values()
                 .stream()
-                .filter(permission -> permission.getGroup().equals(group)
+                .filter(permission -> permission.getPermissionGroup().equals(group)
                         && permission.getDomain().equals(domain)
                         && permission.getId() > page.getCursor())
                 .limit(page.getCount())

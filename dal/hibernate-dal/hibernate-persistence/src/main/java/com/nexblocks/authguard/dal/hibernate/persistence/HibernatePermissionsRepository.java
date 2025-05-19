@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.PermissionDO;
 import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.PermissionsRepository;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -26,16 +28,15 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     private static final String CURSOR_FIELD = "cursor";
 
     @Inject
-    public HibernatePermissionsRepository(final QueryExecutor queryExecutor) {
+    public HibernatePermissionsRepository(final ReactiveQueryExecutor queryExecutor) {
         super(PermissionDO.class, queryExecutor);
     }
 
     @Override
-    public CompletableFuture<Optional<PermissionDO>> getById(final long id) {
+    public Uni<Optional<PermissionDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, PermissionDO.class)
-                        .setParameter(CommonFields.ID, id))
-                .thenApply(Function.identity());
+                        .setParameter(CommonFields.ID, id));
     }
 
     @Override
@@ -43,7 +44,8 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_GROUP_AND_NAME, PermissionDO.class)
                 .setParameter(GROUP_FIELD, group)
                 .setParameter(NAME_FIELD, name)
-                .setParameter(DOMAIN_FIELD, domain));
+                .setParameter(DOMAIN_FIELD, domain))
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -51,6 +53,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 
@@ -61,6 +64,7 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
                         .setParameter(GROUP_FIELD, group)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 }

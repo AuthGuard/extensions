@@ -11,7 +11,7 @@ public class PostgresContainer {
 
     static void start() {
         if (container == null) {
-            container = new PostgreSQLContainer()
+            container = new PostgreSQLContainer("postgres:15")
                     .withUsername("admin")
                     .withPassword("secret_password");
         }
@@ -21,6 +21,7 @@ public class PostgresContainer {
 
             final Properties hibernateProperties = testProperties();
             hibernateProperties.put("hibernate.connection.url", container.getJdbcUrl());
+            hibernateProperties.put("hibernate.reactive.url", container.getJdbcUrl());
 
             sessionProvider = new SessionProvider(hibernateProperties);
         }
@@ -40,7 +41,10 @@ public class PostgresContainer {
         properties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
         properties.put("hibernate.connection.username", "admin");
         properties.put("hibernate.connection.password", "secret_password");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
+        properties.put("hibernate.reactive.username", "admin");
+        properties.put("hibernate.reactive.password", "secret_password");
+
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.put("hibernate.hbm2ddl.auto", "update");
 
         return properties;

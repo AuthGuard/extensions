@@ -3,6 +3,7 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.EventDO;
 import com.nexblocks.authguard.dal.persistence.EventsRepository;
 import com.nexblocks.authguard.dal.persistence.Page;
@@ -22,7 +23,7 @@ public class HibernateEventsRepository extends AbstractHibernateRepository<Event
     private static final String CURSOR_FIELD = "cursor";
 
     @Inject
-    protected HibernateEventsRepository(final QueryExecutor queryExecutor) {
+    protected HibernateEventsRepository(final ReactiveQueryExecutor queryExecutor) {
         super(EventDO.class, queryExecutor);
     }
 
@@ -32,7 +33,7 @@ public class HibernateEventsRepository extends AbstractHibernateRepository<Event
                 .getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, EventDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount())
-                .thenApply(Function.identity());
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -44,7 +45,7 @@ public class HibernateEventsRepository extends AbstractHibernateRepository<Event
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CHANNEL_FIELD, channel)
                         .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount()
-                ).thenApply(Function.identity());
+                ).subscribeAsCompletionStage();
 
     }
 }

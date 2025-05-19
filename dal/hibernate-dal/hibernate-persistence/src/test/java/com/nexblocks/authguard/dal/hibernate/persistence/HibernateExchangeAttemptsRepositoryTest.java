@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.ExchangeAttemptDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +31,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateExchangeAttemptsRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateExchangeAttemptsRepository(new ReactiveQueryExecutor(sessionProvider));
 
         firstAttempt = ExchangeAttemptDO.builder()
                 .id(1)
@@ -46,8 +47,8 @@ public class HibernateExchangeAttemptsRepositoryTest {
                 .createdAt(Instant.now())
                 .build();
 
-        repository.save(firstAttempt).join();
-        repository.save(secondAttempt).join();
+        repository.save(firstAttempt).subscribeAsCompletionStage().join();
+        repository.save(secondAttempt).subscribeAsCompletionStage().join();
 
         repository.save(ExchangeAttemptDO.builder()
                 .id(3)

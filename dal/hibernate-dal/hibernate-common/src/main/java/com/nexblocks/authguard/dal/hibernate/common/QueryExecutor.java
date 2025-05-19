@@ -4,10 +4,9 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -97,7 +96,7 @@ public class QueryExecutor {
     CompletableFuture<Void> doInNewTransaction(final Consumer<Session> consumer) {
         return CompletableFuture.runAsync(() -> {
 
-            try (Session session = sessionProvider.newSession()) {
+            try (Session session = sessionProvider.newBlockingSession()) {
                 session.beginTransaction();
 
                 consumer.accept(session);
@@ -109,7 +108,7 @@ public class QueryExecutor {
 
     <T> CompletableFuture<T> inNewTransaction(final Function<Session, T> function) {
         return CompletableFuture.supplyAsync(() -> {
-            final Session session = sessionProvider.newSession();
+            final Session session = sessionProvider.newBlockingSession();
 
             session.beginTransaction();
 

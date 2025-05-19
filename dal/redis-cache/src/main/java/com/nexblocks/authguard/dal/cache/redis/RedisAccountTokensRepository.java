@@ -5,6 +5,7 @@ import com.nexblocks.authguard.dal.cache.AccountTokensRepository;
 import com.nexblocks.authguard.dal.cache.redis.core.LettuceClientWrapper;
 import com.nexblocks.authguard.dal.cache.redis.core.RedisRepository;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
+import io.smallrye.mutiny.Uni;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class RedisAccountTokensRepository implements AccountTokensRepository {
     }
 
     @Override
-    public CompletableFuture<AccountTokenDO> save(final AccountTokenDO accountToken) {
+    public Uni<AccountTokenDO> save(final AccountTokenDO accountToken) {
         final Duration ttl = Duration.between(Instant.now(), accountToken.getExpiresAt());
 
         LOG.debug("Storing account token {}", accountToken.getToken());

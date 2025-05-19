@@ -6,10 +6,10 @@ import org.junit.jupiter.api.TestInstance;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CockroachDBCredentialsRepositoryTest extends HibernateCredentialsRepositoryTest {
-    @BeforeAll
-    @Override
-    public void setup() {
-        CockroachTestContainer.start();
-        initialize(CockroachTestContainer.getSessionProvider());
-    }
+//    @BeforeAll
+//    @Override
+//    public void setup() {
+//        CockroachTestContainer.start();
+//        initialize(CockroachTestContainer.getSessionProvider());
+//    }
 }

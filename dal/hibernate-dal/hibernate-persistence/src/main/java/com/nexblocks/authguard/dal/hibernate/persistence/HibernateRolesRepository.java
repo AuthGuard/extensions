@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.CommonFields;
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.RoleDO;
 import com.nexblocks.authguard.dal.persistence.Page;
 import com.nexblocks.authguard.dal.persistence.RolesRepository;
+import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -26,16 +28,15 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     private static final String CURSOR_FIELD = "cursor";
 
     @Inject
-    public HibernateRolesRepository(final QueryExecutor queryExecutor) {
+    public HibernateRolesRepository(final ReactiveQueryExecutor queryExecutor) {
         super(RoleDO.class, queryExecutor);
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getById(final long id) {
+    public Uni<Optional<RoleDO>> getById(final long id) {
         return queryExecutor
                 .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, RoleDO.class)
-                        .setParameter(CommonFields.ID, id))
-                .thenApply(Function.identity());
+                        .setParameter(CommonFields.ID, id));
     }
 
     @Override
@@ -43,14 +44,16 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
-                .thenApply(list -> list);
+                .subscribeAsCompletionStage()
+                .thenApply(Function.identity());
     }
 
     @Override
     public CompletableFuture<Optional<RoleDO>> getByName(final String role, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_NAME, RoleDO.class)
                 .setParameter(DOMAIN_FIELD, domain)
-                .setParameter(NAME_FIELD, role));
+                .setParameter(NAME_FIELD, role))
+                .subscribeAsCompletionStage();
     }
 
     @Override
@@ -58,6 +61,7 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_MULTIPLE, RoleDO.class)
                         .setParameter(NAMES_FIELD, roles)
                         .setParameter(DOMAIN_FIELD, domain))
+                .subscribeAsCompletionStage()
                 .thenApply(Function.identity());
     }
 }

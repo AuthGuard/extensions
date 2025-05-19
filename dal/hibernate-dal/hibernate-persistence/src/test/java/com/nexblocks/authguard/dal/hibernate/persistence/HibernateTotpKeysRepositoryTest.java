@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.TotpKeyDO;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +26,7 @@ class HibernateTotpKeysRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateTotpKeysRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateTotpKeysRepository(new ReactiveQueryExecutor(sessionProvider));
 
         first = repository.save(TotpKeyDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
@@ -33,13 +34,15 @@ class HibernateTotpKeysRepositoryTest {
                 .accountId(1L)
                 .encryptedKey(new byte[] { 1, 2, 3 })
                 .nonce(new byte[] { 4, 5, 6 })
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
 
         repository.save(TotpKeyDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .domain("main")
                 .accountId(2L)
-                .build()).join();
+                .build())
+                .subscribeAsCompletionStage().join();
     }
 
     @Test

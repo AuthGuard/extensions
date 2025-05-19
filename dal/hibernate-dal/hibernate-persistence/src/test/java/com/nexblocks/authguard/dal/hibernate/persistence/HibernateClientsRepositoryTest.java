@@ -1,6 +1,7 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
 import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
+import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.ClientDO;
 import com.nexblocks.authguard.dal.persistence.LongPage;
@@ -27,7 +28,7 @@ public class HibernateClientsRepositoryTest {
     }
 
     protected void initialize(final SessionProvider sessionProvider) {
-        repository = new HibernateClientsRepository(new QueryExecutor(sessionProvider));
+        repository = new HibernateClientsRepository(new ReactiveQueryExecutor(sessionProvider));
     }
 
     @Test
@@ -39,8 +40,10 @@ public class HibernateClientsRepositoryTest {
                 .clientType("NONE")
                 .build();
 
-        final ClientDO persisted = repository.save(client).join();
-        final Optional<ClientDO> retrieved = repository.getById(id).join();
+        final ClientDO persisted = repository.save(client)
+                .subscribeAsCompletionStage().join();
+        final Optional<ClientDO> retrieved = repository.getById(id)
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -56,7 +59,8 @@ public class HibernateClientsRepositoryTest {
                 .clientType("NONE")
                 .build();
 
-        final ClientDO persisted = repository.save(client).join();
+        final ClientDO persisted = repository.save(client)
+                .subscribeAsCompletionStage().join();
         final Optional<ClientDO> retrieved = repository.getByExternalId(externalId).join();
 
         assertThat(retrieved).contains(persisted);
@@ -73,7 +77,8 @@ public class HibernateClientsRepositoryTest {
                 .clientType("NONE")
                 .build();
 
-        final ClientDO persisted = repository.save(client).join();
+        final ClientDO persisted = repository.save(client)
+                .subscribeAsCompletionStage().join();
         final List<ClientDO> retrieved = repository.getAllForAccount(accountId, LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
@@ -88,7 +93,8 @@ public class HibernateClientsRepositoryTest {
                 .clientType("AUTH")
                 .build();
 
-        final ClientDO persisted = repository.save(client).join();
+        final ClientDO persisted = repository.save(client)
+                .subscribeAsCompletionStage().join();
         final List<ClientDO> retrieved = repository.getByType("AUTH", LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);
@@ -103,7 +109,8 @@ public class HibernateClientsRepositoryTest {
                 .domain("test")
                 .build();
 
-        final ClientDO persisted = repository.save(client).join();
+        final ClientDO persisted = repository.save(client)
+                .subscribeAsCompletionStage().join();
         final List<ClientDO> retrieved = repository.getByDomain("test", LongPage.of(null, 20)).join();
 
         assertThat(retrieved).containsOnly(persisted);

@@ -32,13 +32,13 @@ class MongoRolesRepositoryTest {
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("first")
                 .domain("main")
-                .build()).join();
+                .build()).subscribeAsCompletionStage().join();
 
         second = repository.save(RoleDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("second")
                 .domain("main")
-                .build()).join();
+                .build()).subscribeAsCompletionStage().join();
     }
 
     @Test
