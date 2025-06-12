@@ -1,21 +1,23 @@
 package com.nexblocks.authguard.dal.hibernate.common;
 
+import com.google.inject.Inject;
 import io.smallrye.mutiny.Uni;
-import jakarta.inject.Inject;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class ReactiveQueryExecutor {
     private final Mutiny.SessionFactory sessionFactory;
 
-    @Inject
     public ReactiveQueryExecutor(final Mutiny.SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public Mutiny.SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     @Inject

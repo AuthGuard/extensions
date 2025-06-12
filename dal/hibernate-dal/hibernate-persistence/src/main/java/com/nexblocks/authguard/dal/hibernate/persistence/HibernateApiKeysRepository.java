@@ -11,7 +11,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateApiKeysRepository extends AbstractHibernateRepository<ApiKeyDO>

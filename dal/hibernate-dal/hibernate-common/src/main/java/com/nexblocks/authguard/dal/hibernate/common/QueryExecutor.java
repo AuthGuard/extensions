@@ -7,7 +7,7 @@ import org.hibernate.query.Query;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -20,27 +20,27 @@ public class QueryExecutor {
         this.sessionProvider = sessionProvider;
     }
 
-    public <T> CompletableFuture<T> persistAndReturn(final T entity) {
+    public <T> Uni<T> persistAndReturn(final T entity) {
         return doInNewTransaction(session -> session.persist(entity))
-                .thenApply(ignored -> entity);
+                .map(ignored -> entity);
     }
 
-    public <T> CompletableFuture<Optional<T>> updateAndReturn(final T entity) {
+    public <T> Uni<Optional<T>> updateAndReturn(final T entity) {
         return doInNewTransaction(session -> session.update(entity))
-                .thenApply(ignored -> Optional.of(entity));
+                .map(ignored -> Optional.of(entity));
     }
 
-    public <T> CompletableFuture<Optional<T>> getById(final String id, final Class<T> entityType) {
+    public <T> Uni<Optional<T>> getById(final String id, final Class<T> entityType) {
         return inNewTransaction(session -> session.get(entityType, id))
-                .thenApply(Optional::ofNullable);
+                .map(Optional::ofNullable);
     }
 
-    public <T> CompletableFuture<Optional<T>> getById(final Long id, final Class<T> entityType) {
+    public <T> Uni<Optional<T>> getById(final Long id, final Class<T> entityType) {
         return inNewTransaction(session -> session.get(entityType, id))
-                .thenApply(Optional::ofNullable);
+                .map(Optional::ofNullable);
     }
 
-    public <T> CompletableFuture<Optional<T>> getSingleResult(final Function<Session, Query<T>> sessionQuery) {
+    public <T> Uni<Optional<T>> getSingleResult(final Function<Session, Query<T>> sessionQuery) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
 
@@ -52,14 +52,14 @@ public class QueryExecutor {
         });
     }
 
-    public <T> CompletableFuture<List<T>> getAList(final Function<Session, Query<T>> sessionQuery) {
+    public <T> Uni<List<T>> getAList(final Function<Session, Query<T>> sessionQuery) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
             return query.getResultList();
         });
     }
 
-    public <T> CompletableFuture<List<T>> getAList(final Function<Session, Query<T>> sessionQuery,
+    public <T> Uni<List<T>> getAList(final Function<Session, Query<T>> sessionQuery,
                                                    final int limit) {
         return inNewTransaction(session -> {
             final Query<T> query = sessionQuery.apply(session);
@@ -69,33 +69,32 @@ public class QueryExecutor {
         });
     }
 
-    public <T> CompletableFuture<Optional<T>> deleteById(final String id, final Class<T> entityType) {
+    public <T> Uni<Optional<T>> deleteById(final String id, final Class<T> entityType) {
         return getById(id, entityType)
-                .thenCompose(retrieved -> {
+                .flatMap(retrieved -> {
                     if (retrieved.isPresent()) {
                         return doInNewTransaction(session -> session.delete(retrieved.get()))
-                                .thenApply(ignored -> retrieved);
+                                .map(ignored -> retrieved);
                     } else {
-                        return CompletableFuture.completedFuture(Optional.empty());
+                        return Uni.createFrom().item(Optional.empty());
                     }
                 });
     }
 
-    public <T> CompletableFuture<Optional<T>> deleteById(final Long id, final Class<T> entityType) {
+    public <T> Uni<Optional<T>> deleteById(final Long id, final Class<T> entityType) {
         return getById(id, entityType)
-                .thenCompose(retrieved -> {
+                .flatMap(retrieved -> {
                     if (retrieved.isPresent()) {
                         return doInNewTransaction(session -> session.delete(retrieved.get()))
-                                .thenApply(ignored -> retrieved);
+                                .map(ignored -> retrieved);
                     } else {
-                        return CompletableFuture.completedFuture(Optional.empty());
+                        return Uni.createFrom().item(Optional.empty());
                     }
                 });
     }
 
-    CompletableFuture<Void> doInNewTransaction(final Consumer<Session> consumer) {
-        return CompletableFuture.runAsync(() -> {
-
+    Uni<Void> doInNewTransaction(final Consumer<Session> consumer) {
+        return Uni.createFrom().item(() -> {
             try (Session session = sessionProvider.newBlockingSession()) {
                 session.beginTransaction();
 
@@ -103,11 +102,13 @@ public class QueryExecutor {
 
                 session.getTransaction().commit();
             }
+
+            return null;
         });
     }
 
-    <T> CompletableFuture<T> inNewTransaction(final Function<Session, T> function) {
-        return CompletableFuture.supplyAsync(() -> {
+    <T> Uni<T> inNewTransaction(final Function<Session, T> function) {
+        return Uni.createFrom().item(() -> {
             final Session session = sessionProvider.newBlockingSession();
 
             session.beginTransaction();

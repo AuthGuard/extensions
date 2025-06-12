@@ -15,7 +15,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> implements AccountsRepository {
     private static final String COLLECTION_KEY = "accounts";
@@ -52,17 +52,16 @@ public class MongoAccountsRepository extends AbstractMongoRepository<AccountDO> 
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByExternalId(final String externalId) {
-        return facade.findOne(Filters.eq("externalId", externalId))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<AccountDO>> getByExternalId(final String externalId) {
+        return facade.findOne(Filters.eq("externalId", externalId));
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email, final String domain) {
+    public Uni<Optional<AccountDO>> getByEmail(final String email, final String domain) {
         return facade.findOne(Filters.and(
                 Filters.eq("email.email", email),
                 Filters.eq("domain", domain)
-        )).subscribeAsCompletionStage();
+        ));
     }
 
     @Override

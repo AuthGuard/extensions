@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class RedisOtpRepository implements OtpRepository {
     private static final Logger LOG = LoggerFactory.getLogger(RedisOtpRepository.class);
@@ -37,6 +36,6 @@ public class RedisOtpRepository implements OtpRepository {
     public Uni<Optional<OneTimePasswordDO>> getById(final long id) {
         LOG.debug("Getting OTP {}", id);
 
-        return Uni.createFrom().completionStage(redisRepository.get(id));
+        return redisRepository.get(id);
     }
 }

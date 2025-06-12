@@ -8,7 +8,7 @@ import com.nexblocks.authguard.dal.model.CredentialsAuditDO;
 import com.nexblocks.authguard.dal.persistence.CredentialsAuditRepository;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class HibernateCredentialsAuditRepository extends AbstractHibernateRepository<CredentialsAuditDO>
         implements CredentialsAuditRepository {
@@ -22,9 +22,8 @@ public class HibernateCredentialsAuditRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
+    public Uni<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_CREDENTIALS_ID, CredentialsAuditDO.class)
-                .setParameter(CREDENTIALS_ID_FIELD, credentialsId))
-                .subscribeAsCompletionStage();
+                .setParameter(CREDENTIALS_ID_FIELD, credentialsId));
     }
 }

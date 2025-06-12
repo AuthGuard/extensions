@@ -8,7 +8,7 @@ import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountTokenDO;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class HibernateAccountTokensRepository extends AbstractHibernateRepository<AccountTokenDO>
         implements AccountTokensRepository {
@@ -22,21 +22,20 @@ public class HibernateAccountTokensRepository extends AbstractHibernateRepositor
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
+    public Uni<Optional<AccountTokenDO>> getByToken(final String token) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, AccountTokenDO.class)
-                .setParameter(TOKEN_FIELD, token))
-                .subscribeAsCompletionStage();
+                .setParameter(TOKEN_FIELD, token));
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> deleteToken(final String token) {
+    public Uni<Optional<AccountTokenDO>> deleteToken(final String token) {
         return getByToken(token)
-                .thenCompose(opt -> {
+                .flatMap(opt -> {
                     if (opt.isPresent()) {
-                        return delete(opt.get().getId()).subscribeAsCompletionStage();
+                        return delete(opt.get().getId());
                     }
 
-                    return CompletableFuture.completedFuture(Optional.empty());
+                    return Uni.createFrom().item(Optional.empty());
                 });
     }
 }

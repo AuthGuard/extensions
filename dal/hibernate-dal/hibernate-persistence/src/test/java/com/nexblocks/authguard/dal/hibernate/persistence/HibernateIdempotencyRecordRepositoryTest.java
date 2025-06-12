@@ -1,6 +1,5 @@
 package com.nexblocks.authguard.dal.hibernate.persistence;
 
-import com.nexblocks.authguard.dal.hibernate.common.QueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.IdempotentRecordDO;
@@ -35,12 +34,10 @@ public class HibernateIdempotencyRecordRepositoryTest {
                 .entityType("entity")
                 .idempotentKey("key")
                 .build())
-                .subscribeAsCompletionStage()
-                .join();
+                .subscribeAsCompletionStage().join();
 
         final Optional<IdempotentRecordDO> retrieved = repository.getById(1)
-                .subscribeAsCompletionStage()
-                .join();
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -52,13 +49,12 @@ public class HibernateIdempotencyRecordRepositoryTest {
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
                 .id(2)
                 .entityId(102)
-                .entityType("by-key-entity")
+                .entityType("ACCOUNT")
                 .idempotentKey(key)
                 .build())
-                .subscribeAsCompletionStage()
-                .join();
+                .subscribeAsCompletionStage().join();
 
-        final List<IdempotentRecordDO> retrieved = repository.findByKey(key).join();
+        final List<IdempotentRecordDO> retrieved = repository.findByKey(key).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
@@ -66,17 +62,16 @@ public class HibernateIdempotencyRecordRepositoryTest {
     @Test
     public void saveAndGetByKeyAndEntityType() {
         final String key = "by-key-and-entity-key";
-        final String entityType = "by-key-and-entity-entity";
+        final String entityType = "ACCOUNT";
 
         final IdempotentRecordDO persisted = repository.save(IdempotentRecordDO.builder()
                 .id(3)
                 .entityId(103)
                 .entityType(entityType)
                 .idempotentKey(key)
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
 
-        final Optional<IdempotentRecordDO> retrieved = repository.findByKeyAndEntityType(key, entityType).join();
+        final Optional<IdempotentRecordDO> retrieved = repository.findByKeyAndEntityType(key, entityType).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }

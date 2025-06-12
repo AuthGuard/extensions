@@ -25,6 +25,12 @@ public class SessionProvider {
         final Configuration configuration = entityMapping(new Configuration())
                 .addProperties(hibernateProperties);
 
+        Properties extra = new Properties();
+
+//        extra.put("hibernate.type_contributors", ByteArrayTypeContributor.class.getCanonicalName());
+
+        configuration.addProperties(extra);
+
         factory = configuration.buildSessionFactory(
                         new ReactiveServiceRegistryBuilder()
                                 .applySettings(configuration.getProperties() )

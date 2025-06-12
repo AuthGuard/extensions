@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class RedisSessionsRepository implements SessionsRepository {
     private static final Logger LOG = LoggerFactory.getLogger(RedisSessionsRepository.class);
@@ -40,19 +40,19 @@ public class RedisSessionsRepository implements SessionsRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> getByToken(final String sessionToken) {
+    public Uni<Optional<SessionDO>> getByToken(final String sessionToken) {
         LOG.debug("Getting session {}", sessionToken);
 
         return redisRepository.get(sessionToken);
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
+    public Uni<Optional<SessionDO>> deleteByToken(final String sessionToken) {
         return redisRepository.delete(sessionToken);
     }
 
     @Override
-    public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
+    public Uni<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
         throw new UnsupportedOperationException("Retrieving sessions by account ID isn't " +
                 "currently supported by Redis cache implementation");
     }

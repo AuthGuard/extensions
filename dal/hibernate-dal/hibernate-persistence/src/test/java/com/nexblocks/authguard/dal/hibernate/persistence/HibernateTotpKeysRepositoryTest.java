@@ -34,20 +34,18 @@ class HibernateTotpKeysRepositoryTest {
                 .accountId(1L)
                 .encryptedKey(new byte[] { 1, 2, 3 })
                 .nonce(new byte[] { 4, 5, 6 })
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
 
         repository.save(TotpKeyDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .domain("main")
                 .accountId(2L)
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
     }
 
     @Test
     public void getById() {
-        List<TotpKeyDO> result = repository.findByAccountId("main", 1L).join();
+        List<TotpKeyDO> result = repository.findByAccountId("main", 1L).subscribeAsCompletionStage().join();
 
         assertThat(result).containsOnly(first);
         assertThat(result.get(0).getEncryptedKey()).containsExactly(1, 2, 3);

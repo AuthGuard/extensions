@@ -71,13 +71,13 @@ public class HibernateAccountTokensRepositoryTest {
                 .build();
 
         final AccountTokenDO persisted = repository.save(accountToken).subscribeAsCompletionStage().join();
-        final Optional<AccountTokenDO> retrieved = repository.getByToken(token).join();
+        final Optional<AccountTokenDO> retrieved = repository.getByToken(token).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
 
     @Test
     void getByTokenNonExistent() {
-        assertThat(repository.getByToken("nothing").join()).isEmpty();
+        assertThat(repository.getByToken("nothing").subscribeAsCompletionStage().join()).isEmpty();
     }
 }

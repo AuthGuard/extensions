@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -52,8 +52,8 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByExternalId(final String externalId) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Optional<AccountDO>> getByExternalId(final String externalId) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(account -> account.getExternalId() != null)
                 .filter(account -> account.getExternalId().equals(externalId))
@@ -61,8 +61,8 @@ public class MockAccountsRepository extends AbstractRepository<AccountDO> implem
     }
 
     @Override
-    public CompletableFuture<Optional<AccountDO>> getByEmail(final String email, final String domain) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Optional<AccountDO>> getByEmail(final String email, final String domain) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(account -> account.getEmail() != null)
                 .filter(account -> account.getEmail().getEmail().equals(email))

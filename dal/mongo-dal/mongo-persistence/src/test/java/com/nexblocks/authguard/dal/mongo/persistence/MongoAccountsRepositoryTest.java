@@ -81,7 +81,7 @@ class MongoAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
+        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -105,8 +105,7 @@ class MongoAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.findByIdentifier(email.getEmail(), account.getDomain())
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.findByIdentifier(email.getEmail(), account.getDomain()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }

@@ -37,31 +37,29 @@ public class HibernateRolesRepositoryTest {
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("first")
                 .domain("main")
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
 
         second = repository.save(RoleDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .name("second")
                 .domain("main")
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
     }
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main", LongPage.of(null, 20)).join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", LongPage.of(null, 20)).subscribeAsCompletionStage().join()).containsOnly(first, second);
     }
 
     @Test
     public void getByName() {
-        assertThat(repository.getByName(first.getName(), first.getDomain()).join()).contains(first);
-        assertThat(repository.getByName(second.getName(), second.getDomain()).join()).contains(second);
+        assertThat(repository.getByName(first.getName(), first.getDomain()).subscribeAsCompletionStage().join()).contains(first);
+        assertThat(repository.getByName(second.getName(), second.getDomain()).subscribeAsCompletionStage().join()).contains(second);
     }
 
     @Test
     public void getMultiple() {
-        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName()), "main").join())
+        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName()), "main").subscribeAsCompletionStage().join())
                 .containsOnly(first, second);
     }
 }

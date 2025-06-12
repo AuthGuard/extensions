@@ -46,8 +46,8 @@ public class MongoCredentialsRepositoryTest {
 //                        .build()))
 //                .build();
 //
-//        final CredentialsDO persisted = repository.save(credentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
+//        final CredentialsDO persisted = repository.save(credentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).contains(persisted);
 //    }
@@ -72,7 +72,7 @@ public class MongoCredentialsRepositoryTest {
 //                        .build()))
 //                .build();
 //
-//        repository.save(first).join();
+//        repository.save(first).subscribeAsCompletionStage().join();
 //
 //        assertThatThrownBy(() -> repository.save(second))
 //                .isInstanceOf(ServiceConflictException.class);

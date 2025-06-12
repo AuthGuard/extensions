@@ -61,7 +61,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
     @Test
     public void findByEntity() {
         final Collection<ExchangeAttemptDO> retrieved =
-                repository.findByEntity(ENTITY_ID).join();
+                repository.findByEntity(ENTITY_ID).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsExactlyInAnyOrder(firstAttempt, secondAttempt);
     }
@@ -69,7 +69,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
     @Test
     public void findByEntityAndTimestamp() {
         final Collection<ExchangeAttemptDO> retrieved =
-                repository.findByEntityAndTimestamp(ENTITY_ID, Instant.now().minus(Duration.ofMinutes(30))).join();
+                repository.findByEntityAndTimestamp(ENTITY_ID, Instant.now().minus(Duration.ofMinutes(30))).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(secondAttempt);
     }
@@ -80,7 +80,7 @@ public class HibernateExchangeAttemptsRepositoryTest {
                 .findByEntityAndTimestampAndExchange(ENTITY_ID,
                         Instant.now().minus(Duration.ofHours(2)),
                         FROM_EXCHANGE)
-                .join();
+                .subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(firstAttempt);
     }

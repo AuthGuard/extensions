@@ -55,13 +55,13 @@ class HibernateAccountLocksRepositoryTest {
                 .build();
 
         final AccountLockDO persisted = repository.save(accountLock).subscribeAsCompletionStage().join();
-        final Collection<AccountLockDO> retrieved = repository.findByAccountId(accountLock.getAccountId()).join();
+        final Collection<AccountLockDO> retrieved = repository.findByAccountId(accountLock.getAccountId()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
 
     @Test
     void getByTokenNonExistent() {
-        assertThat(repository.findByAccountId(0).join()).isEmpty();
+        assertThat(repository.findByAccountId(0).subscribeAsCompletionStage().join()).isEmpty();
     }
 }

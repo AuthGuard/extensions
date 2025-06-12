@@ -47,12 +47,12 @@ class RedisAccountTokensRepositoryTest {
 //                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
 //                .build();
 //
-//        final AccountTokenDO cached = redisAccountTokensRepository.save(accountToken).join();
+//        final AccountTokenDO cached = redisAccountTokensRepository.save(accountToken).subscribeAsCompletionStage().join();
 //
 //        assertThat(cached).isEqualTo(accountToken);
 //
 //        final Optional<AccountTokenDO> retrieved = redisAccountTokensRepository.getByToken(accountToken.getToken())
-//                .join();
+//                .subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).isPresent()
 //                .get()

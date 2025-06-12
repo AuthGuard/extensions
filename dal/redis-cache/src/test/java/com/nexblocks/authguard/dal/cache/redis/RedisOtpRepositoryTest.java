@@ -49,11 +49,11 @@ class RedisOtpRepositoryTest {
 //                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
 //                .build();
 //
-//        final OneTimePasswordDO cached = redisOtpRepository.save(otp).join();
+//        final OneTimePasswordDO cached = redisOtpRepository.save(otp).subscribeAsCompletionStage().join();
 //
 //        assertThat(cached).isEqualTo(otp);
 //
-//        final Optional<OneTimePasswordDO> retrieved = redisOtpRepository.getById(otp.getId()).join();
+//        final Optional<OneTimePasswordDO> retrieved = redisOtpRepository.getById(otp.getId()).subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).isPresent()
 //                .get()

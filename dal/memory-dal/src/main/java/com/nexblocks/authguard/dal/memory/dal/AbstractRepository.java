@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class AbstractRepository<T extends AbstractDO> implements Repository<T> {
     private final Map<Long, T> repo;

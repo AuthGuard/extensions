@@ -10,7 +10,7 @@ import io.smallrye.mutiny.Uni;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class HibernateUserIdentifiersRepository extends AbstractHibernateRepository<UserIdentifierDO> {
     @Inject
@@ -18,25 +18,23 @@ public class HibernateUserIdentifiersRepository extends AbstractHibernateReposit
         super(UserIdentifierDO.class, queryExecutor);
     }
 
-    public CompletableFuture<Void> deleteAll(final Set<UserIdentifierDO> identifiers) {
+    public Uni<Void> deleteAll(final Set<UserIdentifierDO> identifiers) {
         List<Uni<Optional<UserIdentifierDO>>> unis = identifiers.stream()
                 .map(identifier -> queryExecutor.deleteById(identifier.getId(), UserIdentifierDO.class))
                 .toList();
 
         if (identifiers.isEmpty()) {
-            return CompletableFuture.completedFuture(true)
-                    .thenAccept(ignored -> {});
+            return Uni.createFrom().item(true)
+                    .replaceWith(Uni.createFrom().voidItem());
         }
 
         return Uni.combine().all().unis(unis)
                 .with(ignored -> true)
-                .subscribeAsCompletionStage()
-                .thenAccept(ignored -> {});
+                .replaceWith(Uni.createFrom().voidItem());
     }
 
     public List<UserIdentifierDO> getAll() {
         return queryExecutor.getAList(session -> session.createQuery("SELECT iden FROM UserIdentifierDO iden", UserIdentifierDO.class))
-                .subscribeAsCompletionStage()
-                .join();
+                .subscribeAsCompletionStage().join();
     }
 }

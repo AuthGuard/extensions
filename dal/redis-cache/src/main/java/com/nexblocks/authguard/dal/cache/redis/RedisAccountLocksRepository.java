@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class RedisAccountLocksRepository implements AccountLocksRepository {
     private static final Logger LOG = LoggerFactory.getLogger(RedisAccountLocksRepository.class);
@@ -27,11 +27,11 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     }
 
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
+    public Uni<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         LOG.debug("Getting lock for account {}", accountId);
 
         return redisRepository.get(key(accountId))
-                .thenApply(opt -> opt
+                .map(opt -> opt
                         .map(Collections::singleton)
                         .orElseGet(Collections::emptySet));
     }
@@ -49,7 +49,7 @@ public class RedisAccountLocksRepository implements AccountLocksRepository {
     public Uni<Optional<AccountLockDO>> delete(final long accountId) {
         LOG.debug("Removing lock for account {}", accountId);
 
-        return Uni.createFrom().completionStage(redisRepository.delete(key(accountId)));
+        return redisRepository.delete(key(accountId));
     }
 
     private String key(final long accountId) {
