@@ -10,7 +10,7 @@ import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<ExchangeAttemptDO>
@@ -24,24 +24,23 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
+    public Uni<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
         return facade.find(Filters.eq("entityId", entityId))
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp
             (final long entityId,
              final Instant fromTimestamp) {
         return facade.find(Filters.and(
                 Filters.eq("entityId", entityId),
                 Filters.gte("createdAt", fromTimestamp)
-        )).subscribeAsCompletionStage().thenApply(Function.identity());
+        )).map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange
             (final long entityId,
              final Instant fromTimestamp,
              final String fromExchange) {
@@ -49,6 +48,6 @@ public class MongoExchangeAttemptsRepository extends AbstractMongoRepository<Exc
                 Filters.eq("entityId", entityId),
                 Filters.gte("createdAt", fromTimestamp),
                 Filters.eq("exchangeFrom", fromExchange)
-        )).subscribeAsCompletionStage().thenApply(Function.identity());
+        )).map(Function.identity());
     }
 }

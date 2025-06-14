@@ -35,36 +35,34 @@ public class HibernatePermissionsRepositoryTest {
                 .permissionGroup("tests")
                 .name("first")
                 .domain("main")
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
 
         second = repository.save(PermissionDO.builder()
                 .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
                 .permissionGroup("tests")
                 .name("second")
                 .domain("main")
-                .build())
-                .subscribeAsCompletionStage().join();
+                .build()).subscribeAsCompletionStage().join();
     }
 
     @Test
     public void search() {
-        assertThat(repository.search("tests", "first", "main").join()).contains(first);
-        assertThat(repository.search("tests", "second", "main").join()).contains(second);
+        assertThat(repository.search("tests", "first", "main").subscribeAsCompletionStage().join()).contains(first);
+        assertThat(repository.search("tests", "second", "main").subscribeAsCompletionStage().join()).contains(second);
     }
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main", LongPage.of(null, 20)).join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", LongPage.of(null, 20)).subscribeAsCompletionStage().join()).containsOnly(first, second);
     }
 
     @Test
     public void getAllForGroup() {
-        assertThat(repository.getAllForGroup("tests", "main", LongPage.of(null, 20)).join()).containsOnly(first, second);
+        assertThat(repository.getAllForGroup("tests", "main", LongPage.of(null, 20)).subscribeAsCompletionStage().join()).containsOnly(first, second);
     }
 
     @Test
     public void getAllForNonexistentGroup() {
-        assertThat(repository.getAllForGroup("nothing", "main", LongPage.of(null, 20)).join()).isEmpty();
+        assertThat(repository.getAllForGroup("nothing", "main", LongPage.of(null, 20)).subscribeAsCompletionStage().join()).isEmpty();
     }
 }

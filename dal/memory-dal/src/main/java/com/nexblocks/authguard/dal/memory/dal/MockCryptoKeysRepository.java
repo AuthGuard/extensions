@@ -10,15 +10,15 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
 public class MockCryptoKeysRepository extends AbstractRepository<CryptoKeyDO>
         implements CryptoKeysRepository {
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
-        return CompletableFuture.completedFuture(getRepo().values()
+    public Uni<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .sorted(Comparator.comparing(AbstractDO::getCreatedAt).reversed())
                 .filter(key -> key.getCreatedAt() != null
@@ -30,9 +30,9 @@ public class MockCryptoKeysRepository extends AbstractRepository<CryptoKeyDO>
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
+    public Uni<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
                                                                 final Page<Instant> page) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .sorted(Comparator.comparing(AbstractDO::getCreatedAt).reversed())
                 .filter(key -> key.getCreatedAt() != null
@@ -44,9 +44,9 @@ public class MockCryptoKeysRepository extends AbstractRepository<CryptoKeyDO>
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
+    public Uni<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
                                                             final Page<Instant> page) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
             .stream()
             .sorted(Comparator.comparing(AbstractDO::getCreatedAt).reversed())
             .filter(key -> key.getCreatedAt() != null

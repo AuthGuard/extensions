@@ -13,7 +13,7 @@ import io.smallrye.mutiny.Uni;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<CryptoKeyDO>
@@ -36,33 +36,30 @@ public class HibernateCryptoKeysRepository  extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
+    public Uni<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, CryptoKeyDO.class)
                         .setParameter(CommonFields.DOMAIN, domain)
-                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage();
+                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
+    public Uni<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
                                                                 final Page<Instant> page) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, CryptoKeyDO.class)
                         .setParameter(CommonFields.DOMAIN, domain)
-                        .setParameter(CommonFields.ACCOUNT_ID, accountId)
-                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage();
+                        .setParameter(CommonFields.ID, accountId)
+                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
+    public Uni<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
                                                             final Page<Instant> page) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_APP_ID, CryptoKeyDO.class)
                         .setParameter(CommonFields.DOMAIN, domain)
-                        .setParameter(CommonFields.APP_ID, appId)
-                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage();
+                        .setParameter(CommonFields.ID, appId)
+                        .setParameter(CommonFields.CURSOR, page.getCursor()), page.getCount());
     }
 }

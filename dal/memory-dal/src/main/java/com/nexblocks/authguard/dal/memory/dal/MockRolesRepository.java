@@ -7,14 +7,14 @@ import com.nexblocks.authguard.dal.persistence.RolesRepository;
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
 public class MockRolesRepository extends AbstractRepository<RoleDO> implements RolesRepository {
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(role -> role.getDomain().equals(domain) && role.getId() > page.getCursor())
                 .limit(page.getCount())
@@ -22,16 +22,16 @@ public class MockRolesRepository extends AbstractRepository<RoleDO> implements R
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getByName(final String name, final String domain) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Optional<RoleDO>> getByName(final String name, final String domain) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(role -> role.getName().equals(name) && role.getDomain().equals(domain))
                 .findFirst());
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> collection, final String domain) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Collection<RoleDO>> getMultiple(final Collection<String> collection, final String domain) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(role -> collection.contains(role.getName()) && role.getDomain().equals(domain))
                 .collect(Collectors.toList()));

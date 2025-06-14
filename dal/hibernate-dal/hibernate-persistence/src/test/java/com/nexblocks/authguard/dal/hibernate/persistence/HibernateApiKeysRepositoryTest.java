@@ -37,10 +37,8 @@ public class HibernateApiKeysRepositoryTest {
                 .key("saveAndGetById")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey)
-                .subscribeAsCompletionStage().join();
-        final Optional<ApiKeyDO> retrieved = repository.getById(id)
-                .subscribeAsCompletionStage().join();
+        final ApiKeyDO persisted = repository.save(apiKey).subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> retrieved = repository.getById(id).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -56,10 +54,8 @@ public class HibernateApiKeysRepositoryTest {
                 .key("getByAppId")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey)
-                .subscribeAsCompletionStage().join();
-        final Collection<ApiKeyDO> retrieved = repository.getByAppId(appId)
-                .subscribeAsCompletionStage().join();
+        final ApiKeyDO persisted = repository.save(apiKey).subscribeAsCompletionStage().join();
+        final Collection<ApiKeyDO> retrieved = repository.getByAppId(appId).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -75,10 +71,8 @@ public class HibernateApiKeysRepositoryTest {
                 .key(key)
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey)
-                .subscribeAsCompletionStage().join();
-        final Optional<ApiKeyDO> retrieved = repository.getByKey(key)
-                .subscribeAsCompletionStage().join();
+        final ApiKeyDO persisted = repository.save(apiKey).subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> retrieved = repository.getByKey(key).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -92,10 +86,8 @@ public class HibernateApiKeysRepositoryTest {
                 .key("saveAndDeleteById")
                 .build();
 
-        final ApiKeyDO persisted = repository.save(apiKey)
-                .subscribeAsCompletionStage().join();
-        final Optional<ApiKeyDO> deleted = repository.delete(id)
-                .subscribeAsCompletionStage().join();
+        final ApiKeyDO persisted = repository.save(apiKey).subscribeAsCompletionStage().join();
+        final Optional<ApiKeyDO> deleted = repository.delete(id).subscribeAsCompletionStage().join();
 
         assertThat(deleted).contains(persisted);
     }

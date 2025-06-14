@@ -11,7 +11,7 @@ import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> implements ApplicationsRepository {
     private static final String COLLECTION_KEY = "apps";
@@ -22,16 +22,15 @@ public class MongoApplicationsRepository extends AbstractMongoRepository<AppDO> 
     }
 
     @Override
-    public CompletableFuture<Optional<AppDO>> getByExternalId(final String externalId) {
-        return facade.findOne(Filters.eq("externalId", externalId))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<AppDO>> getByExternalId(final String externalId) {
+        return facade.findOne(Filters.eq("externalId", externalId));
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
+    public Uni<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return facade.find(Filters.and(
                 Filters.eq("parentAccountId", accountId),
                 Filters.gt("_id", page.getCursor())
-        ), page.getCount()).subscribeAsCompletionStage();
+        ), page.getCount());
     }
 }

@@ -41,10 +41,8 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app)
-                .subscribeAsCompletionStage().join();
-        final Optional<AppDO> retrieved = repository.getById(id)
-                .subscribeAsCompletionStage().join();
+        final AppDO persisted = repository.save(app).subscribeAsCompletionStage().join();
+        final Optional<AppDO> retrieved = repository.getById(id).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -61,9 +59,8 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app)
-                .subscribeAsCompletionStage().join();
-        final Optional<AppDO> retrieved = repository.getByExternalId(externalId).join();
+        final AppDO persisted = repository.save(app).subscribeAsCompletionStage().join();
+        final Optional<AppDO> retrieved = repository.getByExternalId(externalId).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -79,9 +76,8 @@ public class HibernateAppsRepositoryTest {
                 .permissions(Collections.emptySet())
                 .build();
 
-        final AppDO persisted = repository.save(app)
-                .subscribeAsCompletionStage().join();
-        final List<AppDO> retrieved = repository.getAllForAccount(101, LongPage.of(null, 20)).join();
+        final AppDO persisted = repository.save(app).subscribeAsCompletionStage().join();
+        final List<AppDO> retrieved = repository.getAllForAccount(101, LongPage.of(null, 20)).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(persisted);
     }

@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.model.TotpKeyDO;
 import com.nexblocks.authguard.dal.persistence.TotpKeysRepository;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateTotpKeysRepository extends AbstractHibernateRepository<TotpKeyDO>
@@ -22,12 +22,11 @@ public class HibernateTotpKeysRepository extends AbstractHibernateRepository<Tot
     }
 
     @Override
-    public CompletableFuture<List<TotpKeyDO>> findByAccountId(final String domain, final long accountId) {
+    public Uni<List<TotpKeyDO>> findByAccountId(final String domain, final long accountId) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, TotpKeyDO.class)
                         .setParameter(CommonFields.DOMAIN, domain)
                         .setParameter(CommonFields.ACCOUNT_ID, accountId))
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

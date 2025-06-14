@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.model.SessionDO;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class HibernateSessionsRepository extends AbstractHibernateRepository<SessionDO>
         implements SessionsRepository {
@@ -23,30 +23,28 @@ public class HibernateSessionsRepository extends AbstractHibernateRepository<Ses
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> getByToken(final String token) {
+    public Uni<Optional<SessionDO>> getByToken(final String token) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_TOKEN, SessionDO.class)
-                .setParameter(TOKEN_FIELD, token))
-                .subscribeAsCompletionStage();
+                .setParameter(TOKEN_FIELD, token));
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
+    public Uni<Optional<SessionDO>> deleteByToken(final String sessionToken) {
         return getByToken(sessionToken)
-                .thenCompose(opt -> {
+                .flatMap(opt -> {
                     if (opt.isPresent()) {
-                        return delete(opt.get().getId()).subscribeAsCompletionStage();
+                        return delete(opt.get().getId());
                     }
 
-                    return CompletableFuture.completedFuture(Optional.empty());
+                    return Uni.createFrom().item(Optional.empty());
                 });
     }
 
     @Override
-    public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
+    public Uni<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, SessionDO.class)
                 .setParameter(CommonFields.DOMAIN, domain)
-                .setParameter(CommonFields.ACCOUNT_ID, accountId))
-                .subscribeAsCompletionStage();
+                .setParameter(CommonFields.ACCOUNT_ID, accountId));
 
     }
 }

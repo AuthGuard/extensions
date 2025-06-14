@@ -6,23 +6,23 @@ import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
 public class MockExchangeAttemptsRepository extends AbstractRepository<ExchangeAttemptDO> implements ExchangeAttemptsRepository {
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
-        return CompletableFuture.completedFuture(getRepo().values()
+    public Uni<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .filter(attempt -> attempt.getEntityId() == entityId)
                 .collect(Collectors.toList()));
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final long entityId,
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final long entityId,
                                                                                      final Instant fromTimestamp) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .filter(attempt -> attempt.getEntityId() == entityId)
                 .filter(attempt -> attempt.getCreatedAt().isAfter(fromTimestamp))
@@ -30,10 +30,10 @@ public class MockExchangeAttemptsRepository extends AbstractRepository<ExchangeA
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final long entityId,
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final long entityId,
                                                                                                 final Instant fromTimestamp,
                                                                                                 final String exchangeFrom) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .filter(attempt -> attempt.getEntityId() == entityId)
                 .filter(attempt -> attempt.getCreatedAt().isAfter(fromTimestamp))

@@ -43,18 +43,18 @@ class MongoRolesRepositoryTest {
 
     @Test
     public void getAll() {
-        assertThat(repository.getAll("main", LongPage.of(null, 20)).join()).containsOnly(first, second);
+        assertThat(repository.getAll("main", LongPage.of(null, 20)).subscribeAsCompletionStage().join()).containsOnly(first, second);
     }
 
     @Test
     public void getByName() {
-        assertThat(repository.getByName(first.getName(), "main").join()).contains(first);
-        assertThat(repository.getByName(second.getName(), "main").join()).contains(second);
+        assertThat(repository.getByName(first.getName(), "main").subscribeAsCompletionStage().join()).contains(first);
+        assertThat(repository.getByName(second.getName(), "main").subscribeAsCompletionStage().join()).contains(second);
     }
 
     @Test
     public void getMultiple() {
-        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName()), "main").join())
+        assertThat(repository.getMultiple(Arrays.asList(first.getName(), second.getName()), "main").subscribeAsCompletionStage().join())
                 .containsOnly(first, second);
     }
 }

@@ -12,7 +12,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
@@ -38,17 +38,15 @@ public class HibernateAppsRepository extends AbstractHibernateRepository<AppDO>
     }
 
     @Override
-    public CompletableFuture<Optional<AppDO>> getByExternalId(final String externalId) {
+    public Uni<Optional<AppDO>> getByExternalId(final String externalId) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_EXTERNAL_ID, AppDO.class)
-                .setParameter(EXTERNAL_ID_FIELD, externalId))
-                .subscribeAsCompletionStage();
+                .setParameter(EXTERNAL_ID_FIELD, externalId));
     }
 
     @Override
-    public CompletableFuture<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
+    public Uni<List<AppDO>> getAllForAccount(final long accountId, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AppDO.class)
                 .setParameter(ACCOUNT_ID_FIELD, accountId)
-                .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage();
+                .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount());
     }
 }

@@ -12,7 +12,7 @@ import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import com.nexblocks.authguard.service.exceptions.codes.ErrorCode;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 //public class MongoCredentialsRepostiory extends AbstractMongoRepository<CredentialsDO> implements CredentialsRepository {
 //    private static final String COLLECTION_KEY = "credentials";
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 //    }
 //
 //    @Override
-//    public CompletableFuture<CredentialsDO> save(final CredentialsDO credentials) {
+//    public Uni<CredentialsDO> save(final CredentialsDO credentials) {
 //        try {
 //            return super.save(credentials);
 //        } catch (final MongoWriteException e) {
@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
+//    public Uni<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
 //        return facade.findOne(Filters.and(
 //                Filters.in("identifiers.identifier", identifier),
 //                Filters.eq("identifiers.domain", domain)

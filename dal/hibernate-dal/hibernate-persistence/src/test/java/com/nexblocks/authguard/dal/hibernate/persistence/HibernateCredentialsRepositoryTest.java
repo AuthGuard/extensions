@@ -53,8 +53,8 @@ public class HibernateCredentialsRepositoryTest {
 //                        .build())
 //                .build();
 //
-//        final CredentialsDO persisted = repository.save(credentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.getById(id).join();
+//        final CredentialsDO persisted = repository.save(credentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.getById(id).subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).contains(persisted);
 //    }
@@ -78,8 +78,8 @@ public class HibernateCredentialsRepositoryTest {
 //                        .build())
 //                .build();
 //
-//        final CredentialsDO persisted = repository.save(credentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").join();
+//        final CredentialsDO persisted = repository.save(credentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.findByIdentifier(identifier, "main").subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).contains(persisted);
 //    }
@@ -112,10 +112,10 @@ public class HibernateCredentialsRepositoryTest {
 //                        .build())
 //                .build();
 //
-//        final CredentialsDO persisted = repository.save(credentials).join();
+//        final CredentialsDO persisted = repository.save(credentials).subscribeAsCompletionStage().join();
 //
-//        final Optional<CredentialsDO> updated = repository.update(newCredentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).join();
+//        final Optional<CredentialsDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).subscribeAsCompletionStage().join();
 //
 //        assertThat(updated).contains(newCredentials);
 //        assertThat(retrieved).contains(newCredentials);
@@ -149,10 +149,10 @@ public class HibernateCredentialsRepositoryTest {
 //                        .build())
 //                .build();
 //
-//        repository.save(credentials).join();
+//        repository.save(credentials).subscribeAsCompletionStage().join();
 //
-//        final Optional<CredentialsDO> updated = repository.update(newCredentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).join();
+//        final Optional<CredentialsDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).subscribeAsCompletionStage().join();
 //
 //        final List<UserIdentifierDO> all = userIdentifiersRepository.getAll();
 //
@@ -183,10 +183,10 @@ public class HibernateCredentialsRepositoryTest {
 //                        .build())
 //                .build();
 //
-//        repository.save(credentials).join();
+//        repository.save(credentials).subscribeAsCompletionStage().join();
 //
 //        final CredentialsDO beforeUpdate = repository.getById(credentials.getId())
-//                .join()
+//                .subscribeAsCompletionStage().join()
 //                .get();
 //
 //        final CredentialsDO newCredentials = CredentialsDO.builder()
@@ -203,8 +203,8 @@ public class HibernateCredentialsRepositoryTest {
 //                .hashedPassword(beforeUpdate.getHashedPassword())
 //                .build();
 //
-//        final Optional<CredentialsDO> updated = repository.update(newCredentials).join();
-//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).join();
+//        final Optional<CredentialsDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
+//        final Optional<CredentialsDO> retrieved = repository.getById(credentials.getId()).subscribeAsCompletionStage().join();
 //
 //        assertThat(updated).contains(newCredentials);
 //        assertThat(retrieved).contains(newCredentials);

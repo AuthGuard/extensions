@@ -9,16 +9,16 @@ import com.nexblocks.authguard.dal.persistence.Page;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
 public class MockEventsRepository extends AbstractRepository<EventDO>
         implements EventsRepository {
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainDescending(final String domain,
+    public Uni<List<EventDO>> findByDomainDescending(final String domain,
                                                                    final Page<Instant> page) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .sorted(Comparator.comparing(AbstractDO::getCreatedAt).reversed())
                 .filter(event -> event.getCreatedAt() != null
@@ -29,10 +29,10 @@ public class MockEventsRepository extends AbstractRepository<EventDO>
     }
 
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainAndChannelDescending(final String domain,
+    public Uni<List<EventDO>> findByDomainAndChannelDescending(final String domain,
                                                                              final String channel,
                                                                              final Page<Instant> page) {
-        return CompletableFuture.completedFuture(getRepo().values()
+        return Uni.createFrom().item(getRepo().values()
                 .stream()
                 .sorted(Comparator.comparing(AbstractDO::getCreatedAt).reversed())
                 .filter(event -> event.getCreatedAt() != null

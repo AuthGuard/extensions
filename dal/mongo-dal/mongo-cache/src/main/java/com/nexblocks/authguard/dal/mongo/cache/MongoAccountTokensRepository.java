@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoAccountTokensRepository extends AbstractMongoRepository<AccountTokenDO> implements AccountTokensRepository {
     private static final String COLLECTION_KEY = "account_tokens";
@@ -20,14 +20,12 @@ public class MongoAccountTokensRepository extends AbstractMongoRepository<Accoun
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
-        return facade.findOne(Filters.eq("token", token))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<AccountTokenDO>> getByToken(final String token) {
+        return facade.findOne(Filters.eq("token", token));
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> deleteToken(final String token) {
-        return facade.deleteByFilter(Filters.eq("token", token))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<AccountTokenDO>> deleteToken(final String token) {
+        return facade.deleteByFilter(Filters.eq("token", token));
     }
 }

@@ -12,7 +12,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO>
@@ -40,28 +40,25 @@ public class HibernateRolesRepository extends AbstractHibernateRepository<RoleDO
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
+    public Uni<Collection<RoleDO>> getAll(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, RoleDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Optional<RoleDO>> getByName(final String role, final String domain) {
+    public Uni<Optional<RoleDO>> getByName(final String role, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_NAME, RoleDO.class)
                 .setParameter(DOMAIN_FIELD, domain)
-                .setParameter(NAME_FIELD, role))
-                .subscribeAsCompletionStage();
+                .setParameter(NAME_FIELD, role));
     }
 
     @Override
-    public CompletableFuture<Collection<RoleDO>> getMultiple(final Collection<String> roles, final String domain) {
+    public Uni<Collection<RoleDO>> getMultiple(final Collection<String> roles, final String domain) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_MULTIPLE, RoleDO.class)
                         .setParameter(NAMES_FIELD, roles)
                         .setParameter(DOMAIN_FIELD, domain))
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

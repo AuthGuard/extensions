@@ -10,7 +10,7 @@ import com.nexblocks.authguard.dal.mongo.config.Defaults;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoSessionsRepository extends AbstractMongoRepository<SessionDO> implements SessionsRepository {
     private static final String COLLECTION_KEY = "sessions";
@@ -21,20 +21,18 @@ public class MongoSessionsRepository extends AbstractMongoRepository<SessionDO> 
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> getByToken(final String token) {
-        return facade.findOne(Filters.eq("sessionToken", token))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<SessionDO>> getByToken(final String token) {
+        return facade.findOne(Filters.eq("sessionToken", token));
     }
 
     @Override
-    public CompletableFuture<Optional<SessionDO>> deleteByToken(final String sessionToken) {
-        return facade.deleteByFilter(Filters.eq("sessionToken", sessionToken))
-                .subscribeAsCompletionStage();
+    public Uni<Optional<SessionDO>> deleteByToken(final String sessionToken) {
+        return facade.deleteByFilter(Filters.eq("sessionToken", sessionToken));
     }
 
     @Override
-    public CompletableFuture<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
+    public Uni<List<SessionDO>> findByAccountId(final long accountId, final String domain) {
         return facade.find(Filters.and(Filters.eq("accountId", accountId),
-                Filters.eq("domain", domain))).subscribeAsCompletionStage();
+                Filters.eq("domain", domain)));
     }
 }

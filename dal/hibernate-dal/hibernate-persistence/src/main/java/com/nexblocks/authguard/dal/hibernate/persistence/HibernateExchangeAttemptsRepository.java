@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.persistence.ExchangeAttemptsRepository;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateExchangeAttemptsRepository extends AbstractHibernateRepository<ExchangeAttemptDO>
@@ -28,29 +28,27 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
+    public Uni<Collection<ExchangeAttemptDO>> findByEntity(final long entityId) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                 )
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final long entityId,
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestamp(final long entityId,
                                                                                      final Instant fromTimestamp) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ENTITY_FROM_TIMESTAMP, ExchangeAttemptDO.class)
                         .setParameter(ENTITY_ID_FIELD, entityId)
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)
                 )
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final long entityId,
+    public Uni<Collection<ExchangeAttemptDO>> findByEntityAndTimestampAndExchange(final long entityId,
                                                                                                 final Instant fromTimestamp,
                                                                                                 final String fromExchange) {
         return queryExecutor
@@ -59,7 +57,6 @@ public class HibernateExchangeAttemptsRepository extends AbstractHibernateReposi
                         .setParameter(TIMESTAMP_FIELD, fromTimestamp)
                         .setParameter(FROM_EXCHANGE_FIELD, fromExchange)
                 )
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

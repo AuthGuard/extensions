@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.persistence.IdempotentRecordsRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class HibernateIdempotencyRecordRepository extends AbstractHibernateRepository<IdempotentRecordDO>
         implements IdempotentRecordsRepository {
@@ -25,17 +25,15 @@ public class HibernateIdempotencyRecordRepository extends AbstractHibernateRepos
     }
 
     @Override
-    public CompletableFuture<List<IdempotentRecordDO>> findByKey(final String key) {
+    public Uni<List<IdempotentRecordDO>> findByKey(final String key) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_KEY, IdempotentRecordDO.class)
-                .setParameter(KEY_FIELD, key))
-                .subscribeAsCompletionStage();
+                .setParameter(KEY_FIELD, key));
     }
 
     @Override
-    public CompletableFuture<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key, final String entityType) {
+    public Uni<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key, final String entityType) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_KEY_AND_ENTITY, IdempotentRecordDO.class)
                 .setParameter(KEY_FIELD, key)
-                .setParameter(ENTITY_TYPE_FIELD, entityType))
-                .subscribeAsCompletionStage();
+                .setParameter(ENTITY_TYPE_FIELD, entityType));
     }
 }

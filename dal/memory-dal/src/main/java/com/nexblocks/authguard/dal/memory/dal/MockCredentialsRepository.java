@@ -10,7 +10,7 @@ import com.nexblocks.authguard.service.exceptions.codes.ErrorCode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 //@Singleton
 //public class MockCredentialsRepository extends AbstractRepository<CredentialsDO> implements CredentialsRepository {
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 //    private Map<String, Long> identifiersToAccountId = new HashMap<>();
 //
 //    @Override
-//    public CompletableFuture<CredentialsDO> save(final CredentialsDO credentials) {
+//    public Uni<CredentialsDO> save(final CredentialsDO credentials) {
 //        credentials.getIdentifiers()
 //                .stream()
 //                .filter(identifier -> {
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> update(final CredentialsDO credentials) {
+//    public Uni<Optional<CredentialsDO>> update(final CredentialsDO credentials) {
 //        credentials.getIdentifiers()
 //                .stream()
 //                .filter(identifier -> {
@@ -52,8 +52,8 @@ import java.util.concurrent.CompletableFuture;
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
-//        return CompletableFuture.supplyAsync(() -> getRepo()
+//    public Uni<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
+//        return Uni.createFrom().item(() -> getRepo()
 //                .values()
 //                .stream()
 //                .filter(credentials -> hasIdentifier(credentials, identifier, domain))

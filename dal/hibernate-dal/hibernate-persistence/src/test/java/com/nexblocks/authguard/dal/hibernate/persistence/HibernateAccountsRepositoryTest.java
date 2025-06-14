@@ -91,7 +91,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.getByExternalId(externalId).join();
+        final Optional<AccountDO> retrieved = repository.getByExternalId(externalId).subscribeAsCompletionStage().join();
 
         assertThat(retrieved.isPresent()).isTrue();
         assertThat(retrieved.get()).isEqualTo(persisted);
@@ -121,7 +121,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).join();
+        final Optional<AccountDO> retrieved = repository.getByEmail(email.getEmail(), account.getDomain()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -149,8 +149,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.findByIdentifier(identifier, "main")
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.findByIdentifier(identifier, "main").subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -180,8 +179,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final List<AccountDO> retrieved = repository.getByRole(role, account.getDomain())
-                .subscribeAsCompletionStage().join();
+        final List<AccountDO> retrieved = repository.getByRole(role, account.getDomain()).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).containsOnly(persisted);
     }
@@ -211,8 +209,7 @@ public class HibernateAccountsRepositoryTest {
                 .build();
 
         final AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.update(newAccount)
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.update(newAccount).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }
@@ -254,13 +251,10 @@ public class HibernateAccountsRepositoryTest {
                         .build())
                 .build();
 
-        final AccountDO persisted = repository.save(credentials)
-                .subscribeAsCompletionStage().join();
+        final AccountDO persisted = repository.save(credentials).subscribeAsCompletionStage().join();
 
-        final Optional<AccountDO> updated = repository.update(newCredentials)
-                .subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.getById(credentials.getId())
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.getById(credentials.getId()).subscribeAsCompletionStage().join();
 
         assertThat(updated).contains(newCredentials);
         assertThat(retrieved).contains(newCredentials);
@@ -306,10 +300,8 @@ public class HibernateAccountsRepositoryTest {
 
         repository.save(credentials).subscribeAsCompletionStage().join();
 
-        final Optional<AccountDO> updated = repository.update(newCredentials)
-                .subscribeAsCompletionStage().join();
-        final Optional<AccountDO> retrieved = repository.getById(credentials.getId())
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
+        final Optional<AccountDO> retrieved = repository.getById(credentials.getId()).subscribeAsCompletionStage().join();
 
         final List<UserIdentifierDO> all = userIdentifiersRepository.getAll();
 
@@ -350,8 +342,7 @@ public class HibernateAccountsRepositoryTest {
         repository.save(credentials).subscribeAsCompletionStage().join();
 
         final AccountDO beforeUpdate = repository.getById(credentials.getId())
-                .subscribeAsCompletionStage()
-                .join()
+                .subscribeAsCompletionStage().join()
                 .get();
 
         final AccountDO newCredentials = AccountDO.builder()
@@ -371,8 +362,7 @@ public class HibernateAccountsRepositoryTest {
                 .hashedPassword(beforeUpdate.getHashedPassword())
                 .build();
 
-        final Optional<AccountDO> updated = repository.update(newCredentials)
-                .subscribeAsCompletionStage().join();
+        final Optional<AccountDO> updated = repository.update(newCredentials).subscribeAsCompletionStage().join();
         final Optional<AccountDO> retrieved = repository.getById(credentials.getId())
                 .map(opt -> opt.map(account -> {
                     account.getIdentifiers().forEach(userIdentifier -> {
@@ -380,8 +370,7 @@ public class HibernateAccountsRepositoryTest {
                     });
 
                     return account;
-                }))
-                .subscribeAsCompletionStage().join();
+                })).subscribeAsCompletionStage().join();
 
         assertThat(updated).contains(newCredentials);
 
@@ -427,11 +416,9 @@ public class HibernateAccountsRepositoryTest {
                 .domain("main")
                 .build();
 
-        repository.save(first)
-                .subscribeAsCompletionStage().join();
+        repository.save(first).subscribeAsCompletionStage().join();
 
-        assertThatThrownBy(() -> repository.save(second)
-                .subscribeAsCompletionStage().join());
+        assertThatThrownBy(() -> repository.save(second).subscribeAsCompletionStage().join());
     }
 
     @Test
@@ -567,8 +554,7 @@ public class HibernateAccountsRepositoryTest {
 
         repository.save(first).subscribeAsCompletionStage().join();
 
-        assertThatThrownBy(() -> repository.save(second)
-                .subscribeAsCompletionStage().join());
+        assertThatThrownBy(() -> repository.save(second).subscribeAsCompletionStage().join());
     }
 
     @Test

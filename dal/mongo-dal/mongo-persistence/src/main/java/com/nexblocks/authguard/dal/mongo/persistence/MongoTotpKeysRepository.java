@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.TotpKeysRepository;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class MongoTotpKeysRepository  extends AbstractMongoRepository<TotpKeyDO>
@@ -22,10 +22,10 @@ public class MongoTotpKeysRepository  extends AbstractMongoRepository<TotpKeyDO>
     }
 
     @Override
-    public CompletableFuture<List<TotpKeyDO>> findByAccountId(final String domain, final long accountId) {
+    public Uni<List<TotpKeyDO>> findByAccountId(final String domain, final long accountId) {
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.eq("accountId", accountId)
-        )).subscribeAsCompletionStage();
+        ));
     }
 }

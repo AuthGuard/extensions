@@ -47,12 +47,12 @@ class RedisSessionsRepositoryTest {
 //                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
 //                .build();
 //
-//        final SessionDO cached = redisSessionsRepository.save(session).join();
+//        final SessionDO cached = redisSessionsRepository.save(session).subscribeAsCompletionStage().join();
 //
 //        assertThat(cached).isEqualTo(session);
 //
 //        final Optional<SessionDO> retrieved = redisSessionsRepository.getByToken(session.getSessionToken())
-//                .join();
+//                .subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).isPresent()
 //                .get()

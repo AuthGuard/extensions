@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-// TODO switch to the reactive client by just changing the import
 @Singleton
 public class MongoClientWrapper {
     private final MongoClient mongoClient;

@@ -8,14 +8,14 @@ import com.nexblocks.authguard.dal.persistence.Page;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
 public class MockClientsRepository extends AbstractRepository<ClientDO> implements ClientsRepository {
     @Override
-    public CompletableFuture<Optional<ClientDO>> getByExternalId(final String externalId) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<Optional<ClientDO>> getByExternalId(final String externalId) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(app -> app.getExternalId() != null)
                 .filter(app -> app.getExternalId().equals(externalId))
@@ -23,8 +23,8 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<List<ClientDO>> getAllForAccount(final long accountId, final Page<Long> page) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(client -> client.getAccountId().equals(accountId) && client.getId() > page.getCursor())
                 .limit(page.getCount())
@@ -32,8 +32,8 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<List<ClientDO>> getByType(final String clientType, final Page<Long> page) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(client -> Objects.equals(client.getClientType(), clientType) && client.getId() > page.getCursor())
                 .limit(page.getCount())
@@ -41,8 +41,8 @@ public class MockClientsRepository extends AbstractRepository<ClientDO> implemen
     }
 
     @Override
-    public CompletableFuture<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<List<ClientDO>> getByDomain(final String domain, final Page<Long> page) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(client -> Objects.equals(client.getDomain(), domain) && client.getId() > page.getCursor())
                 .limit(page.getCount())

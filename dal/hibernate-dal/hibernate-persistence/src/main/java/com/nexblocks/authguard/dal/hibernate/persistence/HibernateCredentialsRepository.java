@@ -13,7 +13,7 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 //    }
 //
 //    @Override
-//    public CompletableFuture<CredentialsDO> save(final CredentialsDO entity) {
+//    public Uni<CredentialsDO> save(final CredentialsDO entity) {
 //        return super.save(entity)
 //                .exceptionally(e -> {
 //                    throw mapExceptions(e);
@@ -41,10 +41,10 @@ import java.util.stream.Collectors;
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> update(final CredentialsDO entity) {
+//    public Uni<Optional<CredentialsDO>> update(final CredentialsDO entity) {
 //        return super.getById(entity.getId())
-//                .thenApply(Optional::get)
-//                .thenApply(existing -> {
+//                .map(Optional::get)
+//                .map(existing -> {
 //                    final Set<String> newIdentifiers = entity.getIdentifiers()
 //                            .stream()
 //                            .map(UserIdentifierDO::getIdentifier)
@@ -56,25 +56,25 @@ import java.util.stream.Collectors;
 //                            .filter(e -> !newIdentifiers.contains(e.getIdentifier()))
 //                            .collect(Collectors.toSet());
 //                })
-//                .thenCompose(difference -> super.update(entity)
-//                        .thenApply(ignored -> difference))
-//                .thenCompose(userIdentifiersRepository::deleteAll)
-//                .thenApply(ignored -> Optional.of(entity))
+//                .flatMap(difference -> super.update(entity)
+//                        .map(ignored -> difference))
+//                .flatMap(userIdentifiersRepository::deleteAll)
+//                .map(ignored -> Optional.of(entity))
 //                .exceptionally(e -> {
 //                    throw mapExceptions(e);
 //                });
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> getById(final long id) {
+//    public Uni<Optional<CredentialsDO>> getById(final long id) {
 //        return queryExecutor
 //                .getSingleResult(session -> session.createNamedQuery(GET_BY_ID, CredentialsDO.class)
 //                        .setParameter(CommonFields.ID, id))
-//                .thenApply(Function.identity());
+//                .map(Function.identity());
 //    }
 //
 //    @Override
-//    public CompletableFuture<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
+//    public Uni<Optional<CredentialsDO>> findByIdentifier(final String identifier, final String domain) {
 //        return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_IDENTIFIER, CredentialsDO.class)
 //                .setParameter(IDENTIFIER_FIELD, identifier)
 //                .setParameter(DOMAIN_FIELD, domain));

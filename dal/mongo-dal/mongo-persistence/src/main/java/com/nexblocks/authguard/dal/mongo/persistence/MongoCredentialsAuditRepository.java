@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.mongo.config.Defaults;
 import com.nexblocks.authguard.dal.persistence.CredentialsAuditRepository;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoCredentialsAuditRepository extends AbstractMongoRepository<CredentialsAuditDO> implements CredentialsAuditRepository {
     private static final String COLLECTION_KEY = "credentials_audit";
@@ -20,8 +20,7 @@ public class MongoCredentialsAuditRepository extends AbstractMongoRepository<Cre
     }
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
-        return facade.find(Filters.eq("credentialsId", credentialsId))
-                .subscribeAsCompletionStage();
+    public Uni<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
+        return facade.find(Filters.eq("credentialsId", credentialsId));
     }
 }

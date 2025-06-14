@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class RedisAccountTokensRepository implements AccountTokensRepository {
     private static final Logger LOG = LoggerFactory.getLogger(RedisAccountTokensRepository.class);
@@ -34,14 +34,14 @@ public class RedisAccountTokensRepository implements AccountTokensRepository {
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> getByToken(final String token) {
+    public Uni<Optional<AccountTokenDO>> getByToken(final String token) {
         LOG.debug("Getting account token {}", token);
 
         return redisRepository.get(token);
     }
 
     @Override
-    public CompletableFuture<Optional<AccountTokenDO>> deleteToken(final String token) {
+    public Uni<Optional<AccountTokenDO>> deleteToken(final String token) {
         return redisRepository.delete(token);
     }
 }

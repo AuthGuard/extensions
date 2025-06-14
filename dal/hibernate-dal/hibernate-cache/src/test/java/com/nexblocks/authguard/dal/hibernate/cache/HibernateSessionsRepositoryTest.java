@@ -45,7 +45,7 @@ public class HibernateSessionsRepositoryTest {
                 .build();
 
         final SessionDO persisted = repository.save(session).subscribeAsCompletionStage().join();
-        final Optional<SessionDO> retrieved = repository.getByToken(token).join();
+        final Optional<SessionDO> retrieved = repository.getByToken(token).subscribeAsCompletionStage().join();
 
         assertThat(retrieved).contains(persisted);
     }

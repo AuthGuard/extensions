@@ -13,7 +13,7 @@ import org.bson.conversions.Bson;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class MongoCryptoKeysRepository extends AbstractMongoRepository<CryptoKeyDO> implements CryptoKeysRepository {
@@ -25,37 +25,37 @@ public class MongoCryptoKeysRepository extends AbstractMongoRepository<CryptoKey
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
+    public Uni<List<CryptoKeyDO>> findByDomain(final String domain, final Page<Instant> page) {
         Bson sort = Sorts.descending("createdAt");
 
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
-                Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).subscribeAsCompletionStage();
+                Filters.lte("createdAt", page.getCursor().toEpochMilli())
+        ), sort, page.getCount());
 
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
+    public Uni<List<CryptoKeyDO>> findByAccountId(final String domain, final long accountId,
                                                                 final Page<Instant> page) {
         Bson sort = Sorts.descending("createdAt");
 
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.eq("accountId", accountId),
-                Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).subscribeAsCompletionStage();
+                Filters.lte("createdAt", page.getCursor().toEpochMilli())
+        ), sort, page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
+    public Uni<List<CryptoKeyDO>> findByAppId(final String domain, final long appId,
                                                             final Page<Instant> page) {
         Bson sort = Sorts.descending("createdAt");
 
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.eq("appId", appId),
-                Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).subscribeAsCompletionStage();
+                Filters.lte("createdAt", page.getCursor().toEpochMilli())
+        ), sort, page.getCount());
     }
 }

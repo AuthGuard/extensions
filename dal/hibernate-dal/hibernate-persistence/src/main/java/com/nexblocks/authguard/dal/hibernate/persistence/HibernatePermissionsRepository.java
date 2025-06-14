@@ -12,7 +12,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernatePermissionsRepository extends AbstractHibernateRepository<PermissionDO>
@@ -40,31 +40,28 @@ public class HibernatePermissionsRepository extends AbstractHibernateRepository<
     }
 
     @Override
-    public CompletableFuture<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
+    public Uni<Optional<PermissionDO>> search(final String group, final String name, final String domain) {
         return queryExecutor.getSingleResult(session -> session.createNamedQuery(GET_BY_GROUP_AND_NAME, PermissionDO.class)
                 .setParameter(GROUP_FIELD, group)
                 .setParameter(NAME_FIELD, name)
-                .setParameter(DOMAIN_FIELD, domain))
-                .subscribeAsCompletionStage();
+                .setParameter(DOMAIN_FIELD, domain));
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAll(final String domain, final Page<Long> page) {
+    public Uni<Collection<PermissionDO>> getAll(final String domain, final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_ALL, PermissionDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 
     @Override
-    public CompletableFuture<Collection<PermissionDO>> getAllForGroup(final String group, final String domain,
+    public Uni<Collection<PermissionDO>> getAllForGroup(final String group, final String domain,
                                                                       final Page<Long> page) {
         return queryExecutor.getAList(session -> session.createNamedQuery(GET_BY_GROUP, PermissionDO.class)
                         .setParameter(GROUP_FIELD, group)
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CURSOR_FIELD,  page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

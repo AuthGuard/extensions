@@ -10,7 +10,7 @@ import com.nexblocks.authguard.dal.persistence.IdempotentRecordsRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoIdempotentRecordsRepository extends AbstractMongoRepository<IdempotentRecordDO>
         implements IdempotentRecordsRepository {
@@ -22,15 +22,14 @@ public class MongoIdempotentRecordsRepository extends AbstractMongoRepository<Id
     }
 
     @Override
-    public CompletableFuture<List<IdempotentRecordDO>> findByKey(final String key) {
-        return facade.find(Filters.eq("idempotentKey", key))
-                .subscribeAsCompletionStage();
+    public Uni<List<IdempotentRecordDO>> findByKey(final String key) {
+        return facade.find(Filters.eq("idempotentKey", key));
     }
 
     @Override
-    public CompletableFuture<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key,
+    public Uni<Optional<IdempotentRecordDO>> findByKeyAndEntityType(final String key,
                                                                                   final String entityType) {
         return facade.findOne(Filters.and(Filters.eq("idempotentKey", key),
-                Filters.eq("entityType", entityType))).subscribeAsCompletionStage();
+                Filters.eq("entityType", entityType)));
     }
 }

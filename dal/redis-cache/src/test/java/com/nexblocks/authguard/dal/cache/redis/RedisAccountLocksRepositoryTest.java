@@ -46,12 +46,12 @@ class RedisAccountLocksRepositoryTest {
 //                .expiresAt(Instant.now(Clock.systemUTC()).plus(Duration.ofMinutes(5)))
 //                .build();
 //
-//        final AccountLockDO cached = redisAccountLocksRepository.save(lock).join();
+//        final AccountLockDO cached = redisAccountLocksRepository.save(lock).subscribeAsCompletionStage().join();
 //
 //        assertThat(cached).isEqualTo(lock);
 //
 //        final Collection<AccountLockDO> retrieved = redisAccountLocksRepository.findByAccountId(lock.getAccountId())
-//                .join();
+//                .subscribeAsCompletionStage().join();
 //
 //        assertThat(retrieved).contains(lock);
 //    }

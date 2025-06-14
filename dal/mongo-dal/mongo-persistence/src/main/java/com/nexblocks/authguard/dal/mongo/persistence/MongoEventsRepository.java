@@ -12,8 +12,9 @@ import com.nexblocks.authguard.dal.persistence.Page;
 import org.bson.conversions.Bson;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class MongoEventsRepository extends AbstractMongoRepository<EventDO>
@@ -27,15 +28,15 @@ public class MongoEventsRepository extends AbstractMongoRepository<EventDO>
     }
 
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainDescending(final String domain, final Page<Instant> page) {
+    public Uni<List<EventDO>> findByDomainDescending(final String domain, final Page<Instant> page) {
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
-                Filters.gte("createdAt", page.getCursor())
-        ), page.getCount()).subscribeAsCompletionStage();
+                Filters.lte("createdAt", page.getCursor().truncatedTo(ChronoUnit.MILLIS))
+        ), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainAndChannelDescending(final String domain,
+    public Uni<List<EventDO>> findByDomainAndChannelDescending(final String domain,
                                                                              final String channel,
                                                                              final Page<Instant> page) {
         Bson sort = Sorts.descending("createdAt");
@@ -43,7 +44,7 @@ public class MongoEventsRepository extends AbstractMongoRepository<EventDO>
         return facade.find(Filters.and(
                 Filters.eq("domain", domain),
                 Filters.eq("channel", channel),
-                Filters.lte("createdAt", page.getCursor())
-        ), sort, page.getCount()).subscribeAsCompletionStage();
+                Filters.lte("createdAt", page.getCursor().truncatedTo(ChronoUnit.MILLIS))
+        ), sort, page.getCount());
     }
 }

@@ -11,7 +11,7 @@ import io.smallrye.mutiny.Uni;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class MongoApiKeysRepository extends AbstractMongoRepository<ApiKeyDO> implements ApiKeysRepository {
     private static final String COLLECTION_KEY = "api_keys";

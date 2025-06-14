@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 
 public class SyncMongoFacade<T> {
 //    private final MongoCollection<T> collection;
@@ -24,37 +24,37 @@ public class SyncMongoFacade<T> {
 //        this.timeout = operationsTimeout;
 //    }
 //
-//    public CompletableFuture<T> save(final T document) {
+//    public Uni<T> save(final T document) {
 //        final InsertOneResult result = collection.insertOne(document);
 //
-//        return CompletableFuture.completedFuture(document);
+//        return Uni.createFrom().item(document);
 //    }
 //
-//    public CompletableFuture<Optional<T>> findById(final long id) {
+//    public Uni<Optional<T>> findById(final long id) {
 //        return findOne(Filters.eq("_id", id));
 //    }
 //
-//    public CompletableFuture<Optional<T>> findOne(final Bson filter) {
+//    public Uni<Optional<T>> findOne(final Bson filter) {
 //        final T result = collection.find(filter).first();
 //
-//        return CompletableFuture.completedFuture(Optional.ofNullable(result));
+//        return Uni.createFrom().item(Optional.ofNullable(result));
 //    }
 //
-//    public CompletableFuture<Optional<T>> replaceById(final long id, final T document) {
+//    public Uni<Optional<T>> replaceById(final long id, final T document) {
 //        return replaceOne(Filters.eq("_id", id), document);
 //    }
 //
-//    public CompletableFuture<Optional<T>> replaceOne(final Bson filter, final T document) {
+//    public Uni<Optional<T>> replaceOne(final Bson filter, final T document) {
 //        final UpdateResult publisher = collection.replaceOne(filter, document);
 //
 //        if (publisher.getMatchedCount() == 0) {
-//            return CompletableFuture.completedFuture(Optional.empty());
+//            return Uni.createFrom().item(Optional.empty());
 //        }
 //
-//        return CompletableFuture.completedFuture(Optional.of(document));
+//        return Uni.createFrom().item(Optional.of(document));
 //    }
 //
-//    public CompletableFuture<List<T>> find(final Bson filter) {
+//    public Uni<List<T>> find(final Bson filter) {
 //        final FindIterable<T> resultIterable = collection.find(filter);
 //        final List<T> list = new ArrayList<>();
 //
@@ -62,10 +62,10 @@ public class SyncMongoFacade<T> {
 //            list.add(result);
 //        }
 //
-//        return CompletableFuture.completedFuture(list);
+//        return Uni.createFrom().item(list);
 //    }
 //
-//    public CompletableFuture<List<T>> find(final Bson filter, final int limit) {
+//    public Uni<List<T>> find(final Bson filter, final int limit) {
 //        final FindIterable<T> resultIterable = collection.find(filter).limit(limit);
 //        final List<T> list = new ArrayList<>();
 //
@@ -73,10 +73,10 @@ public class SyncMongoFacade<T> {
 //            list.add(result);
 //        }
 //
-//        return CompletableFuture.completedFuture(list);
+//        return Uni.createFrom().item(list);
 //    }
 //
-//    public CompletableFuture<List<T>> find(final Bson filter, final Bson sort,
+//    public Uni<List<T>> find(final Bson filter, final Bson sort,
 //                                           final int limit) {
 //        final FindIterable<T> resultIterable = collection.find(filter)
 //                .sort(sort)
@@ -87,10 +87,10 @@ public class SyncMongoFacade<T> {
 //            list.add(result);
 //        }
 //
-//        return CompletableFuture.completedFuture(list);
+//        return Uni.createFrom().item(list);
 //    }
 //
-//    public CompletableFuture<List<T>> findAll() {
+//    public Uni<List<T>> findAll() {
 //        final FindIterable<T> resultIterable = collection.find();
 //        final List<T> list = new ArrayList<>();
 //
@@ -98,21 +98,21 @@ public class SyncMongoFacade<T> {
 //            list.add(result);
 //        }
 //
-//        return CompletableFuture.completedFuture(list);
+//        return Uni.createFrom().item(list);
 //    }
 //
-//    public CompletableFuture<Optional<T>> deleteById(final long id) {
+//    public Uni<Optional<T>> deleteById(final long id) {
 //        return delete(Filters.eq("_id", id));
 //    }
 //
-//    public CompletableFuture<Optional<T>> deleteByFilter(final Bson filter) {
+//    public Uni<Optional<T>> deleteByFilter(final Bson filter) {
 //        return delete(filter);
 //    }
 //
-//    public CompletableFuture<Optional<T>> delete(final Bson filter) {
+//    public Uni<Optional<T>> delete(final Bson filter) {
 //        final T result = collection.findOneAndDelete(filter);
 //
-//        return CompletableFuture.completedFuture(Optional.ofNullable(result));
+//        return Uni.createFrom().item(Optional.ofNullable(result));
 //    }
 //
 //    public static class Builder {

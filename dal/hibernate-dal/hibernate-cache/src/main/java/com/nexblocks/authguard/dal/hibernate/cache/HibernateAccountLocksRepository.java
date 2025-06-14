@@ -8,7 +8,7 @@ import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountLockDO;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateAccountLocksRepository extends AbstractHibernateRepository<AccountLockDO>
@@ -24,11 +24,10 @@ public class HibernateAccountLocksRepository extends AbstractHibernateRepository
     }
 
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
+    public Uni<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_ACCOUNT_ID, AccountLockDO.class)
                         .setParameter(ACCOUNT_ID_FIELD, accountId))
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

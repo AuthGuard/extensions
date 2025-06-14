@@ -9,7 +9,7 @@ import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
 import com.nexblocks.authguard.dal.mongo.config.Defaults;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class MongoAccountLocksRepository extends AbstractMongoRepository<AccountLockDO>
@@ -22,9 +22,8 @@ public class MongoAccountLocksRepository extends AbstractMongoRepository<Account
     }
 
     @Override
-    public CompletableFuture<Collection<AccountLockDO>> findByAccountId(final long accountId) {
+    public Uni<Collection<AccountLockDO>> findByAccountId(final long accountId) {
         return facade.find(Filters.eq("accountId", accountId))
-                .subscribeAsCompletionStage()
-                .thenApply(Function.identity());
+                .map(Function.identity());
     }
 }

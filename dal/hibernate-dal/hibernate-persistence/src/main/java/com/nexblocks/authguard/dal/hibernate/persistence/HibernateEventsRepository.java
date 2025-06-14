@@ -10,7 +10,7 @@ import com.nexblocks.authguard.dal.persistence.Page;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.function.Function;
 
 public class HibernateEventsRepository extends AbstractHibernateRepository<EventDO>
@@ -28,16 +28,15 @@ public class HibernateEventsRepository extends AbstractHibernateRepository<Event
     }
 
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainDescending(final String domain, final Page<Instant> page) {
+    public Uni<List<EventDO>> findByDomainDescending(final String domain, final Page<Instant> page) {
         return queryExecutor
                 .getAList(session -> session.createNamedQuery(GET_BY_DOMAIN, EventDO.class)
                         .setParameter(DOMAIN_FIELD, domain)
-                        .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount())
-                .subscribeAsCompletionStage();
+                        .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount());
     }
 
     @Override
-    public CompletableFuture<List<EventDO>> findByDomainAndChannelDescending(final String domain,
+    public Uni<List<EventDO>> findByDomainAndChannelDescending(final String domain,
                                                                              final String channel,
                                                                              final Page<Instant> page) {
         return queryExecutor
@@ -45,7 +44,7 @@ public class HibernateEventsRepository extends AbstractHibernateRepository<Event
                         .setParameter(DOMAIN_FIELD, domain)
                         .setParameter(CHANNEL_FIELD, channel)
                         .setParameter(CURSOR_FIELD, page.getCursor()), page.getCount()
-                ).subscribeAsCompletionStage();
+                );
 
     }
 }

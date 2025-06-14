@@ -5,7 +5,7 @@ import com.nexblocks.authguard.dal.model.CredentialsAuditDO;
 import com.nexblocks.authguard.dal.persistence.CredentialsAuditRepository;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import io.smallrye.mutiny.Uni;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -13,8 +13,8 @@ public class MockCredentialsAuditRepository extends AbstractRepository<Credentia
         implements CredentialsAuditRepository {
 
     @Override
-    public CompletableFuture<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
-        return CompletableFuture.supplyAsync(() -> getRepo().values()
+    public Uni<List<CredentialsAuditDO>> findByCredentialsId(final long credentialsId) {
+        return Uni.createFrom().item(() -> getRepo().values()
                 .stream()
                 .filter(record -> record.getCredentialsId() == credentialsId)
                 .collect(Collectors.toList()));
