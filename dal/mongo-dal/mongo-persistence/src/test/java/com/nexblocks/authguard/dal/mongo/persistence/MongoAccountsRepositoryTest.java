@@ -1,11 +1,7 @@
 package com.nexblocks.authguard.dal.mongo.persistence;
 
-import com.nexblocks.authguard.dal.model.AccountDO;
-import com.nexblocks.authguard.dal.model.EmailDO;
-import com.nexblocks.authguard.dal.model.PhoneNumberDO;
-import com.nexblocks.authguard.dal.model.UserIdentifierDO;
+import com.nexblocks.authguard.dal.model.*;
 import com.nexblocks.authguard.dal.mongo.common.setup.MongoClientWrapper;
-//import com.nexblocks.authguard.dal.mongo.persistence.bootstrap.IndicesBootstrap;
 import com.nexblocks.authguard.dal.mongo.persistence.bootstrap.IndicesBootstrap;
 import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -378,5 +371,68 @@ class MongoAccountsRepositoryTest {
 
         assertThatThrownBy(() -> repository.update(second).subscribeAsCompletionStage().join())
                 .hasCauseInstanceOf(ServiceConflictException.class);
+    }
+
+    @Test
+    public void addAndRemoveAccountPermission() {
+        long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
+        String identifier = "addAccountPermission";
+
+        AccountDO account = AccountDO.builder()
+                .id(id)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
+                .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(identifier)
+                        .type(UserIdentifierDO.Type.USERNAME)
+                        .domain("main")
+                        .build()))
+                .hashedPassword(PasswordDO.builder()
+                        .password("password")
+                        .salt("salt")
+                        .build())
+                .build();
+
+        AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
+
+        PermissionDO firstPermission = PermissionDO.builder()
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                .domain("main")
+                .forAccounts(true)
+                .permissionGroup("tests")
+                .name("read")
+                .build();
+
+        PermissionDO secondPermission = PermissionDO.builder()
+                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                .domain("main")
+                .forAccounts(true)
+                .permissionGroup("tests")
+                .name("write")
+                .build();
+
+        // add
+        repository.addAccountPermissions(persisted, Arrays.asList(firstPermission, secondPermission))
+                .subscribeAsCompletionStage()
+                .join();
+
+        Optional<AccountDO> afterAdd = repository.getById(persisted.getId()).subscribeAsCompletionStage().join();
+
+        assertThat(afterAdd).isNotEmpty();
+        assertThat(afterAdd.get().getPermissions())
+                .containsExactlyInAnyOrder(firstPermission, secondPermission);
+
+        // remove one
+        repository.removeAccountPermissions(persisted, Collections.singletonList(firstPermission))
+                .subscribeAsCompletionStage()
+                .join();
+
+        Optional<AccountDO> afterRemove = repository.getById(persisted.getId()).subscribeAsCompletionStage().join();
+
+        assertThat(afterRemove).isNotEmpty();
+        assertThat(afterRemove.get().getPermissions())
+                .containsExactlyInAnyOrder(secondPermission);
     }
 }
