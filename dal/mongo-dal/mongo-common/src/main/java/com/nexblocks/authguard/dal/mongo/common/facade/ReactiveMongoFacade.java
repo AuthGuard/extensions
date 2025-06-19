@@ -38,6 +38,10 @@ public class ReactiveMongoFacade<T> {
         return findOne(Filters.eq("_id", id));
     }
 
+    public Uni<T> findByIdUnchecked(final long id) {
+        return findOneUnchecked(Filters.eq("_id", id));
+    }
+
     public Uni<Optional<T>> findOne(final Bson filter) {
         final Publisher<T> publisher = collection.find(filter)
                 .first();
@@ -46,6 +50,15 @@ public class ReactiveMongoFacade<T> {
 
         return Uni.createFrom().completionStage(subscriber.getFuture())
                 .map(Optional::ofNullable);
+    }
+
+    public Uni<T> findOneUnchecked(final Bson filter) {
+        final Publisher<T> publisher = collection.find(filter)
+                .first();
+
+        final SubscribeSingleResult<T> subscriber = SubscribeSingleResult.toPublisher(publisher);
+
+        return Uni.createFrom().completionStage(subscriber.getFuture());
     }
 
     public Uni<Optional<T>> replaceById(final long id, final T document) {

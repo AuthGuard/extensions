@@ -3,16 +3,12 @@ package com.nexblocks.authguard.dal.hibernate.persistence;
 import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.hibernate.common.SessionProvider;
 import com.nexblocks.authguard.dal.model.*;
-import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HibernateAccountsRepositoryTest {
     private HibernateAccountsRepository repository;
+    private HibernatePermissionsRepository permissionsRepository;
     protected HibernateUserIdentifiersRepository userIdentifiersRepository;
 
     @BeforeAll
@@ -36,6 +33,7 @@ public class HibernateAccountsRepositoryTest {
 
         repository = new HibernateAccountsRepository(queryExecutor);
         userIdentifiersRepository = new HibernateUserIdentifiersRepository(queryExecutor);
+        permissionsRepository = new HibernatePermissionsRepository(queryExecutor);
     }
 
     @Test
@@ -56,6 +54,7 @@ public class HibernateAccountsRepositoryTest {
                         UserIdentifierDO.builder()
                                 .identifier(email.getEmail())
                                 .type(UserIdentifierDO.Type.EMAIL)
+                                .active(true)
                                 .build()
                 ))
                 .build();
@@ -86,6 +85,7 @@ public class HibernateAccountsRepositoryTest {
                         UserIdentifierDO.builder()
                                 .identifier(email.getEmail())
                                 .type(UserIdentifierDO.Type.EMAIL)
+                                .active(true)
                                 .build()
                 ))
                 .build();
@@ -116,6 +116,7 @@ public class HibernateAccountsRepositoryTest {
                         UserIdentifierDO.builder()
                                 .identifier(email.getEmail())
                                 .type(UserIdentifierDO.Type.EMAIL)
+                                .active(true)
                                 .build()
                 ))
                 .build();
@@ -141,6 +142,7 @@ public class HibernateAccountsRepositoryTest {
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
                         .domain("main")
+                        .active(true)
                         .build()))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -231,6 +233,7 @@ public class HibernateAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
+                        .active(true)
                         .build()))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -275,10 +278,13 @@ public class HibernateAccountsRepositoryTest {
                 .roles(Collections.emptySet())
                 .permissions(Collections.emptySet())
                 .metadata(Collections.emptyMap())
-                .identifiers(Collections.singleton(UserIdentifierDO.builder()
-                        .identifier(identifier)
-                        .type(UserIdentifierDO.Type.USERNAME)
-                        .build()))
+                .identifiers(new HashSet<>(Arrays.asList(
+                        UserIdentifierDO.builder()
+                                .identifier(identifier)
+                                .type(UserIdentifierDO.Type.USERNAME)
+                                .active(true)
+                                .build()
+                )))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
                         .salt("salt")
@@ -332,6 +338,7 @@ public class HibernateAccountsRepositoryTest {
                 .identifiers(Collections.singleton(UserIdentifierDO.builder()
                         .identifier(identifier)
                         .type(UserIdentifierDO.Type.USERNAME)
+                        .active(true)
                         .build()))
                 .hashedPassword(PasswordDO.builder()
                         .password("password")
@@ -588,5 +595,77 @@ public class HibernateAccountsRepositoryTest {
 
         repository.save(first).subscribeAsCompletionStage().join();
         repository.save(second).subscribeAsCompletionStage().join();
+    }
+
+    @Test
+    public void addAndRemoveAccountPermission() {
+        long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
+        String identifier = "addAccountPermission";
+
+        AccountDO account = AccountDO.builder()
+                .id(id)
+                .roles(Collections.emptySet())
+                .permissions(Collections.emptySet())
+                .metadata(Collections.emptyMap())
+                .domain("main")
+                .identifiers(Collections.singleton(UserIdentifierDO.builder()
+                        .identifier(identifier)
+                        .type(UserIdentifierDO.Type.USERNAME)
+                        .domain("main")
+                        .active(true)
+                        .build()))
+                .hashedPassword(PasswordDO.builder()
+                        .password("password")
+                        .salt("salt")
+                        .build())
+                .build();
+
+        AccountDO persisted = repository.save(account).subscribeAsCompletionStage().join();
+
+        PermissionDO firstPermission = permissionsRepository.save(
+                        PermissionDO.builder()
+                                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                                .domain("main")
+                                .forAccounts(true)
+                                .permissionGroup("account_tests")
+                                .name("read")
+                                .build()
+                )
+                .subscribeAsCompletionStage()
+                .join();
+
+        PermissionDO secondPermission = permissionsRepository.save(
+                        PermissionDO.builder()
+                                .id(Math.abs(UUID.randomUUID().getMostSignificantBits()))
+                                .domain("main")
+                                .forAccounts(true)
+                                .permissionGroup("account_tests")
+                                .name("write")
+                                .build()
+                )
+                .subscribeAsCompletionStage()
+                .join();
+
+        // add
+        repository.addAccountPermissions(persisted, Arrays.asList(firstPermission, secondPermission))
+                .subscribeAsCompletionStage()
+                .join();
+
+        Optional<AccountDO> afterAdd = repository.getById(persisted.getId()).subscribeAsCompletionStage().join();
+
+        assertThat(afterAdd).isNotEmpty();
+        assertThat(afterAdd.get().getPermissions())
+                .containsExactlyInAnyOrder(firstPermission, secondPermission);
+
+        // remove one
+        repository.removeAccountPermissions(persisted, Collections.singletonList(firstPermission))
+                .subscribeAsCompletionStage()
+                .join();
+
+        Optional<AccountDO> afterRemove = repository.getById(persisted.getId()).subscribeAsCompletionStage().join();
+
+        assertThat(afterRemove).isNotEmpty();
+        assertThat(afterRemove.get().getPermissions())
+                .containsExactlyInAnyOrder(secondPermission);
     }
 }

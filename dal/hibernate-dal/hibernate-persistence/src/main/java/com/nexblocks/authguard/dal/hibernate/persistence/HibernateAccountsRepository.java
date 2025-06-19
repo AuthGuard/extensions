@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.nexblocks.authguard.dal.hibernate.common.AbstractHibernateRepository;
 import com.nexblocks.authguard.dal.hibernate.common.ReactiveQueryExecutor;
 import com.nexblocks.authguard.dal.model.AccountDO;
+import com.nexblocks.authguard.dal.model.PasswordDO;
+import com.nexblocks.authguard.dal.model.PermissionDO;
 import com.nexblocks.authguard.dal.model.UserIdentifierDO;
 import com.nexblocks.authguard.dal.persistence.AccountsRepository;
 import com.nexblocks.authguard.service.exceptions.ServiceConflictException;
@@ -33,14 +35,12 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
     private static final String DOMAIN_FIELD = "domain";
 
     private final HibernateUserIdentifiersRepository userIdentifiersRepository;
-    private final HibernatePermissionsRepository permissionsRepository;
 
     @Inject
     public HibernateAccountsRepository(final ReactiveQueryExecutor queryExecutor) {
         super(AccountDO.class, queryExecutor);
 
         this.userIdentifiersRepository = new HibernateUserIdentifiersRepository(queryExecutor);
-        this.permissionsRepository = new HibernatePermissionsRepository(queryExecutor);
     }
 
     @Override
@@ -100,6 +100,97 @@ public class HibernateAccountsRepository extends AbstractHibernateRepository<Acc
         return queryExecutor.getSingleResult(GET_BY_IDENTIFIER, AccountDO.class,
                         IDENTIFIER_FIELD, identifier,
                         DOMAIN_FIELD, domain);
+    }
+
+    @Override
+    public Uni<AccountDO> addAccountPermissions(final AccountDO account, final List<PermissionDO> permissions) {
+        String sql = "INSERT INTO account_permissions (AccountDO_id, permissions_id) " +
+                "VALUES (:accountId, :permissionId)";
+
+        return queryExecutor.getSessionFactory().withTransaction(session -> {
+            List<Uni<Void>> insertUnis = permissions.stream()
+                    .map(permission -> session.createNativeQuery(sql)
+                            .setParameter("accountId", account.getId())
+                            .setParameter("permissionId", permission.getId())
+                            .executeUpdate()
+                            .replaceWithVoid()
+                    )
+                    .toList();
+
+            return Uni.combine().all().unis(insertUnis)
+                    .with(list -> account);
+        });
+    }
+
+    @Override
+    public Uni<AccountDO> removeAccountPermissions(final AccountDO account, final List<PermissionDO> permissions) {
+        String sql = "DELETE FROM account_permissions " +
+                "WHERE AccountDO_id = :accountId and permissions_id in :permissionIds";
+
+        return queryExecutor.getSessionFactory().withTransaction(session -> session.createNativeQuery(sql)
+                .setParameter("accountId", account.getId())
+                .setParameter("permissionIds", permissions.stream().map(PermissionDO::getId).toList())
+                .executeUpdate()
+                .map(ignored -> account));
+    }
+
+    @Override
+    public Uni<AccountDO> addUserIdentifier(final AccountDO account, final UserIdentifierDO identifier) {
+        return queryExecutor.getSessionFactory().withTransaction(session -> {
+            return session.find(AccountDO.class, account.getId())
+                    .flatMap(retrieved -> {
+                        retrieved.getIdentifiers().add(identifier);
+
+                        return session.merge(retrieved);
+                    });
+        });
+    }
+
+    @Override
+    public Uni<AccountDO> removeUserIdentifier(final AccountDO account, final UserIdentifierDO identifier) {
+        return queryExecutor.getSessionFactory().withTransaction(session -> {
+            return session.find(AccountDO.class, account.getId())
+                    .flatMap(retrieved -> {
+                        retrieved.setIdentifiers(retrieved.getIdentifiers()
+                                .stream()
+                                .filter(existing -> !existing.getIdentifier().equals(identifier.getIdentifier()))
+                                .collect(Collectors.toSet()));
+
+                        return session.merge(retrieved);
+                    });
+        });
+    }
+
+    @Override
+    public Uni<AccountDO> replaceIdentifierInPlace(final AccountDO accountDO, final String oldIdentifier,
+                                                   final UserIdentifierDO newIdentifier) {
+        return queryExecutor.getSessionFactory().withTransaction(session -> {
+            return session.find(AccountDO.class, accountDO.getId())
+                    .flatMap(retrieved -> {
+                        // remove the old one
+                        retrieved.setIdentifiers(retrieved.getIdentifiers()
+                                .stream()
+                                .filter(existing -> !existing.getIdentifier().equals(oldIdentifier))
+                                .collect(Collectors.toSet()));
+
+                        // add the new one
+                        retrieved.getIdentifiers().add(newIdentifier);
+
+                        return session.merge(retrieved);
+                    });
+        });
+    }
+
+    @Override
+    public Uni<AccountDO> updateUserPassword(final AccountDO account, final PasswordDO hashedPassword) {
+        return queryExecutor.getSessionFactory().withTransaction(session -> {
+            return session.find(AccountDO.class, account.getId())
+                    .flatMap(retrieved -> {
+                        retrieved.setHashedPassword(hashedPassword);
+
+                        return session.merge(retrieved);
+                    });
+        });
     }
 
     @Override
